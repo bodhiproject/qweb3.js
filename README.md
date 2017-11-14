@@ -30,6 +30,10 @@ Qweb3 is a library for Dapps to interract with Qtum network. Behind the scene Qw
 ### Utility
   * qweb3.bot.fromBotoshi();
 
+# Developing
+### Tips
+  * Eslint is used to examine Javascript syntax. Use `npm run lint:fix` to auto-fix spacing, and check code.
+
 # Testing
 Testing is done with mocha + babel-register plugin. An excample to run all tests in ./test/qweb3.js would be
 `mocha --compilers js:babel-register "./test/qweb3.js"`
