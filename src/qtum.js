@@ -1,9 +1,7 @@
-class Qtum{
+class Qtum {
+  constructor(qweb3) {
 
-	constructor(qweb3){
-		
-	}
-
+  }
 }
 
 export default Qtum;

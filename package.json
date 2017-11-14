@@ -16,13 +16,11 @@
     "babel-cli": "https://registry.npmjs.org/babel-cli/-/babel-cli-6.24.1.tgz",
     "babel-preset-stage-2": "https://registry.npmjs.org/babel-preset-stage-2/-/babel-preset-stage-2-6.24.1.tgz",
     "babel-runtime": "https://registry.npmjs.org/babel-runtime/-/babel-runtime-5.8.38.tgz",
+    "bluebird": "^3.5.1",
     "ethjs-abi": "^0.2.1",
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.3",
-    "request": "^2.83.0",
-    "request-promise": "^4.2.2",
-    "web3": "^1.0.0-beta.24",
-    "xmlhttprequest": "^1.8.0"
+    "web3": "^1.0.0-beta.24"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -31,20 +29,19 @@
     "babel-preset-es2015": "https://registry.npmjs.org/babel-preset-es2015/-/babel-preset-es2015-6.24.1.tgz",
     "babel-register": "^6.26.0",
     "chai": "^3.0.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "^11.2.0",
-    "eslint-plugin-import": "^2.7.0",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "istanbul": "^0.4.4",
-    "jshint": ">=2.5.0",
     "mocha": ">=2.3.3"
   },
   "scripts": {
     "start": "babel-node --inspect src/index.js --presets es2015,stage-2",
     "build": "",
     "watch": "",
-    "lint": "jshint *.js lib",
-    "test": "",
+    "lint:fix": "eslint --fix -- src/. test/.",
+    "test": "mocha --compilers js:babel-register ./test/**/*.js",
     "test-coveralls": "istanbul cover _mocha -- -R spec && cat coverage/lcov.info | coveralls --verbose"
   },
   "homepage": "http://www.bodhi.network/",
@@ -62,7 +59,7 @@
     {
       "name": "Chris Li",
       "email": "chris@bodhi.network",
-      "url": ""
+      "url": "https://www.bodhi.network/"
     }
   ]
 }

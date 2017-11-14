@@ -1,5 +1,14 @@
 import _ from 'lodash';
 
+/**
+ * Parameter check at the beginning of a function
+ * Throw errors if required keys are missing in params object
+ * @param  {string} methodName Function name used for error message
+ * @param  {object} params     params object
+ * @param  {array} required    Array of key strings in params, e.g. ['resultNames', 'sender']
+ * @param  {func} validators  Custom functions used to validate params
+ * @return {}
+ */
 export function paramsCheck(methodName, params, required, validators) {
   if (_.isUndefined(params)) {
     throw new Error(`params is undefined in params of ${methodName}; expected: ${_.isEmpty(required) ? undefined : required.join(',')}`);
@@ -21,7 +30,7 @@ export function paramsCheck(methodName, params, required, validators) {
     _.each(validators, (validFunc, key) => {
       // Check whether each validator is a function
       if (typeof validFunc !== 'function') {
-        throw new Error('validators values have to be functions ...');
+        throw new Error('validators are defined but not functions ...');
       }
 
       // Check whether key defined in validator is in params
