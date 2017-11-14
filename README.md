@@ -2,19 +2,18 @@
 
 Qweb3 is a library for Dapps to interract with Qtum network. Behind the scene Qweb3 communicates to a local Qtum node through RPC calls.
 
-`web3` contains the `eth` object - `web3.eth` (for specifically Ethereum blockchain interactions) and the `shh` object - `web3.shh` (for Whisper interaction). Over time we'll introduce other objects for each of the other web3 protocols. Working  [examples can be found here](https://github.com/ethereum/web3.js/tree/master/example).
-
-If you want to look at some more sophisticated examples using web3.js check out these [useful app patterns](https://github.com/ethereum/wiki/wiki/Useful-Ðapp-Patterns).
-
-# Usage example
-
+# Get Started
+1. `git clone https://github.com/bodhiproject/qweb3.js.git`
+2. `cd qweb3`
+3. `npm install`
+4. Run tests with `npm run test`
 
 # Qweb3.js API Reference
 
-## QTUM
-qweb3.qtum.getTransaction
+### QTUM
+  * qweb3.qtum.getTransaction
 
-### Accounts
+### Accounts (Not Implemented yet)
 
   * Create
 	qweb3.bot.accounts.create()
@@ -23,31 +22,17 @@ qweb3.qtum.getTransaction
 	qweb3.bot.getBalance(address)
 
 ### Contract
-qweb3.qtum.Contract(contractABI, contractAddress);
-
-  * GetPastEvents
-	contract.getPastEvents('allEvents', {
-        filter: { _to: '0x3184Ae2a7d52bf89C902072CbC87c231c73b96b9'  }, 
-        fromBlock: fromBlockNum,
-        toBlock: toBlockNum
-    }, function(error, events) {
-        if (error) {
-            console.log('error', error);
-        }
-        console.log('events', events);
-    })
-    .then(function(events) {
-        console.log(events) // same results as the optional callback above
-    });
-
+  * qweb3.Contract.call();
+  * qweb3.Contract.send();
+  * qweb3.Contract.searchLogs();
   * Subscribe
 
 ### Utility
-qweb3.bot.fromWei();
-
+  * qweb3.bot.fromBotoshi();
 
 # Testing
-We use mocha + babel-register plugin to transplie and run tests under root ./test
+Testing is done with mocha + babel-register plugin. An excample to run all tests in ./test/qweb3.js would be
+`mocha --compilers js:babel-register "./test/qweb3.js"`
 
-## Debug with Mocha
-mocha --compilers js:babel-register "./test/unit/huobi.js" "-g" "getProductsTickerWebsocket" --inspect --debug-brk
+In addition, you can add "-g" option to run a specific test, and use "--inspect-brk" to debug in Chrome Dev Tool.
+`mocha --compilers js:babel-register "./test/qweb3.js" -g "getTransaction" --inspect-brk`
