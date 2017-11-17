@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import EthjsAbi from 'ethjs-abi';
 import web3 from 'web3';
+import Formatter from './formatter';
 
 /* Internal Import */
 import { paramsCheck } from './utils';
@@ -24,7 +25,7 @@ class Contract {
    * @return {Promise}           Promise containing result object or Error
    */
   call(methodName, params) {
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, params, false /* isSend */);
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, params, false /* isSend */ );
 
     // Convert string into bytes or bytes32[] according to ABI definition
     _.each(methodObj.inputs, (item, index) => {
@@ -66,9 +67,14 @@ class Contract {
     paramsCheck('send', params, ['senderAddress', 'data']);
 
     const {
-      senderAddress, data, amount, gasLimit, gasPrice,
+      senderAddress,
+      data,
+      amount,
+      gasLimit,
+      gasPrice,
     } = params;
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, data, true /* isSend */);
+
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, data, true /* isSend */ );
 
     // Convert string into bytes or bytes32[] according to ABI definition
     _.each(methodObj.inputs, (item, index) => {
@@ -145,7 +151,8 @@ class Contract {
       ],
     };
 
-    return this.parent.provider.request(options);
+    return this.parent.provider.request(options)
+      .then((results) => Formatter.searchLogOutput(results, this.abi));
   }
 
   /**

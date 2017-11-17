@@ -47,3 +47,18 @@ export function paramsCheck(methodName, params, required, validators) {
     });
   }
 }
+
+/**
+ * Validate format string and append '0x' to it if there's not one.
+ * @param  {string} value  Hex string to format
+ * @return {string}       
+ */
+export function formatHexStr(value) {
+
+  // TODO: validate format of hex string
+  if (_.startsWith(value, '0x')) {
+    return value;
+  } else {
+    return "0x" + value;
+  }
+}
