@@ -6,7 +6,7 @@ import Qweb3 from '../src/qweb3';
 import Contracts from './data/Contracts';
 import utils from '../src/utils';
 
-describe('Contract EventFactory', () => {
+describe('Contract BodhiToken', () => {
 
   let qweb3;
   let contract;
@@ -14,7 +14,7 @@ describe('Contract EventFactory', () => {
   beforeEach(() => {
 
     qweb3 = new Qweb3('http://kezjo:qweASD@localhost:13889');
-    contract = new qweb3.Contract(Contracts.EventFactory.address, Contracts.EventFactory.abi);
+    contract = new qweb3.Contract(Contracts.BodhiToken.address, Contracts.BodhiToken.abi);
 
     // TODO: Enter wallet passphrase
   });
