@@ -20,83 +20,67 @@ describe('Contract BodhiToken', () => {
   });
 
   describe('methods', () => {
-    /** Create a topic with sendtocontract and make sure txid returned */
-    it('createTopic', () => {
-
-      // TODO: Get sender address with unspent balance first
-
-      const resultSetter = '0x5089a838dc9b27174c3b7a0314c6a6219d3002ed';
-
-      let name = utils.toHex('firstTopic');
-
-      name = utils.formatHexStr(name);
-
-      let resultNames = new Array(10).fill('\u0000');
-      resultNames[0] = utils.toHex('result1');
-      resultNames[1] = utils.toHex('result2');
-      resultNames = _.map(resultNames, (value) => utils.toHex(value));
-
-      const bettingEndBlock = 33000;
-
-      return contract.send('createTopic', {
-          senderAddress: 'qX1wv2426uABCJFqcqauCMGuXZv2unZYcd',
-          data: [resultSetter, name, resultNames, bettingEndBlock],
-        })
-        .then((res) => {
-          console.log(res);
-          assert.isDefined(res.txid);
-        });
-    });
-
-    /** Make sure topics returns created topics */
-    it('topics', () => {
-
-      const name = Buffer.from('firstTopic', 'utf-8');
-      const resultNames = [Buffer.from('firstResult', 'utf-8'), Buffer.from('secondResult', 'utf-8')];
-      const bettingEndBlock = 33000;
-
-      return contract.call('topics', '382e62114f64d453f3b5c053e57839bdd9a0bfb9d63acd772a7b1572ffdd5df7')
-        .then((res) => {
-          console.log(res);
-          assert.isDefined(res.executionResult.output);
-        });
-    });
-
-    /** Make sure doesTopicExist returns created topics */
-    it('doesTopicExist', () => {
-
-      const name = Buffer.from('firstTopic', 'utf-8');
-      const resultNames = [Buffer.from('result1', 'utf-8'), Buffer.from('result2', 'utf-8')];
-      const bettingEndBlock = 33000;
-
-      return contract.call('doesTopicExist', [name, resultNames, bettingEndBlock])
-        .then((res) => {
-          console.log(res);
-          assert.isDefined(res.executionResult.output);
-        });
-    });
-
-    /** Search past topics and validate results */
-    it('searchLogs', () => {
+    /** Search past Mint logs */
+    it('searchLogs Mint', () => {
 
       const fromBlock = 0;
       const toBlock = -1;
-      const addresses = 'f6464ab9222b959a50765ac5c4889f8c3fe24241';
-      const topics = ['null'];
+      const addresses = Contracts.BodhiToken.address;
+
+      // TODO: generate topic only by specifying 'Mint'
+      const topics = ['4e3883c75cc9c752bb1db2e406a822e4a75067ae77ad9a0a4d179f2709b9e1f6'];
 
       return contract.searchLogs(fromBlock, toBlock, addresses, topics)
         .then((res) => {
           console.log(`Retrieved ${res.length} entries from searchLogs.`);
 
           res.forEach((entry, index) => {
-            console.log(`Entry #${index} contains ${entry.log.length} logs.`);
+            // Bodhi contract specific - convert byte and byte32 to string
+            if (!_.isEmpty(entry.log)) {
+              _.each(entry.log, (logEntry) => {
+                _.each(logEntry, (value, key) => {
+                  // Convert value of field '_name' (byte32[]) and '_resultNames' (byte32[])
+                  if (key === 'supply' || key === 'amount') {
+                    logEntry[key] = value.toNumber();
+                  }
+                });
+              })
+            }
+
             console.log(entry);
-            entry.log.forEach((logEntry, logIndex) => {
-              console.log(`Log #${logIndex}`, logEntry);
-              if (logEntry.data) {
-                console.log('data translation: ', utils.toAscii(`0x${logEntry.data}`));
-              }
-            });
+
+          });
+        });
+    });
+
+    /** Search past Transfer logs */
+    it('searchLogs Transfer', () => {
+
+      const fromBlock = 30000;
+      const toBlock = -1;
+      const addresses = Contracts.BodhiToken.address;
+
+      // TODO: generate topic only by specifying 'Mint'
+      const topics = ['ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'];
+
+      return contract.searchLogs(fromBlock, toBlock, addresses, topics)
+        .then((res) => {
+          console.log(`Retrieved ${res.length} entries from searchLogs.`);
+
+          res.forEach((entry, index) => {
+            // Bodhi contract specific - convert byte and byte32 to string
+            if (!_.isEmpty(entry.log)) {
+              _.each(entry.log, (logEntry) => {
+                _.each(logEntry, (value, key) => {
+                  // Convert value of field '_name' (byte32[]) and '_resultNames' (byte32[])
+                  if (key === '_value') {
+                    logEntry[key] = value.toNumber();
+                  }
+                });
+              })
+            }
+
+            console.log(entry);
           });
         });
     });

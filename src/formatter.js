@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import EthjsAbi from 'ethjs-abi';
-import { formatHexStr } from './utils';
+import utils from './utils';
 
 class Formatter {
 
@@ -30,9 +30,9 @@ class Formatter {
       if (!_.isEmpty(resultEntry.log)) {
 
         const rawlogs = _.map(resultEntry.log, (logEntry) => ({
-          address: formatHexStr(logEntry.address),
-          data: formatHexStr(logEntry.data),
-          topics: _.map(logEntry.topics, formatHexStr)
+          address: utils.formatHexStr(logEntry.address),
+          data: utils.formatHexStr(logEntry.data),
+          topics: _.map(logEntry.topics, utils.formatHexStr)
         }));
 
         formatted.log = logDecoder(rawlogs);

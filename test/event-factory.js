@@ -81,7 +81,7 @@ describe('Contract EventFactory', () => {
 
       const fromBlock = 0;
       const toBlock = -1;
-      const addresses = 'f6464ab9222b959a50765ac5c4889f8c3fe24241';
+      const addresses = Contracts.EventFactory.address;
       const topics = ['null'];
 
       return contract.searchLogs(fromBlock, toBlock, addresses, topics)
@@ -91,12 +91,6 @@ describe('Contract EventFactory', () => {
           res.forEach((entry, index) => {
             console.log(`Entry #${index} contains ${entry.log.length} logs.`);
             console.log(entry);
-            entry.log.forEach((logEntry, logIndex) => {
-              console.log(`Log #${logIndex}`, logEntry);
-              if (logEntry.data) {
-                console.log('data translation: ', utils.toAscii(`0x${logEntry.data}`));
-              }
-            });
           });
         });
     });
