@@ -13,7 +13,7 @@ describe('Contract EventFactory', () => {
 
   beforeEach(() => {
 
-    qweb3 = new Qweb3('http://kezjo:qweASD@localhost:13889');
+    qweb3 = new Qweb3('http://bodhi:bodhi@localhost:13889');
     contract = new qweb3.Contract(Contracts.EventFactory.address, Contracts.EventFactory.abi);
 
     // TODO: Enter wallet passphrase

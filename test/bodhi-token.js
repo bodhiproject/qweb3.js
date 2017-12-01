@@ -21,7 +21,7 @@ describe('Contract BodhiToken', () => {
 
   describe('methods', () => {
     /** Search past Mint logs */
-    it('searchLogs Mint', () => {
+    it('Mint', () => {
 
       const fromBlock = 0;
       const toBlock = -1;
@@ -54,7 +54,7 @@ describe('Contract BodhiToken', () => {
     });
 
     /** Search past Transfer logs */
-    it('searchLogs Transfer', () => {
+    it('Transfer', () => {
 
       const fromBlock = 30000;
       const toBlock = -1;

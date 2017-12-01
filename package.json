@@ -12,6 +12,10 @@
   "directories": {
     "lib": "./lib"
   },
+  "engines": {
+    "node": "8.6.0",
+    "npm": "5.3.0"
+  },
   "dependencies": {
     "babel-cli": "https://registry.npmjs.org/babel-cli/-/babel-cli-6.24.1.tgz",
     "babel-preset-stage-2": "https://registry.npmjs.org/babel-preset-stage-2/-/babel-preset-stage-2-6.24.1.tgz",
