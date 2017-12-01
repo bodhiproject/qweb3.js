@@ -3,7 +3,6 @@ import { assert } from 'chai';
 import _ from 'lodash';
 import util from 'util';
 import utils from '../src/utils';
-import web3 from 'web3';
 import Formatter from '../src/formatter';
 
 const CONTRACT_ADDRESS = 'f6464ab9222b959a50765ac5c4889f8c3fe24241';
@@ -86,9 +85,9 @@ describe('Formatter', () => {
             _.each(logEntry, (value, key) => {
               // Convert value of field '_name' (byte32[]) and '_resultNames' (byte32[])
               if (key === '_name') {
-                logEntry[key] = web3.utils.toAscii(value);
+                logEntry[key] = utils.toAscii(value);
               } else if (key === '_resultNames') {
-                logEntry[key] = _.map(value, (val) => web3.utils.toAscii(val));
+                logEntry[key] = _.map(value, (val) => utils.toAscii(val));
               } else if (key === '_bettingEndBlock') {
                 logEntry[key] = value.toNumber();
               }
