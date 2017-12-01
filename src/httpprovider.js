@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import _ from 'lodash';
 
 /* Internal Import */
-import { paramsCheck } from './utils';
+import utils from './utils';
 
 class HttpProvider {
   constructor(urlString) {
@@ -14,7 +14,7 @@ class HttpProvider {
 
   request(params) {
     // Make sure method is defined in params
-    paramsCheck('request', params, ['method']);
+    utils.paramsCheck('request', params, ['method']);
 
     // Construct body of request options
     const bodyJson = _.extend({
@@ -70,8 +70,16 @@ class HttpProvider {
    * @return {object}          The parsed JSON from the request
    */
   parseJSON(response) {
-    // return response.json();
-    return response.json();
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return {
+        error: {
+          message: response.statusText,
+          status: response.status
+        }
+      }
+    }
   }
 }
 
