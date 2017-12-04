@@ -83,28 +83,7 @@ var toUtf8 = function(hex) {
   return utf8.decode(str);
 };
 
-/**
- * Should be called to get ascii from it's hex representation
- *
- * @method toAscii
- * @param {String} string in hex
- * @returns {String} ascii string representation of hex value
- */
-export function toAscii(hex) {
-  // Find termination
-  var str = "";
-  var i = 0,
-    l = hex.length;
-  if (hex.substring(0, 2) === '0x') {
-    i = 2;
-  }
-  for (; i < l; i += 2) {
-    var code = parseInt(hex.substr(i, 2), 16);
-    str += String.fromCharCode(code);
-  }
 
-  return str;
-};
 
 /**
  * Should be called to get hex representation (prefixed by 0x) of utf8 string
@@ -548,6 +527,29 @@ class Utils {
       return "0x" + value;
     }
   }
+
+  /**
+   * Should be called to get ascii from it's hex representation
+   *
+   * @method toAscii
+   * @param {String} string in hex
+   * @returns {String} ascii string representation of hex value
+   */
+  static toAscii(hex) {
+    // Find termination
+    var str = "";
+    var i = 0,
+      l = hex.length;
+    if (hex.substring(0, 2) === '0x') {
+      i = 2;
+    }
+    for (; i < l; i += 2) {
+      var code = parseInt(hex.substr(i, 2), 16);
+      str += String.fromCharCode(code);
+    }
+
+    return str;
+  };
 }
 
 export default Utils;
