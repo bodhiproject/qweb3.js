@@ -1,5 +1,6 @@
 /* global describe,it,beforeEach */
 const assert = require('chai').assert;
+import util from 'util';
 
 import _ from 'lodash';
 import Qweb3 from '../src/qweb3';
@@ -90,7 +91,7 @@ describe('Contract EventFactory', () => {
 
           res.forEach((entry, index) => {
             console.log(`Entry #${index} contains ${entry.log.length} logs.`);
-            console.log(entry);
+            console.log(util.inspect(entry, { depth: null }));
           });
         });
     });
