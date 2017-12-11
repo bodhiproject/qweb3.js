@@ -38,6 +38,10 @@ class Qweb3 {
     });
   }
 
+  /*
+  * Lists unspent transaction outputs.
+  * @return Array of unspent transaction outputs.
+  */
   listUnspent() {
     return this.provider.request({
       method: 'listunspent',
