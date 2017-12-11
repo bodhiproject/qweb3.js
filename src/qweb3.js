@@ -37,6 +37,12 @@ class Qweb3 {
       params: [txid],
     });
   }
+
+  listUnspent() {
+    return this.provider.request({
+      method: 'listunspent',
+    });
+  }
 }
 
 export default Qweb3;
