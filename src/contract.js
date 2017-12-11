@@ -97,6 +97,26 @@ class Contract {
     return this.parent.provider.request(options);
   }
 
+  sendWithDataHex(params) {
+    const {
+      dataHex, amount, gasLimit, gasPrice, senderAddress
+    } = params;
+
+    const options = {
+      method: 'sendtocontract',
+      params: [
+        this.address,
+        dataHex,
+        amount || SEND_AMOUNT,
+        gasLimit || SEND_GASLIMIT,
+        gasPrice || SEND_GASPRICE,
+        senderAddress,
+      ],
+    };
+    
+    return this.parent.provider.request(options);
+  }
+
   /**
    * Search logs with given filters
    * @param  {number} fromBlock Number of from block
