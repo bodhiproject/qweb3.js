@@ -26,6 +26,18 @@ class Qweb3 {
   }
 
   /**
+   * Get the hex address of a Qtum address
+   * @param {address} Qtum address
+   * @return Hex string of the converted address
+   */
+  getHexAddress(address) {
+    return this.provider.request({
+      method: 'gethexaddress',
+      params: [address],
+    });
+  }
+
+  /**
    * Get transaction details by txid
    * @param  {string} txid transaction Id (64 digits hexString),
    *                       e.g. dfafd59050fbe825d884b1e9279924f42bfa9506ca11e3d1910141054858f338
