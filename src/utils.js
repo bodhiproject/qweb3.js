@@ -53,36 +53,43 @@ export function paramsCheck(methodName, params, required, validators) {
 
 /*
 * @dev Converts a string to hex string padded-right to the number of bytes specified.
-* @param _string The string to convert to hex.
-* @param _paddedBytes The number of bytes to pad-right.
+* @param str The string to convert to hex.
+* @param paddedBytes The number of bytes to pad-right.
 * @return The converted padded-right hex string.
 */
-export function stringToHex(_string, _paddedBytes) {
-  let hexString = Web3Utils.toHex(_string);
+export function stringToHex(str, paddedBytes) {
+  if (paddedBytes <= 0) {
+    throw new Error(`paddedBytes should be greater than 0.`);
+  }
+
+  let hexString = Web3Utils.toHex(str);
   if (hexString.indexOf('0x') === 0) {
     // Remove the 0x hex prefix
     hexString = hexString.slice(2); 
   }
-  return Web3Utils.padRight(hexString, numOfChars(_paddedBytes));
+  return Web3Utils.padRight(hexString, numOfChars(paddedBytes));
 }
 
 /*
 * @dev Converts an array of string elements (max 32 bytes) into a concatenated hex string.
-* @param _stringArray The string array to convert to hex.
-* @param _numOfItems The total number of items the string array should have.
+* @param strArray The string array to convert to hex.
+* @param numOfItems The total number of items the string array should have.
 * @return The converted string array to single padded-right hex string.
 */
-export function stringArrayToHex(_stringArray, _numOfItems) {
-  if (!Array.isArray(_stringArray)) {
-    throw new Error(`_stringArray is not an array type.`);
+export function stringArrayToHex(strArray, numOfItems) {
+  if (!Array.isArray(strArray)) {
+    throw new Error(`strArray is not an array type.`);
+  }
+  if (numOfItems <= 0) {
+    throw new Error(`numOfItems should be greater than 0.`);
   }
 
   let chars = numOfChars(32);
   let array = new Array(10);
-  for (let i = 0; i < _numOfItems; i++) {
+  for (let i = 0; i < numOfItems; i++) {
     let hexString;
-    if (i < _stringArray.length - 1) {
-      hexString = Web3Utils.toHex(_stringArray[i]);
+    if (i < strArray.length - 1) {
+      hexString = Web3Utils.toHex(strArray[i]);
     } else {
       hexString = Web3Utils.toHex('');
     }
@@ -94,19 +101,19 @@ export function stringArrayToHex(_stringArray, _numOfItems) {
 
 /*
 * @dev Converts a uint256 to hex padded-left to 32 bytes.
-* @param _uint256 The number to convert.
+* @param uint256 The number to convert.
 * @return The converted uint256 to padded-left hex string.
 */
-export function uint256ToHex(_uint256) {
-  let hexNumber = Web3Utils.toHex(_uint256);
+export function uint256ToHex(uint256) {
+  let hexNumber = Web3Utils.toHex(uint256);
   return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
 }
 
 /*
 * @dev Returns the number of characters in the bytes specified.
-* @param _bytes The number of bytes.
+* @param bytes The number of bytes.
 * @return The int number of characters given the bytes.
 */
-function numOfChars(_bytes) {
-  return _bytes * constants['CHARS_IN_BYTE'];
+function numOfChars(bytes) {
+  return bytes * constants['CHARS_IN_BYTE'];
 }
