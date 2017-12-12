@@ -61,44 +61,45 @@ class Contract {
    *
    * @return {Promise}           Promise containing result object or Error
    */
-  send(methodName, params) {
-    // Error out if senderAddress or data is not defined in params
-    paramsCheck('send', params, ['senderAddress', 'data']);
+  // send(methodName, params) {
+  //   // Error out if senderAddress or data is not defined in params
+  //   paramsCheck('send', params, ['senderAddress', 'data']);
 
-    const {
-      senderAddress, data, amount, gasLimit, gasPrice,
-    } = params;
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, data, true /* isSend */);
+  //   const {
+  //     senderAddress, data, amount, gasLimit, gasPrice,
+  //   } = params;
+  //   const { method: methodObj, args } = this.validateMethodAndArgs(methodName, data, true /* isSend */);
 
-    // Convert string into bytes or bytes32[] according to ABI definition
-    _.each(methodObj.inputs, (item, index) => {
-      if (item.type === 'bytes') {
-        args[index] = web3.utils.toHex(args[index]);
-      } else if (item.type === 'bytes32[]') {
-        args[index] = _.map(args[index], value => web3.utils.toHex(value));
-      }
-    });
+  //   // Convert string into bytes or bytes32[] according to ABI definition
+  //   _.each(methodObj.inputs, (item, index) => {
+  //     if (item.type === 'bytes') {
+  //       args[index] = web3.utils.toHex(args[index]);
+  //     } else if (item.type === 'bytes32[]') {
+  //       args[index] = _.map(args[index], value => web3.utils.toHex(value));
+  //     }
+  //   });
 
-    // Encoding dataHex and remove "0x" in the front.
-    const dataHex = EthjsAbi.encodeMethod(methodObj, args).slice(2);
+  //   // Encoding dataHex and remove "0x" in the front.
+  //   const dataHex = EthjsAbi.encodeMethod(methodObj, args).slice(2);
 
-    const options = {
-      method: 'sendtocontract',
-      params: [
-        this.address,
-        dataHex,
-        amount || SEND_AMOUNT,
-        gasLimit || SEND_GASLIMIT,
-        gasPrice || SEND_GASPRICE,
-        senderAddress,
-      ],
-    };
+  //   const options = {
+  //     method: 'sendtocontract',
+  //     params: [
+  //       this.address,
+  //       dataHex,
+  //       amount || SEND_AMOUNT,
+  //       gasLimit || SEND_GASLIMIT,
+  //       gasPrice || SEND_GASPRICE,
+  //       senderAddress,
+  //     ],
+  //   };
 
-    return this.parent.provider.request(options);
-  }
+  //   return this.parent.provider.request(options);
+  // }
 
   send(methodName, args, amount, gasLimit, gasPrice, senderAddress) {
     const methodObj = _.find(this.abi, { methodName });
+    console.log(methodObj);
 
     if (methodObj.inputs.length != args.length) {
       throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
