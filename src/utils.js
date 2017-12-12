@@ -55,7 +55,7 @@ export function paramsCheck(methodName, params, required, validators) {
 * @dev Converts a string to hex string padded-right to the number of bytes specified.
 * @param _string The string to convert to hex.
 * @param _paddedBytes The number of bytes to pad-right.
-* @return The converted hex string.
+* @return The converted padded-right hex string.
 */
 export function stringToHex(_string, _paddedBytes) {
   let hexString = Web3Utils.toHex(_string);
@@ -70,7 +70,7 @@ export function stringToHex(_string, _paddedBytes) {
 * @dev Converts an array of string elements (max 32 bytes) into a concatenated hex string.
 * @param _stringArray The string array to convert to hex.
 * @param _numOfItems The total number of items the string array should have.
-* @return The converted string array to single hex string.
+* @return The converted string array to single padded-right hex string.
 */
 export function stringArrayToHex(_stringArray, _numOfItems) {
   let chars = numOfChars(32);
@@ -86,6 +86,16 @@ export function stringArrayToHex(_stringArray, _numOfItems) {
     array[i] = Web3Utils.padRight(hexString, chars).slice(2);
   }
   return array.join('');
+}
+
+/*
+* @dev Converts a uint256 to hex padded-left to 32 bytes.
+* @param _uint256 The number to convert.
+* @return The converted uint256 to padded-left hex string.
+*/
+export function uint256ToHex(_uint256) {
+  let hexNumber = Web3Utils.toHex(_uint256);
+  return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
 }
 
 /*
