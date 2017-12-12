@@ -1,10 +1,10 @@
 /* External Import */
-import _ from 'lodash';
-import EthjsAbi from 'ethjs-abi';
-import Formatter from './formatter';
+const _ = require('lodash');
+const EthjsAbi = require('ethjs-abi');
+const Formatter = require('./formatter');
 
 /* Internal Import */
-import utils from './utils';
+const utils = require('./utils');
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
@@ -191,4 +191,4 @@ class Contract {
   }
 }
 
-export default Contract;
+module.exports = Contract;

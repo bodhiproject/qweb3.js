@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
-import utf8 from 'utf8';
-import _ from 'lodash';
+const BigNumber = require('bignumber.js');
+const utf8 = require('utf8');
+const _ = require('lodash');
 
 var unitMap = {
   'noether': '0',
@@ -517,7 +517,7 @@ class Utils {
   /**
    * Validate format string and append '0x' to it if there's not one.
    * @param  {string} value  Hex string to format
-   * @return {string}       
+   * @return {string}
    */
   static formatHexStr(value) {
     // TODO: validate format of hex string
@@ -552,7 +552,7 @@ class Utils {
   };
 }
 
-export default Utils;
+module.exports = Utils;
 
 // module.exports = {
 //   padLeft: padLeft,

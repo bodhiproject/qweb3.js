@@ -1,13 +1,13 @@
-import _ from 'lodash';
-import EthjsAbi from 'ethjs-abi';
-import utils from './utils';
+const _ = require('lodash');
+const EthjsAbi = require('ethjs-abi');
+const utils = require('./utils');
 
 class Formatter {
 
 	/**
 	 * Formats the output of searchlog by decoding eventName, indexed and unindexed params
 	 * @param  {object} rawOutput   Raw seachlog output
-	 * @param  {object} contractABI 
+	 * @param  {object} contractABI
 	 * @return {object}             Decoded searchlog output
 	 */
   static searchLogOutput(rawOutput, contractABI) {
@@ -44,4 +44,4 @@ class Formatter {
 
 }
 
-export default Formatter;
+module.exports = Formatter;
