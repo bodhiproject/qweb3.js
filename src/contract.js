@@ -98,8 +98,7 @@ class Contract {
   // }
 
   send(methodName, args, amount, gasLimit, gasPrice, senderAddress) {
-    const methodObj = _.find(this.abi, { methodName });
-    console.log(methodObj);
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, args, true);
 
     if (methodObj.inputs.length != args.length) {
       throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
