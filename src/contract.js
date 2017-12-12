@@ -49,23 +49,45 @@ class Contract {
     return this.parent.provider.request(options);
   }
 
+  /*
+  * @dev Executes a sendtocontract on this contract via the qtum-cli.
+  * @param methodName Method name to execute as a string.
+  * @param params Parameters of the contract method.
+  * @return The transaction id of the sendtocontract.
+  */
   send(methodName, params) {
-    const {
-      methodArgs, amount, gasLimit, gasPrice, senderAddress,
-    } = params;
+    // Throw if methodArgs or senderAddress is not defined in params
+    utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
+
+    const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, true);
+    const options = {
+      method: 'sendtocontract',
+      params: [
+        this.address,
+        constructDataHex(methodObj),
+        amount || SEND_AMOUNT,
+        gasLimit || SEND_GASLIMIT,
+        gasPrice || SEND_GASPRICE,
+        senderAddress,
+      ],
+    };
 
-    if (methodObj.inputs.length != args.length) {
-      throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
-    }
-    if (_.isUndefined(senderAddress)) {
-      throw new Error(`Sender address should not be undefined.`);
-    }
+    return this.parent.provider.request(options);
+  }
 
-    const functionSig = getFunctionHash(methodObj);
+  /*
+  * @dev Constructs the data hex string needed for a call() or send().
+  * @param methodObj The json object of the method taken from the ABI.
+  * @return The full hex string concatenated together.
+  */
+  constructDataHex(methodObj) {
+    if (!methodObj) {
+      throw new Error(`methodObj should not be undefined.`);
+    }
 
     let dataHex = '';
-    dataHex = dataHex.concat(functionSig);
+    dataHex = dataHex.concat(getFunctionHash(methodObj));
 
     let hex;
     _.each(methodObj.inputs, (item, index) => {
@@ -81,18 +103,7 @@ class Contract {
       }
     });
 
-    const options = {
-      method: 'sendtocontract',
-      params: [
-        this.address,
-        dataHex,
-        amount || SEND_AMOUNT,
-        gasLimit || SEND_GASLIMIT,
-        gasPrice || SEND_GASPRICE,
-        senderAddress,
-      ],
-    };
-    return this.parent.provider.request(options);
+    return dataHex;
   }
 
   /**
@@ -159,6 +170,10 @@ class Contract {
     // Check whether name is defined in ABI
     if (_.isUndefined(methodObj)) {
       throw new Error(`Method ${name} not defined in ABI.`);
+    }
+
+    if (methodObj.inputs.length != params.length) {
+      throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
     }
 
     // Error out if a call method is not defined with view or constant keyword
