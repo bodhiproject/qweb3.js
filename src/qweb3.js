@@ -37,6 +37,16 @@ class Qweb3 {
     });
   }
 
+  /*
+  * @dev Returns the current block height that is synced with the client.
+  * @return {Promise} Current block count or Error.
+  */
+  getBlockCount() {
+    return this.provider.request({
+      method: 'getblockcount',
+    });
+  }
+
   /**
    * Get transaction details by txid
    * @param  {string} txid transaction Id (64 digits hexString),
