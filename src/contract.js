@@ -4,7 +4,7 @@ import EthjsAbi from 'ethjs-abi';
 import web3 from 'web3';
 
 /* Internal Import */
-import { paramsCheck } from './utils';
+import { paramsCheck, stringToHex, stringArrayToHex, uint256ToHex } from './utils';
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
@@ -97,10 +97,35 @@ class Contract {
     return this.parent.provider.request(options);
   }
 
-  sendWithDataHex(params) {
-    const {
-      dataHex, amount, gasLimit, gasPrice, senderAddress
-    } = params;
+  send(methodName, args, amount, gasLimit, gasPrice, senderAddress) {
+    const methodObj = _.find(this.abi, { methodName });
+
+    if (methodObj.inputs.length != args.length) {
+      throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
+    }
+    if (_.isUndefined(senderAddress)) {
+      throw new Error(`Sender address should not be undefined.`);
+    }
+
+    let hex;
+    let dataHex = '';
+
+    // TODO: hash this here later
+    const functionSig = 'd0613dce';
+    dataHex = dataHex.concat(functionSig);
+
+    _.each(methodObj.inputs, (item, index) => {
+      if (item.type === 'address') {
+        hex = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
+        dataHex = dataHex.concat(hex);
+      } else if (item.type === 'bytes32[10]') {
+        hex = stringArrayToHex(args[index], 10);
+        dataHex = dataHex.concat(hex);
+      } else if (item.type === 'uint256') {
+        hex = uint256ToHex(args[index]);
+        dataHex = dataHex.concat(hex);
+      }
+    });
 
     const options = {
       method: 'sendtocontract',

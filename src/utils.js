@@ -73,6 +73,10 @@ export function stringToHex(_string, _paddedBytes) {
 * @return The converted string array to single padded-right hex string.
 */
 export function stringArrayToHex(_stringArray, _numOfItems) {
+  if (!Array.isArray(_stringArray)) {
+    throw new Error(`_stringArray is not an array type.`);
+  }
+
   let chars = numOfChars(32);
   let array = new Array(10);
   for (let i = 0; i < _numOfItems; i++) {
