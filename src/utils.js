@@ -1,7 +1,6 @@
-import BigNumber from 'bignumber.js';
-import utf8 from 'utf8';
-import _ from 'lodash';
-import Web3Utils from '../node_modules/web3-utils';
+const BigNumber = require('bignumber.js');
+const utf8 = require('utf8');
+const _ = require('lodash');
 
 const constants = require('./constants.js');
 const bs58 = require('bs58');
@@ -490,7 +489,7 @@ class Utils {
   /**
    * Validate format string and append '0x' to it if there's not one.
    * @param  {string} value  Hex string to format
-   * @return {string}       
+   * @return {string}
    */
   static formatHexStr(value) {
     // TODO: validate format of hex string

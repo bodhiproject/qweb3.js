@@ -1,7 +1,7 @@
 /* External Import */
-import _ from 'lodash';
-import EthjsAbi from 'ethjs-abi';
-import Formatter from './formatter';
+const _ = require('lodash');
+const EthjsAbi = require('ethjs-abi');
+const Formatter = require('./formatter');
 
 /* Internal Import */
 const Utils = require('./utils.js');
@@ -198,4 +198,4 @@ class Contract {
   }
 }
 
-export default Contract;
+module.exports = Contract;

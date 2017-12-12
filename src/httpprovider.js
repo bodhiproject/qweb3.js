@@ -1,7 +1,7 @@
 /* External Import */
-import url from 'url';
-import fetch from 'node-fetch';
-import _ from 'lodash';
+const url = require('url');
+const fetch = require('node-fetch');
+const _ = require('lodash');
 
 /* Internal Import */
 const Utils = require('./utils.js');
@@ -83,4 +83,4 @@ class HttpProvider {
   }
 }
 
-export default HttpProvider;
+module.exports = HttpProvider;
