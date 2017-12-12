@@ -204,8 +204,6 @@ class Contract {
    */
   validateMethodAndArgs(name, params, isSend) {
     const methodObj = _.find(this.abi, { name });
-    console.log(name);
-    console.log(this.abi);
 
     // Check whether name is defined in ABI
     if (_.isUndefined(methodObj)) {
