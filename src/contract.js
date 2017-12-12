@@ -57,7 +57,7 @@ class Contract {
   */
   send(methodName, params) {
     // Throw if methodArgs or senderAddress is not defined in params
-    utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
+    paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
     const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, true);
@@ -65,7 +65,7 @@ class Contract {
       method: 'sendtocontract',
       params: [
         this.address,
-        constructDataHex(methodObj, args),
+        this.constructDataHex(methodObj, args),
         amount || SEND_AMOUNT,
         gasLimit || SEND_GASLIMIT,
         gasPrice || SEND_GASPRICE,
