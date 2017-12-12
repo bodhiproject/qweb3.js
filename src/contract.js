@@ -18,31 +18,20 @@ class Contract {
   }
 
   /**
-   * Call a constant or view contract method by name
+   * @dev Executes a callcontract on a view/pure method via the qtum-cli.
    * @param  {string} methodName Name of contract method
    * @param  {array} params      Parameters of contract method
    * @return {Promise}           Promise containing result object or Error
    */
   call(methodName, params) {
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, params, false /* isSend */);
-
-    // Convert string into bytes or bytes32[] according to ABI definition
-    _.each(methodObj.inputs, (item, index) => {
-      if (item.type === 'bytes') {
-        args[index] = web3.utils.toHex(args[index]);
-      } else if (item.type === 'bytes32[]') {
-        args[index] = _.map(args[index], value => web3.utils.toHex(value));
-      }
-    });
-
-    // Encoding dataHex and remove "0x" in the front.
-    const dataHex = EthjsAbi.encodeMethod(methodObj, args).slice(2);
-
+    const { methodArgs, senderAddress } = params;
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, false);
     const options = {
       method: 'callcontract',
       params: [
         this.address,
-        dataHex,
+        this.constructDataHex(methodObj, args),
+        senderAddress,
       ],
     };
 
