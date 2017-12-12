@@ -65,7 +65,7 @@ class Contract {
       method: 'sendtocontract',
       params: [
         this.address,
-        constructDataHex(methodObj),
+        constructDataHex(methodObj, args),
         amount || SEND_AMOUNT,
         gasLimit || SEND_GASLIMIT,
         gasPrice || SEND_GASPRICE,
@@ -79,9 +79,10 @@ class Contract {
   /*
   * @dev Constructs the data hex string needed for a call() or send().
   * @param methodObj The json object of the method taken from the ABI.
+  * @param args The arguments for the method.
   * @return The full hex string concatenated together.
   */
-  constructDataHex(methodObj) {
+  constructDataHex(methodObj, args) {
     if (!methodObj) {
       throw new Error(`methodObj should not be undefined.`);
     }
