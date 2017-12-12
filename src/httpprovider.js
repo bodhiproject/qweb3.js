@@ -70,8 +70,16 @@ class HttpProvider {
    * @return {object}          The parsed JSON from the request
    */
   parseJSON(response) {
-    // return response.json();
-    return response.json();
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return {
+        error: {
+          message: response.statusText,
+          status: response.status
+        }
+      }
+    }
   }
 }
 

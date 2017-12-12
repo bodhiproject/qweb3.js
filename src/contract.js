@@ -1,7 +1,7 @@
 /* External Import */
 import _ from 'lodash';
 import EthjsAbi from 'ethjs-abi';
-import web3 from 'web3';
+import Formatter from './formatter';
 
 /* Internal Import */
 const Utils = require('./utils.js');
@@ -26,6 +26,7 @@ class Contract {
   call(methodName, params) {
     const { methodArgs, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, false);
+
     const options = {
       method: 'callcontract',
       params: [
@@ -152,7 +153,8 @@ class Contract {
       ],
     };
 
-    return this.parent.provider.request(options);
+    return this.parent.provider.request(options)
+      .then((results) => Formatter.searchLogOutput(results, this.abi));
   }
 
   /**
