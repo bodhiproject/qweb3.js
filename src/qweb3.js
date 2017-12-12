@@ -26,9 +26,9 @@ class Qweb3 {
   }
 
   /**
-   * Get the hex address of a Qtum address
+   * Get the hex address of a Qtum address.
    * @param {address} Qtum address
-   * @return Hex string of the converted address
+   * @return {Promise} Hex string of the converted address or Error
    */
   getHexAddress(address) {
     return this.provider.request({
@@ -52,7 +52,7 @@ class Qweb3 {
 
   /*
   * Lists unspent transaction outputs.
-  * @return Array of unspent transaction outputs.
+  * @return {Promise} Array of unspent transaction outputs or Error
   */
   listUnspent() {
     return this.provider.request({
