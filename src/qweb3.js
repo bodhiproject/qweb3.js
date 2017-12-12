@@ -26,6 +26,28 @@ class Qweb3 {
   }
 
   /**
+   * Get the hex address of a Qtum address.
+   * @param {address} Qtum address
+   * @return {Promise} Hex string of the converted address or Error
+   */
+  getHexAddress(address) {
+    return this.provider.request({
+      method: 'gethexaddress',
+      params: [address],
+    });
+  }
+
+  /*
+  * @dev Returns the current block height that is synced with the client.
+  * @return {Promise} Current block count or Error.
+  */
+  getBlockCount() {
+    return this.provider.request({
+      method: 'getblockcount',
+    });
+  }
+
+  /**
    * Get transaction details by txid
    * @param  {string} txid transaction Id (64 digits hexString),
    *                       e.g. dfafd59050fbe825d884b1e9279924f42bfa9506ca11e3d1910141054858f338
@@ -38,9 +60,13 @@ class Qweb3 {
     });
   }
 
-  getBlockCount() {
+  /*
+  * Lists unspent transaction outputs.
+  * @return {Promise} Array of unspent transaction outputs or Error
+  */
+  listUnspent() {
     return this.provider.request({
-      method: 'getblockcount',
+      method: 'listunspent',
     });
   }
 }

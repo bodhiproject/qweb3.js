@@ -2,35 +2,8 @@ const BigNumber = require('bignumber.js');
 const utf8 = require('utf8');
 const _ = require('lodash');
 
-var unitMap = {
-  'noether': '0',
-  'wei': '1',
-  'kwei': '1000',
-  'Kwei': '1000',
-  'babbage': '1000',
-  'femtoether': '1000',
-  'mwei': '1000000',
-  'Mwei': '1000000',
-  'lovelace': '1000000',
-  'picoether': '1000000',
-  'gwei': '1000000000',
-  'Gwei': '1000000000',
-  'shannon': '1000000000',
-  'nanoether': '1000000000',
-  'nano': '1000000000',
-  'szabo': '1000000000000',
-  'microether': '1000000000000',
-  'micro': '1000000000000',
-  'finney': '1000000000000000',
-  'milliether': '1000000000000000',
-  'milli': '1000000000000000',
-  'ether': '1000000000000000000',
-  'kether': '1000000000000000000000',
-  'grand': '1000000000000000000000',
-  'mether': '1000000000000000000000000',
-  'gether': '1000000000000000000000000000',
-  'tether': '1000000000000000000000000000000'
-};
+const constants = require('./constants.js');
+const bs58 = require('bs58');
 
 /**
  * Should be called to pad string to expected length
@@ -194,12 +167,11 @@ var fromDecimal = function(value) {
  * @returns {BigNumber} value of the unit (in Wei)
  * @throws error if the unit is not correct:w
  */
-var getValueOfUnit = function(unit) {
-  unit = unit ? unit.toLowerCase() : 'ether';
-  var unitValue = unitMap[unit];
-  if (unitValue === undefined) {
-    throw new Error('This unit doesn\'t exists, please use the one of the following units' + JSON.stringify(unitMap, null, 2));
+function paramsCheck(methodName, params, required, validators) {
+  if (_.isUndefined(params)) {
+    throw new Error(`params is undefined in params of ${methodName}; expected: ${_.isEmpty(required) ? undefined : required.join(',')}`);
   }
+  
   return new BigNumber(unitValue, 10);
 };
 
@@ -552,32 +524,135 @@ class Utils {
   };
 }
 
-module.exports = Utils;
+/*
+* @dev Converts an object of a method from the ABI to a function hash.
+* @param methodObj The json object of the method taken from the ABI.
+* @return The function hash.
+*/
+function getFunctionHash(methodObj) {
+  if (!methodObj) {
+    throw new Error(`methodObj should not be undefined.`);
+  }
 
-// module.exports = {
-//   padLeft: padLeft,
-//   padRight: padRight,
-//   toHex: toHex,
-//   toDecimal: toDecimal,
-//   fromDecimal: fromDecimal,
-//   toUtf8: toUtf8,
-//   toAscii: toAscii,
-//   fromUtf8: fromUtf8,
-//   fromAscii: fromAscii,
-//   transformToFullName: transformToFullName,
-//   extractDisplayName: extractDisplayName,
-//   extractTypeName: extractTypeName,
-//   toWei: toWei,
-//   fromWei: fromWei,
-//   toBigNumber: toBigNumber,
-//   toTwosComplement: toTwosComplement,
-//   toAddress: toAddress,
-//   isBigNumber: isBigNumber,
-//   isStrictAddress: isStrictAddress,
-//   isAddress: isAddress,
-//   isString: isString,
-//   isObject: isObject,
-//   isArray: isArray,
-//   isJson: isJson,
-//   isTopic: isTopic,
-// };
+  let name = methodObj.name;
+  let params = '';
+  for (let i = 0; i < methodObj.inputs.length; i++) {
+    params = params.concat(methodObj.inputs[i].type);
+
+    if (i < methodObj.inputs.length - 1) {
+      params = params.concat(',');
+    }
+  };
+  let signature = name.concat('(').concat(params).concat(')');
+
+  // Return only the first 4 bytes
+  return Web3Utils.sha3(signature).slice(2, 10);
+}
+
+/*
+* @dev Converts a Qtum address to hex string.
+* @param address The Qtum address to convert.
+* @return The 32 bytes padded-left hex string.
+*/
+function addressToHex(address) {
+  if (!address) {
+    throw new Error(`address should not be undefined.`);
+  }
+
+  const bytes = bs58.decode(address);
+  let hexStr = bytes.toString('hex');
+
+  // Removes:
+  // First byte = version
+  // Last 4 bytes = checksum
+  hexStr = hexStr.slice(2, 42);
+
+  return Web3Utils.padLeft(hexStr, numOfChars(32));
+}
+
+/*
+* @dev Converts a string to hex string padded-right to the number of bytes specified.
+* @param str The string to convert to hex.
+* @param paddedBytes The number of bytes to pad-right.
+* @return The converted padded-right hex string.
+*/
+function stringToHex(str, paddedBytes) {
+  if (paddedBytes <= 0) {
+    throw new Error(`paddedBytes should be greater than 0.`);
+  }
+
+  let hexString = Web3Utils.toHex(str);
+  if (hexString.indexOf('0x') === 0) {
+    // Remove the 0x hex prefix
+    hexString = hexString.slice(2); 
+  }
+  return Web3Utils.padRight(hexString, numOfChars(paddedBytes));
+}
+
+/*
+* @dev Converts an array of string elements (max 32 bytes) into a concatenated hex string.
+* @param strArray The string array to convert to hex.
+* @param numOfItems The total number of items the string array should have.
+* @return The converted string array to single padded-right hex string.
+*/
+function stringArrayToHex(strArray, numOfItems) {
+  if (!Array.isArray(strArray)) {
+    throw new Error(`strArray is not an array type.`);
+  }
+  if (numOfItems <= 0) {
+    throw new Error(`numOfItems should be greater than 0.`);
+  }
+
+  let chars = numOfChars(32);
+  let array = new Array(10);
+  for (let i = 0; i < numOfItems; i++) {
+    let hexString;
+    if (i < strArray.length - 1) {
+      hexString = Web3Utils.toHex(strArray[i]);
+    } else {
+      hexString = Web3Utils.toHex('');
+    }
+    // Remove the 0x hex prefix
+    array[i] = Web3Utils.padRight(hexString, chars).slice(2);
+  }
+  return array.join('');
+}
+
+/*
+* @dev Converts a uint256 to hex padded-left to 32 bytes.
+* @param uint256 The number to convert.
+* @return The converted uint256 to padded-left hex string.
+*/
+function uint8ToHex(uint8) {
+  let hexNumber = Web3Utils.toHex(uint8);
+  return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
+}
+
+/*
+* @dev Converts a uint256 to hex padded-left to 32 bytes.
+* @param uint256 The number to convert.
+* @return The converted uint256 to padded-left hex string.
+*/
+function uint256ToHex(uint256) {
+  let hexNumber = Web3Utils.toHex(uint256);
+  return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
+}
+
+/*
+* @dev Returns the number of characters in the bytes specified.
+* @param bytes The number of bytes.
+* @return The int number of characters given the bytes.
+*/
+function numOfChars(bytes) {
+  return bytes * constants['CHARS_IN_BYTE'];
+}
+
+module.exports = {
+  paramsCheck: paramsCheck,
+  getFunctionHash: getFunctionHash,
+  addressToHex: addressToHex,
+  stringToHex: stringToHex,
+  stringArrayToHex: stringArrayToHex,
+  uint8ToHex: uint8ToHex,
+  uint256ToHex: uint256ToHex,
+};

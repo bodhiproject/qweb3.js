@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const _ = require('lodash');
 
 /* Internal Import */
-const utils = require('./utils');
+const Utils = require('./utils.js');
 
 class HttpProvider {
   constructor(urlString) {
@@ -14,7 +14,7 @@ class HttpProvider {
 
   request(params) {
     // Make sure method is defined in params
-    utils.paramsCheck('request', params, ['method']);
+    Utils.paramsCheck('request', params, ['method']);
 
     // Construct body of request options
     const bodyJson = _.extend({

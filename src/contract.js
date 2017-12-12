@@ -4,7 +4,7 @@ const EthjsAbi = require('ethjs-abi');
 const Formatter = require('./formatter');
 
 /* Internal Import */
-const utils = require('./utils');
+const Utils = require('./utils.js');
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
@@ -18,80 +18,44 @@ class Contract {
   }
 
   /**
-   * Call a constant or view contract method by name
+   * @dev Executes a callcontract on a view/pure method via the qtum-cli.
    * @param  {string} methodName Name of contract method
    * @param  {array} params      Parameters of contract method
    * @return {Promise}           Promise containing result object or Error
    */
   call(methodName, params) {
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, params, false /* isSend */ );
-
-    // Convert string into bytes or bytes32[] according to ABI definition
-    _.each(methodObj.inputs, (item, index) => {
-      if (item.type === 'bytes') {
-        args[index] = utils.toHex(args[index]);
-      } else if (item.type === 'bytes32[]') {
-        args[index] = _.map(args[index], value => utils.toHex(value));
-      }
-    });
-
-    // Encoding dataHex and remove "0x" in the front.
-    const dataHex = EthjsAbi.encodeMethod(methodObj, args).slice(2);
+    const { methodArgs, senderAddress } = params;
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, false);
 
     const options = {
       method: 'callcontract',
       params: [
         this.address,
-        dataHex,
+        this.constructDataHex(methodObj, args),
+        senderAddress,
       ],
     };
 
     return this.parent.provider.request(options);
   }
 
-  /**
-   * Send to a contract method by name
-   * @param  {string} methodName Name of contract method
-   * @param  {array} params      Parameters of contract method
-   *                             senderAddress {string} - required
-   *                             data {array} - used to construct dataHex,required
-   *                             amount {number} - optional
-   *                             gasLimit {number} - optional
-   *                             gasPrice {number} - optional
-   *
-   * @return {Promise}           Promise containing result object or Error
-   */
+  /*
+  * @dev Executes a sendtocontract on this contract via the qtum-cli.
+  * @param methodName Method name to execute as a string.
+  * @param params Parameters of the contract method.
+  * @return The transaction id of the sendtocontract.
+  */
   send(methodName, params) {
-    // Error out if senderAddress or data is not defined in params
-    utils.paramsCheck('send', params, ['senderAddress', 'data']);
+    // Throw if methodArgs or senderAddress is not defined in params
+    Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
-    const {
-      senderAddress,
-      data,
-      amount,
-      gasLimit,
-      gasPrice,
-    } = params;
-
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, data, true /* isSend */ );
-
-    // Convert string into bytes or bytes32[] according to ABI definition
-    _.each(methodObj.inputs, (item, index) => {
-      if (item.type === 'bytes') {
-        args[index] = utils.toHex(args[index]);
-      } else if (item.type === 'bytes32[]') {
-        args[index] = _.map(args[index], value => utils.toHex(value));
-      }
-    });
-
-    // Encoding dataHex and remove "0x" in the front.
-    const dataHex = EthjsAbi.encodeMethod(methodObj, args).slice(2);
-
+    const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, true);
     const options = {
       method: 'sendtocontract',
       params: [
         this.address,
-        dataHex,
+        this.constructDataHex(methodObj, args),
         amount || SEND_AMOUNT,
         gasLimit || SEND_GASLIMIT,
         gasPrice || SEND_GASPRICE,
@@ -100,6 +64,45 @@ class Contract {
     };
 
     return this.parent.provider.request(options);
+  }
+
+  /*
+  * @dev Constructs the data hex string needed for a call() or send().
+  * @param methodObj The json object of the method taken from the ABI.
+  * @param args The arguments for the method.
+  * @return The full hex string concatenated together.
+  */
+  constructDataHex(methodObj, args) {
+    if (!methodObj) {
+      throw new Error(`methodObj should not be undefined.`);
+    }
+
+    let dataHex = '';
+    dataHex = dataHex.concat(Utils.getFunctionHash(methodObj));
+
+    let hex;
+    _.each(methodObj.inputs, (item, index) => {
+      switch (item.type) {
+        case 'address':
+          hex = Utils.addressToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+          break;
+        case 'bytes32[10]':
+          hex = Utils.stringArrayToHex(args[index], 10);
+          dataHex = dataHex.concat(hex);
+          break;
+        case 'uint8':
+          hex = Utils.uint8ToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+          break;
+        case 'uint256':
+          hex = Utils.uint256ToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+          break;
+      }
+    });
+
+    return dataHex;
   }
 
   /**
@@ -167,6 +170,10 @@ class Contract {
     // Check whether name is defined in ABI
     if (_.isUndefined(methodObj)) {
       throw new Error(`Method ${name} not defined in ABI.`);
+    }
+
+    if (methodObj.inputs.length != params.length) {
+      throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
     }
 
     // Error out if a call method is not defined with view or constant keyword
