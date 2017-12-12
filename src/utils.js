@@ -62,6 +62,10 @@ export function getFunctionHash(methodObj) {
   let params = '';
   for (let i = 0; i < methodObj.inputs.length; i++) {
     params = params.concat(methodObj.inputs[i].type);
+    
+    if (i < methodObj.inputs.length - 1) {
+      params = params.concat(',');
+    }
   };
   let signature = name.concat('(').concat(params).concat(')');
 
