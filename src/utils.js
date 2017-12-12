@@ -53,6 +53,24 @@ export function paramsCheck(methodName, params, required, validators) {
 }
 
 /*
+* @dev Converts an Qtum address to hex string.
+* @param address The Qtum address to convert.
+* @return The 32 bytes padded-left hex string.
+*/
+export function addressToHex(address) {
+  const bytes = bs58.decode(address);
+  let hexStr = bytes.toString('hex');
+
+  // Removes:
+  // First byte = version
+  // Last 4 bytes = checksum
+  hexStr = hexStr.slice(2, 42);
+
+  // Remove the 0x hex prefix
+  return Web3Utils.padLeft(hexStr, numOfChars(32)).slice(2);
+}
+
+/*
 * @dev Converts a string to hex string padded-right to the number of bytes specified.
 * @param str The string to convert to hex.
 * @param paddedBytes The number of bytes to pad-right.

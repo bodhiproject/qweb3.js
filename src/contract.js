@@ -4,7 +4,7 @@ import EthjsAbi from 'ethjs-abi';
 import web3 from 'web3';
 
 /* Internal Import */
-import { paramsCheck, stringToHex, stringArrayToHex, uint256ToHex } from './utils';
+import { paramsCheck, addressToHex, stringToHex, stringArrayToHex, uint256ToHex } from './utils';
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
@@ -49,54 +49,6 @@ class Contract {
     return this.parent.provider.request(options);
   }
 
-  /**
-   * Send to a contract method by name
-   * @param  {string} methodName Name of contract method
-   * @param  {array} params      Parameters of contract method
-   *                             senderAddress {string} - required
-   *                             data {array} - used to construct dataHex,required
-   *                             amount {number} - optional
-   *                             gasLimit {number} - optional
-   *                             gasPrice {number} - optional
-   *
-   * @return {Promise}           Promise containing result object or Error
-   */
-  // send(methodName, params) {
-  //   // Error out if senderAddress or data is not defined in params
-  //   paramsCheck('send', params, ['senderAddress', 'data']);
-
-  //   const {
-  //     senderAddress, data, amount, gasLimit, gasPrice,
-  //   } = params;
-  //   const { method: methodObj, args } = this.validateMethodAndArgs(methodName, data, true /* isSend */);
-
-  //   // Convert string into bytes or bytes32[] according to ABI definition
-  //   _.each(methodObj.inputs, (item, index) => {
-  //     if (item.type === 'bytes') {
-  //       args[index] = web3.utils.toHex(args[index]);
-  //     } else if (item.type === 'bytes32[]') {
-  //       args[index] = _.map(args[index], value => web3.utils.toHex(value));
-  //     }
-  //   });
-
-  //   // Encoding dataHex and remove "0x" in the front.
-  //   const dataHex = EthjsAbi.encodeMethod(methodObj, args).slice(2);
-
-  //   const options = {
-  //     method: 'sendtocontract',
-  //     params: [
-  //       this.address,
-  //       dataHex,
-  //       amount || SEND_AMOUNT,
-  //       gasLimit || SEND_GASLIMIT,
-  //       gasPrice || SEND_GASPRICE,
-  //       senderAddress,
-  //     ],
-  //   };
-
-  //   return this.parent.provider.request(options);
-  // }
-
   send(methodName, params) {
     const {
       methodArgs, amount, gasLimit, gasPrice, senderAddress,
@@ -119,7 +71,7 @@ class Contract {
 
     _.each(methodObj.inputs, (item, index) => {
       if (item.type === 'address') {
-        hex = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
+        hex = addressToHex(args[index]);
         dataHex = dataHex.concat(hex);
       } else if (item.type === 'bytes32[10]') {
         hex = stringArrayToHex(args[index], 10);
