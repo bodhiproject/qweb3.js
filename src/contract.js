@@ -97,13 +97,16 @@ class Contract {
   //   return this.parent.provider.request(options);
   // }
 
-  send(_methodName, _args, _amount, _gasLimit, _gasPrice, _senderAddress) {
-    const { method: methodObj, args } = this.validateMethodAndArgs(_methodName, _args, true);
+  send(methodName, params) {
+    const {
+      methodArgs, amount, gasLimit, gasPrice, senderAddress,
+    } = params;
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, true);
 
     if (methodObj.inputs.length != args.length) {
       throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
     }
-    if (_.isUndefined(_senderAddress)) {
+    if (_.isUndefined(senderAddress)) {
       throw new Error(`Sender address should not be undefined.`);
     }
 
@@ -132,10 +135,10 @@ class Contract {
       params: [
         this.address,
         dataHex,
-        _amount || SEND_AMOUNT,
-        _gasLimit || SEND_GASLIMIT,
-        _gasPrice || SEND_GASPRICE,
-        _senderAddress,
+        amount || SEND_AMOUNT,
+        gasLimit || SEND_GASLIMIT,
+        gasPrice || SEND_GASPRICE,
+        senderAddress,
       ],
     };
     return this.parent.provider.request(options);

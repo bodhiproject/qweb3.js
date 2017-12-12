@@ -108,5 +108,5 @@ export function uint256ToHex(_uint256) {
 * @return The int number of characters given the bytes.
 */
 function numOfChars(_bytes) {
-  return _bytes * constants[CHARS_IN_BYTE];
+  return _bytes * constants['CHARS_IN_BYTE'];
 }
