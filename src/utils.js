@@ -66,8 +66,7 @@ export function addressToHex(address) {
   // Last 4 bytes = checksum
   hexStr = hexStr.slice(2, 42);
 
-  // Remove the 0x hex prefix
-  return Web3Utils.padLeft(hexStr, numOfChars(32)).slice(2);
+  return Web3Utils.padLeft(hexStr, numOfChars(32));
 }
 
 /*
