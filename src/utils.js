@@ -58,11 +58,15 @@ export function paramsCheck(methodName, params, required, validators) {
 * @return The function hash.
 */
 export function getFunctionHash(methodObj) {
+  if (!methodObj) {
+    throw new Error(`methodObj should not be undefined.`);
+  }
+
   let name = methodObj.name;
   let params = '';
   for (let i = 0; i < methodObj.inputs.length; i++) {
     params = params.concat(methodObj.inputs[i].type);
-    
+
     if (i < methodObj.inputs.length - 1) {
       params = params.concat(',');
     }
@@ -79,6 +83,10 @@ export function getFunctionHash(methodObj) {
 * @return The 32 bytes padded-left hex string.
 */
 export function addressToHex(address) {
+  if (!address) {
+    throw new Error(`address should not be undefined.`);
+  }
+
   const bytes = bs58.decode(address);
   let hexStr = bytes.toString('hex');
 
@@ -144,6 +152,10 @@ export function stringArrayToHex(strArray, numOfItems) {
 * @return The converted uint256 to padded-left hex string.
 */
 export function uint256ToHex(uint256) {
+  if (!uint256) {
+    throw new Error(`uint256 should not be undefined.`);
+  }
+
   let hexNumber = Web3Utils.toHex(uint256);
   return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
 }
