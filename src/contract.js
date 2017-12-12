@@ -4,7 +4,7 @@ import EthjsAbi from 'ethjs-abi';
 import web3 from 'web3';
 
 /* Internal Import */
-import { paramsCheck, getFunctionHash, addressToHex, stringToHex, stringArrayToHex, uint256ToHex } from './utils';
+const Utils = require('./utils.js');
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
@@ -57,7 +57,7 @@ class Contract {
   */
   send(methodName, params) {
     // Throw if methodArgs or senderAddress is not defined in params
-    paramsCheck('send', params, ['methodArgs', 'senderAddress']);
+    Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
     const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, true);
@@ -88,19 +88,27 @@ class Contract {
     }
 
     let dataHex = '';
-    dataHex = dataHex.concat(getFunctionHash(methodObj));
+    dataHex = dataHex.concat(Utils.getFunctionHash(methodObj));
 
     let hex;
     _.each(methodObj.inputs, (item, index) => {
-      if (item.type === 'address') {
-        hex = addressToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (item.type === 'bytes32[10]') {
-        hex = stringArrayToHex(args[index], 10);
-        dataHex = dataHex.concat(hex);
-      } else if (item.type === 'uint256') {
-        hex = uint256ToHex(args[index]);
-        dataHex = dataHex.concat(hex);
+      switch (item.type) {
+        case 'address':
+          hex = Utils.addressToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+          break;
+        case 'bytes32[10]':
+          hex = Utils.stringArrayToHex(args[index], 10);
+          dataHex = dataHex.concat(hex);
+          break;
+        case 'uint8':
+          hex = Utils.uint8ToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+          break;
+        case 'uint256':
+          hex = Utils.uint256ToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+          break;
       }
     });
 

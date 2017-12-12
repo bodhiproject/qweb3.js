@@ -13,7 +13,7 @@ const bs58 = require('bs58');
  * @param  {func} validators  Custom functions used to validate params
  * @return {}
  */
-export function paramsCheck(methodName, params, required, validators) {
+function paramsCheck(methodName, params, required, validators) {
   if (_.isUndefined(params)) {
     throw new Error(`params is undefined in params of ${methodName}; expected: ${_.isEmpty(required) ? undefined : required.join(',')}`);
   }
@@ -57,7 +57,7 @@ export function paramsCheck(methodName, params, required, validators) {
 * @param methodObj The json object of the method taken from the ABI.
 * @return The function hash.
 */
-export function getFunctionHash(methodObj) {
+function getFunctionHash(methodObj) {
   if (!methodObj) {
     throw new Error(`methodObj should not be undefined.`);
   }
@@ -82,7 +82,7 @@ export function getFunctionHash(methodObj) {
 * @param address The Qtum address to convert.
 * @return The 32 bytes padded-left hex string.
 */
-export function addressToHex(address) {
+function addressToHex(address) {
   if (!address) {
     throw new Error(`address should not be undefined.`);
   }
@@ -104,7 +104,7 @@ export function addressToHex(address) {
 * @param paddedBytes The number of bytes to pad-right.
 * @return The converted padded-right hex string.
 */
-export function stringToHex(str, paddedBytes) {
+function stringToHex(str, paddedBytes) {
   if (paddedBytes <= 0) {
     throw new Error(`paddedBytes should be greater than 0.`);
   }
@@ -123,7 +123,7 @@ export function stringToHex(str, paddedBytes) {
 * @param numOfItems The total number of items the string array should have.
 * @return The converted string array to single padded-right hex string.
 */
-export function stringArrayToHex(strArray, numOfItems) {
+function stringArrayToHex(strArray, numOfItems) {
   if (!Array.isArray(strArray)) {
     throw new Error(`strArray is not an array type.`);
   }
@@ -151,11 +151,17 @@ export function stringArrayToHex(strArray, numOfItems) {
 * @param uint256 The number to convert.
 * @return The converted uint256 to padded-left hex string.
 */
-export function uint256ToHex(uint256) {
-  if (!uint256) {
-    throw new Error(`uint256 should not be undefined.`);
-  }
+function uint8ToHex(uint8) {
+  let hexNumber = Web3Utils.toHex(uint8);
+  return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
+}
 
+/*
+* @dev Converts a uint256 to hex padded-left to 32 bytes.
+* @param uint256 The number to convert.
+* @return The converted uint256 to padded-left hex string.
+*/
+function uint256ToHex(uint256) {
   let hexNumber = Web3Utils.toHex(uint256);
   return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
 }
@@ -168,3 +174,13 @@ export function uint256ToHex(uint256) {
 function numOfChars(bytes) {
   return bytes * constants['CHARS_IN_BYTE'];
 }
+
+module.exports = {
+  paramsCheck: paramsCheck,
+  getFunctionHash: getFunctionHash,
+  addressToHex: addressToHex,
+  stringToHex: stringToHex,
+  stringArrayToHex: stringArrayToHex,
+  uint8ToHex: uint8ToHex,
+  uint256ToHex: uint256ToHex,
+};
