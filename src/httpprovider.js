@@ -1,10 +1,10 @@
 /* External Import */
-import url from 'url';
-import fetch from 'node-fetch';
-import _ from 'lodash';
+const url = require('url');
+const fetch = require('node-fetch');
+const _ = require('lodash');
 
 /* Internal Import */
-import utils from './utils';
+const utils = require('./utils');
 
 class HttpProvider {
   constructor(urlString) {
@@ -83,4 +83,4 @@ class HttpProvider {
   }
 }
 
-export default HttpProvider;
+module.exports = HttpProvider;

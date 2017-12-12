@@ -1,7 +1,7 @@
 /* Internal Import */
-import Qtum from './qtum';
-import HttpProvider from './httpprovider';
-import Contract from './contract';
+const Qtum  = require('./qtum');
+const HttpProvider = require('./httpprovider');
+const Contract = require('./contract');
 
 class Qweb3 {
   constructor(url) {
@@ -37,6 +37,12 @@ class Qweb3 {
       params: [txid],
     });
   }
+
+  getBlockCount() {
+    return this.provider.request({
+      method: 'getblockcount',
+    });
+  }
 }
 
-export default Qweb3;
+module.exports = Qweb3;

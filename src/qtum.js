@@ -4,4 +4,4 @@ class Qtum {
   }
 }
 
-export default Qtum;
+module.exports=Qtum;
