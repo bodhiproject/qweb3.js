@@ -2,6 +2,7 @@ import _ from 'lodash';
 import Web3Utils from '../node_modules/web3-utils';
 
 const constants = require('./constants.js');
+const bs58 = require('bs58');
 
 /**
  * Parameter check at the beginning of a function
