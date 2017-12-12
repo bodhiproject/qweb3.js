@@ -53,7 +53,24 @@ export function paramsCheck(methodName, params, required, validators) {
 }
 
 /*
-* @dev Converts an Qtum address to hex string.
+* @dev Converts an object of a method from the ABI to a function hash.
+* @param methodObj The json object of the method taken from the ABI.
+* @return The function hash.
+*/
+export function getFunctionHash(methodObj) {
+  let name = methodObj.name;
+  let params = '';
+  for (let i = 0; i < methodObj.inputs.length; i++) {
+    p = p.concat(methodObj.inputs[i].type);
+  };
+  let signature = name.concat('(').concat(params).concat(')');
+
+  // Return only the first 4 bytes
+  return Web3Utils.sha3(signature).slice(2, 10);
+}
+
+/*
+* @dev Converts a Qtum address to hex string.
 * @param address The Qtum address to convert.
 * @return The 32 bytes padded-left hex string.
 */

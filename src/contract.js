@@ -4,7 +4,7 @@ import EthjsAbi from 'ethjs-abi';
 import web3 from 'web3';
 
 /* Internal Import */
-import { paramsCheck, addressToHex, stringToHex, stringArrayToHex, uint256ToHex } from './utils';
+import { paramsCheck, getFunctionHash, addressToHex, stringToHex, stringArrayToHex, uint256ToHex } from './utils';
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
@@ -62,13 +62,12 @@ class Contract {
       throw new Error(`Sender address should not be undefined.`);
     }
 
-    let hex;
-    let dataHex = '';
+    const functionSig = getFunctionHash(methodObj);
 
-    // TODO: hash this here later
-    const functionSig = 'd0613dce';
+    let dataHex = '';
     dataHex = dataHex.concat(functionSig);
 
+    let hex;
     _.each(methodObj.inputs, (item, index) => {
       if (item.type === 'address') {
         hex = addressToHex(args[index]);
