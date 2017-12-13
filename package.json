@@ -26,7 +26,8 @@
     "ethjs-abi": "^0.2.1",
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.3",
-    "utf8": "^2.1.2"
+    "utf8": "^2.1.2",
+    "web3-utils": "^1.0.0-beta.26"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
