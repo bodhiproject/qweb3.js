@@ -5,6 +5,36 @@ const _ = require('lodash');
 const constants = require('./constants.js');
 const bs58 = require('bs58');
 
+var unitMap = {
+  'noether': '0',
+  'wei': '1',
+  'kwei': '1000',
+  'Kwei': '1000',
+  'babbage': '1000',
+  'femtoether': '1000',
+  'mwei': '1000000',
+  'Mwei': '1000000',
+  'lovelace': '1000000',
+  'picoether': '1000000',
+  'gwei': '1000000000',
+  'Gwei': '1000000000',
+  'shannon': '1000000000',
+  'nanoether': '1000000000',
+  'nano': '1000000000',
+  'szabo': '1000000000000',
+  'microether': '1000000000000',
+  'micro': '1000000000000',
+  'finney': '1000000000000000',
+  'milliether': '1000000000000000',
+  'milli': '1000000000000000',
+  'ether': '1000000000000000000',
+  'kether': '1000000000000000000000',
+  'grand': '1000000000000000000000',
+  'mether': '1000000000000000000000000',
+  'gether': '1000000000000000000000000000',
+  'tether': '1000000000000000000000000000000'
+};
+
 /**
  * Should be called to pad string to expected length
  *
@@ -159,19 +189,21 @@ var fromDecimal = function(value) {
   return number.lessThan(0) ? '-0x' + result.substr(1) : '0x' + result;
 };
 
+
 /**
- * Returns value of unit in Wei
- *
  * @method getValueOfUnit
- * @param {String} unit the unit to convert to, default ether
- * @returns {BigNumber} value of the unit (in Wei)
- * @throws error if the unit is not correct:w
+ * @param  {string} unit the unit to convert to, default ether
+ * @return {BigNumber} value of the unit (in Wei)
+ * @throws error if the unit not correct
  */
-function paramsCheck(methodName, params, required, validators) {
-  if (_.isUndefined(params)) {
-    throw new Error(`params is undefined in params of ${methodName}; expected: ${_.isEmpty(required) ? undefined : required.join(',')}`);
+var getValueOfUnit = function(unit) {
+  unit = unit ? unit.toLowerCase() : 'ether';
+  var unitValue = unitMap[unit];
+
+  if (unitValue === undefined) {
+    throw new Error('This unit doesn\'t exists, please use the one of the following units' + JSON.stringify(unitMap, null, 2));
   }
-  
+
   return new BigNumber(unitValue, 10);
 };
 
@@ -402,6 +434,54 @@ var isTopic = function(topic) {
   return false;
 };
 
+/**
+ * Parameter check at the beginning of a function
+ * Throw errors if required keys are missing in params object
+ * @param  {string} methodName Function name used for error message
+ * @param  {object} params     params object
+ * @param  {array} required    Array of key strings in params, e.g. ['resultNames', 'sender']
+ * @param  {func} validators  Custom functions used to validate params
+ * @return {}
+ */
+function paramsCheck(methodName, params, required, validators) {
+  if (_.isUndefined(params)) {
+    throw new Error(`params is undefined in params of ${methodName}; expected: ${_.isEmpty(required) ? undefined : required.join(',')}`);
+  }
+
+  if (required) {
+    if (_.isArray(required)) {
+      _.each(required, (value) => {
+        if (_.isUndefined(params[value])) {
+          throw new Error(`${value} is undefined in params of ${methodName}`);
+        }
+      });
+    } else if (_.isUndefined(params[required])) {
+      throw new Error(`${required} is undefined in params of ${methodName}`);
+    }
+  }
+
+  if (!_.isEmpty(validators)) {
+    _.each(validators, (validFunc, key) => {
+      // Check whether each validator is a function
+      if (typeof validFunc !== 'function') {
+        throw new Error('validators are defined but not functions ...');
+      }
+
+      // Check whether key defined in validator is in params
+      if (_.indexOf(params, key) < 0) {
+        throw new Error(`${key} in validator is not found in params.`);
+      }
+
+      // Run validator funcs and check result
+      // If result === 'undefined', pass; otherwise throw error with message
+      const error = validFunc(params[key], key);
+      if (error instanceof Error) {
+        throw new Error(`validation for ${key} failed; message:${error.message}`);
+      }
+    });
+  }
+}
+
 class Utils {
 
   /**
@@ -437,54 +517,6 @@ class Utils {
 
     return fromDecimal(val);
   };
-
-  /**
-   * Parameter check at the beginning of a function
-   * Throw errors if required keys are missing in params object
-   * @param  {string} methodName Function name used for error message
-   * @param  {object} params     params object
-   * @param  {array} required    Array of key strings in params, e.g. ['resultNames', 'sender']
-   * @param  {func} validators  Custom functions used to validate params
-   * @return {}
-   */
-  static paramsCheck(methodName, params, required, validators) {
-    if (_.isUndefined(params)) {
-      throw new Error(`params is undefined in params of ${methodName}; expected: ${_.isEmpty(required) ? undefined : required.join(',')}`);
-    }
-
-    if (required) {
-      if (_.isArray(required)) {
-        _.each(required, (value) => {
-          if (_.isUndefined(params[value])) {
-            throw new Error(`${value} is undefined in params of ${methodName}`);
-          }
-        });
-      } else if (_.isUndefined(params[required])) {
-        throw new Error(`${required} is undefined in params of ${methodName}`);
-      }
-    }
-
-    if (!_.isEmpty(validators)) {
-      _.each(validators, (validFunc, key) => {
-        // Check whether each validator is a function
-        if (typeof validFunc !== 'function') {
-          throw new Error('validators are defined but not functions ...');
-        }
-
-        // Check whether key defined in validator is in params
-        if (_.indexOf(params, key) < 0) {
-          throw new Error(`${key} in validator is not found in params.`);
-        }
-
-        // Run validator funcs and check result
-        // If result === 'undefined', pass; otherwise throw error with message
-        const error = validFunc(params[key], key);
-        if (error instanceof Error) {
-          throw new Error(`validation for ${key} failed; message:${error.message}`);
-        }
-      });
-    }
-  }
 
   /**
    * Validate format string and append '0x' to it if there's not one.
@@ -525,10 +557,10 @@ class Utils {
 }
 
 /*
-* @dev Converts an object of a method from the ABI to a function hash.
-* @param methodObj The json object of the method taken from the ABI.
-* @return The function hash.
-*/
+ * @dev Converts an object of a method from the ABI to a function hash.
+ * @param methodObj The json object of the method taken from the ABI.
+ * @return The function hash.
+ */
 function getFunctionHash(methodObj) {
   if (!methodObj) {
     throw new Error(`methodObj should not be undefined.`);
@@ -550,10 +582,10 @@ function getFunctionHash(methodObj) {
 }
 
 /*
-* @dev Converts a Qtum address to hex string.
-* @param address The Qtum address to convert.
-* @return The 32 bytes padded-left hex string.
-*/
+ * @dev Converts a Qtum address to hex string.
+ * @param address The Qtum address to convert.
+ * @return The 32 bytes padded-left hex string.
+ */
 function addressToHex(address) {
   if (!address) {
     throw new Error(`address should not be undefined.`);
@@ -571,11 +603,11 @@ function addressToHex(address) {
 }
 
 /*
-* @dev Converts a string to hex string padded-right to the number of bytes specified.
-* @param str The string to convert to hex.
-* @param paddedBytes The number of bytes to pad-right.
-* @return The converted padded-right hex string.
-*/
+ * @dev Converts a string to hex string padded-right to the number of bytes specified.
+ * @param str The string to convert to hex.
+ * @param paddedBytes The number of bytes to pad-right.
+ * @return The converted padded-right hex string.
+ */
 function stringToHex(str, paddedBytes) {
   if (paddedBytes <= 0) {
     throw new Error(`paddedBytes should be greater than 0.`);
@@ -584,17 +616,17 @@ function stringToHex(str, paddedBytes) {
   let hexString = Web3Utils.toHex(str);
   if (hexString.indexOf('0x') === 0) {
     // Remove the 0x hex prefix
-    hexString = hexString.slice(2); 
+    hexString = hexString.slice(2);
   }
   return Web3Utils.padRight(hexString, numOfChars(paddedBytes));
 }
 
 /*
-* @dev Converts an array of string elements (max 32 bytes) into a concatenated hex string.
-* @param strArray The string array to convert to hex.
-* @param numOfItems The total number of items the string array should have.
-* @return The converted string array to single padded-right hex string.
-*/
+ * @dev Converts an array of string elements (max 32 bytes) into a concatenated hex string.
+ * @param strArray The string array to convert to hex.
+ * @param numOfItems The total number of items the string array should have.
+ * @return The converted string array to single padded-right hex string.
+ */
 function stringArrayToHex(strArray, numOfItems) {
   if (!Array.isArray(strArray)) {
     throw new Error(`strArray is not an array type.`);
@@ -619,30 +651,30 @@ function stringArrayToHex(strArray, numOfItems) {
 }
 
 /*
-* @dev Converts a uint256 to hex padded-left to 32 bytes.
-* @param uint256 The number to convert.
-* @return The converted uint256 to padded-left hex string.
-*/
+ * @dev Converts a uint256 to hex padded-left to 32 bytes.
+ * @param uint256 The number to convert.
+ * @return The converted uint256 to padded-left hex string.
+ */
 function uint8ToHex(uint8) {
   let hexNumber = Web3Utils.toHex(uint8);
   return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
 }
 
 /*
-* @dev Converts a uint256 to hex padded-left to 32 bytes.
-* @param uint256 The number to convert.
-* @return The converted uint256 to padded-left hex string.
-*/
+ * @dev Converts a uint256 to hex padded-left to 32 bytes.
+ * @param uint256 The number to convert.
+ * @return The converted uint256 to padded-left hex string.
+ */
 function uint256ToHex(uint256) {
   let hexNumber = Web3Utils.toHex(uint256);
   return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
 }
 
 /*
-* @dev Returns the number of characters in the bytes specified.
-* @param bytes The number of bytes.
-* @return The int number of characters given the bytes.
-*/
+ * @dev Returns the number of characters in the bytes specified.
+ * @param bytes The number of bytes.
+ * @return The int number of characters given the bytes.
+ */
 function numOfChars(bytes) {
   return bytes * constants['CHARS_IN_BYTE'];
 }
