@@ -61,6 +61,17 @@ class Qweb3 {
   }
 
   /*
+  * @dev Returns the transaction receipt given the txid.
+  * @return {Promise} Transaction receipt or Error.
+  */
+  getTransactionReceipt(txid) {
+    return this.provider.request({
+      method: 'gettransactionreceipt',
+      params: [txid],
+    });
+  }
+
+  /*
   * Lists unspent transaction outputs.
   * @return {Promise} Array of unspent transaction outputs or Error
   */
