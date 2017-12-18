@@ -483,79 +483,76 @@ function paramsCheck(methodName, params, required, validators) {
   }
 }
 
-class Utils {
+/**
+ * Auto converts any given value into it's hex representation.
+ *
+ * And even stringifys objects before.
+ *
+ * @method toHex
+ * @param {String|Number|BigNumber|Object}
+ * @return {String}
+ */
+function toHex(val) {
+  /*jshint maxcomplexity: 8 */
 
-  /**
-   * Auto converts any given value into it's hex representation.
-   *
-   * And even stringifys objects before.
-   *
-   * @method toHex
-   * @param {String|Number|BigNumber|Object}
-   * @return {String}
-   */
-  static toHex(val) {
-    /*jshint maxcomplexity: 8 */
+  if (_.isBoolean(val))
+    return fromDecimal(+val);
 
-    if (_.isBoolean(val))
-      return fromDecimal(+val);
-
-    if (isBigNumber(val))
-      return fromDecimal(val);
-
-    if (typeof val === 'object')
-      return fromUtf8(JSON.stringify(val));
-
-    // if its a negative number, pass it through fromDecimal
-    if (isString(val)) {
-      if (val.indexOf('-0x') === 0)
-        return fromDecimal(val);
-      else if (val.indexOf('0x') === 0)
-        return val;
-      else if (!isFinite(val))
-        return fromAscii(val);
-    }
-
+  if (isBigNumber(val))
     return fromDecimal(val);
-  };
 
-  /**
-   * Validate format string and append '0x' to it if there's not one.
-   * @param  {string} value  Hex string to format
-   * @return {string}
-   */
-  static formatHexStr(value) {
-    // TODO: validate format of hex string
-    if (_.startsWith(value, '0x')) {
-      return value;
-    } else {
-      return "0x" + value;
-    }
+  if (typeof val === 'object')
+    return fromUtf8(JSON.stringify(val));
+
+  // if its a negative number, pass it through fromDecimal
+  if (isString(val)) {
+    if (val.indexOf('-0x') === 0)
+      return fromDecimal(val);
+    else if (val.indexOf('0x') === 0)
+      return val;
+    else if (!isFinite(val))
+      return fromAscii(val);
   }
 
-  /**
-   * Should be called to get ascii from it's hex representation
-   *
-   * @method toAscii
-   * @param {String} string in hex
-   * @returns {String} ascii string representation of hex value
-   */
-  static toAscii(hex) {
-    // Find termination
-    var str = "";
-    var i = 0,
-      l = hex.length;
-    if (hex.substring(0, 2) === '0x') {
-      i = 2;
-    }
-    for (; i < l; i += 2) {
-      var code = parseInt(hex.substr(i, 2), 16);
-      str += String.fromCharCode(code);
-    }
+  return fromDecimal(val);
+};
 
-    return str;
-  };
+/**
+ * Validate format string and append '0x' to it if there's not one.
+ * @param  {string} value  Hex string to format
+ * @return {string}
+ */
+function formatHexStr(value) {
+  // TODO: validate format of hex string
+  if (_.startsWith(value, '0x')) {
+    return value;
+  } else {
+    return "0x" + value;
+  }
 }
+
+/**
+ * Should be called to get ascii from it's hex representation
+ *
+ * @method toAscii
+ * @param {String} string in hex
+ * @returns {String} ascii string representation of hex value
+ */
+function toAscii(hex) {
+  // Find termination
+  var str = "";
+  var i = 0,
+    l = hex.length;
+  if (hex.substring(0, 2) === '0x') {
+    i = 2;
+  }
+  for (; i < l; i += 2) {
+    var code = parseInt(hex.substr(i, 2), 16);
+    str += String.fromCharCode(code);
+  }
+
+  return str;
+};
 
 /*
  * @dev Converts an object of a method from the ABI to a function hash.
