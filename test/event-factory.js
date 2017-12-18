@@ -5,7 +5,7 @@ import util from 'util';
 import _ from 'lodash';
 import Qweb3 from '../src/qweb3';
 import Contracts from './data/Contracts';
-import utils from '../src/utils';
+import Utils from '../src/utils';
 
 describe('Contract EventFactory', () => {
 
@@ -28,14 +28,14 @@ describe('Contract EventFactory', () => {
 
       const resultSetter = '0x5089a838dc9b27174c3b7a0314c6a6219d3002ed';
 
-      let name = utils.toHex('firstTopic');
+      let name = Utils.toHex('firstTopic');
 
-      name = utils.formatHexStr(name);
+      name = Utils.formatHexStr(name);
 
       let resultNames = new Array(10).fill('\u0000');
-      resultNames[0] = utils.toHex('result1');
-      resultNames[1] = utils.toHex('result2');
-      resultNames = _.map(resultNames, (value) => utils.toHex(value));
+      resultNames[0] = Utils.toHex('result1');
+      resultNames[1] = Utils.toHex('result2');
+      resultNames = _.map(resultNames, (value) => Utils.toHex(value));
 
       const bettingEndBlock = 33000;
 
