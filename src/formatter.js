@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const EthjsAbi = require('ethjs-abi');
-const utils = require('./utils');
+const Utils = require('./utils');
 
 class Formatter {
 
@@ -30,9 +30,9 @@ class Formatter {
       if (!_.isEmpty(resultEntry.log)) {
 
         const rawlogs = _.map(resultEntry.log, (logEntry) => ({
-          address: utils.formatHexStr(logEntry.address),
-          data: utils.formatHexStr(logEntry.data),
-          topics: _.map(logEntry.topics, utils.formatHexStr)
+          address: Utils.formatHexStr(logEntry.address),
+          data: Utils.formatHexStr(logEntry.data),
+          topics: _.map(logEntry.topics, Utils.formatHexStr)
         }));
 
         formatted.log = logDecoder(rawlogs);
