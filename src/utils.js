@@ -679,6 +679,9 @@ function numOfChars(bytes) {
 
 module.exports = {
   paramsCheck: paramsCheck,
+  toHex: toHex,
+  formatHexStr: formatHexStr,
+  toAscii: toAscii,
   getFunctionHash: getFunctionHash,
   addressToHex: addressToHex,
   stringToHex: stringToHex,
