@@ -555,7 +555,7 @@ function toAscii(hex) {
 };
 
 /*
- * @dev Converts an object of a method from the ABI to a function hash.
+ * Converts an object of a method from the ABI to a function hash.
  * @param methodObj The json object of the method taken from the ABI.
  * @return The function hash.
  */
@@ -580,7 +580,7 @@ function getFunctionHash(methodObj) {
 }
 
 /*
- * @dev Converts a Qtum address to hex string.
+ * Converts a Qtum address to hex string.
  * @param address The Qtum address to convert.
  * @return The 32 bytes padded-left hex string.
  */
@@ -601,7 +601,7 @@ function addressToHex(address) {
 }
 
 /*
- * @dev Converts a string to hex string padded-right to the number of bytes specified.
+ * Converts a string to hex string padded-right to the number of bytes specified.
  * @param str The string to convert to hex.
  * @param paddedBytes The number of bytes to pad-right.
  * @return The converted padded-right hex string.
@@ -620,7 +620,7 @@ function stringToHex(str, paddedBytes) {
 }
 
 /*
- * @dev Converts an array of string elements (max 32 bytes) into a concatenated hex string.
+ * Converts an array of string elements (max 32 bytes) into a concatenated hex string.
  * @param strArray The string array to convert to hex.
  * @param numOfItems The total number of items the string array should have.
  * @return The converted string array to single padded-right hex string.
@@ -649,7 +649,7 @@ function stringArrayToHex(strArray, numOfItems) {
 }
 
 /*
- * @dev Converts a uint256 to hex padded-left to 32 bytes.
+ * Converts a uint256 to hex padded-left to 32 bytes.
  * @param uint256 The number to convert.
  * @return The converted uint256 to padded-left hex string.
  */
@@ -659,7 +659,7 @@ function uint8ToHex(uint8) {
 }
 
 /*
- * @dev Converts a uint256 to hex padded-left to 32 bytes.
+ * Converts a uint256 to hex padded-left to 32 bytes.
  * @param uint256 The number to convert.
  * @return The converted uint256 to padded-left hex string.
  */
@@ -669,12 +669,22 @@ function uint256ToHex(uint256) {
 }
 
 /*
- * @dev Returns the number of characters in the bytes specified.
+ * Returns the number of characters in the bytes specified.
  * @param bytes The number of bytes.
  * @return The int number of characters given the bytes.
  */
 function numOfChars(bytes) {
   return bytes * constants['CHARS_IN_BYTE'];
+}
+
+/*
+ * Breaks down a string by {length} and returns an array of string
+ * @param {string} Input string
+ * @param {number} Length of each chunk.
+ * @return {array} broken-down string array
+ */
+function chunkString(str, length) {
+  return str.match(new RegExp('.{1,' + length + '}', 'g'));
 }
 
 module.exports = {
@@ -688,4 +698,5 @@ module.exports = {
   stringArrayToHex: stringArrayToHex,
   uint8ToHex: uint8ToHex,
   uint256ToHex: uint256ToHex,
+  chunkString: chunkString,
 };
