@@ -555,6 +555,19 @@ function toAscii(hex) {
 };
 
 /*
+* Removes the '0x' hex prefix if necessary.
+* @param str The string to remove the prefix from.
+* @return The str without the hex prefix.
+*/
+function trimHexPrefix(str) {
+  if (str.indexOf('0x') === 0) {
+    return str.slice(2);
+  } else {
+    return str;
+  }
+}
+
+/*
  * Converts an object of a method from the ABI to a function hash.
  * @param methodObj The json object of the method taken from the ABI.
  * @return The function hash.
@@ -590,12 +603,7 @@ function addressToHex(address) {
   }
 
   // Remove '0x' from beginning of address
-  let addr;
-  if (address.indexOf('0x') === 0) {
-    addr = address.slice(2);
-  } else {
-    addr = address;
-  }
+  let addr = this.trimHexPrefix(address);
 
   let hexStr;
   try {
@@ -711,6 +719,7 @@ module.exports = {
   toHex: toHex,
   formatHexStr: formatHexStr,
   toAscii: toAscii,
+  trimHexPrefix: trimHexPrefix,
   getFunctionHash: getFunctionHash,
   addressToHex: addressToHex,
   stringToHex: stringToHex,

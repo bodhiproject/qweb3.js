@@ -13,7 +13,7 @@ const SEND_GASPRICE = 0.0000004;
 class Contract {
   constructor(parent, address, abi) {
     this.parent = parent;
-    this.address = address;
+    this.address = Utils.trimHexPrefix(address);
     this.abi = abi;
   }
 
