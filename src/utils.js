@@ -580,8 +580,8 @@ function getFunctionHash(methodObj) {
 }
 
 /*
- * Converts a Qtum address to hex string.
- * @param address The Qtum address to convert.
+ * Converts a Qtum or hex address to a padded hex string.
+ * @param address The Qtum/hex address to convert.
  * @return The 32 bytes padded-left hex string.
  */
 function addressToHex(address) {
@@ -589,9 +589,17 @@ function addressToHex(address) {
     throw new Error(`address should not be undefined.`);
   }
 
+  // Remove '0x' from beginning of address
+  let addr;
+  if (address.indexOf('0x') === 0) {
+    addr = address.slice(2);
+  } else {
+    addr = address;
+  }
+
   let hexStr;
   try {
-    const bytes = bs58.decode(address);
+    const bytes = bs58.decode(addr);
     hexStr = bytes.toString('hex');
 
     // Removes:
@@ -600,7 +608,7 @@ function addressToHex(address) {
     hexStr = hexStr.slice(2, 42);
   } catch(err) {
     if (err.message.match(/Non-base58 character/)) {
-      hexStr = address;
+      hexStr = addr;
     } else {
       throw new Error('Invalid address: not Qtum or hex address');
     }
