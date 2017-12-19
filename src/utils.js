@@ -733,5 +733,6 @@ module.exports = {
   stringArrayToHex: stringArrayToHex,
   uint8ToHex: uint8ToHex,
   uint256ToHex: uint256ToHex,
+  hexToNumber: hexToNumber,
   chunkString: chunkString,
 };
