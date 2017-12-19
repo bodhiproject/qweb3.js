@@ -646,14 +646,16 @@ function stringArrayToHex(strArray, numOfItems) {
   let array = new Array(10);
   for (let i = 0; i < numOfItems; i++) {
     let hexString;
-    if (i < strArray.length - 1) {
+    if (strArray[i] != undefined) {
       hexString = Web3Utils.toHex(strArray[i]);
     } else {
       hexString = Web3Utils.toHex('');
     }
+
     // Remove the 0x hex prefix
     array[i] = Web3Utils.padRight(hexString, chars).slice(2);
   }
+
   return array.join('');
 }
 
