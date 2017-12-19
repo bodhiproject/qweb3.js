@@ -589,13 +589,22 @@ function addressToHex(address) {
     throw new Error(`address should not be undefined.`);
   }
 
-  const bytes = bs58.decode(address);
-  let hexStr = bytes.toString('hex');
+  let hexStr;
+  try {
+    const bytes = bs58.decode(address);
+    hexStr = bytes.toString('hex');
 
-  // Removes:
-  // First byte = version
-  // Last 4 bytes = checksum
-  hexStr = hexStr.slice(2, 42);
+    // Removes:
+    // First byte = version
+    // Last 4 bytes = checksum
+    hexStr = hexStr.slice(2, 42);
+  } catch(err) {
+    if (err.message.match(/Non-base58 character/)) {
+      hexStr = address;
+    } else {
+      throw new Error('Invalid address: not Qtum or hex address');
+    }
+  }
 
   return Web3Utils.padLeft(hexStr, numOfChars(32));
 }
