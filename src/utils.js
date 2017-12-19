@@ -701,7 +701,7 @@ function uint256ToHex(uint256) {
  * @return The int number of characters given the bytes.
  */
 function numOfChars(bytes) {
-  return bytes * constants['CHARS_IN_BYTE'];
+  return bytes * 2;
 }
 
 /*
