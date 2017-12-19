@@ -694,6 +694,15 @@ function uint256ToHex(uint256) {
 }
 
 /*
+ * Converts a hex string to a number.
+ * @param string The hex string to convert.
+ * @return The converted hex string to number.
+ */
+function hexToNumber(str) {
+  return Web3Utils.hexToNumber(str);
+}
+
+/*
  * Returns the number of characters in the bytes specified.
  * @param bytes The number of bytes.
  * @return The int number of characters given the bytes.
