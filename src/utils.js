@@ -2,8 +2,6 @@ const BigNumber = require('bignumber.js');
 const utf8 = require('utf8');
 const _ = require('lodash');
 const Web3Utils = require('web3-utils');
-
-const constants = require('./constants.js');
 const bs58 = require('bs58');
 
 var unitMap = {
