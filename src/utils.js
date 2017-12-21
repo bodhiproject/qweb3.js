@@ -558,7 +558,7 @@ function toAscii(hex) {
 * @return The str without the hex prefix.
 */
 function trimHexPrefix(str) {
-  if (str.indexOf('0x') === 0) {
+  if (str && str.indexOf('0x') === 0) {
     return str.slice(2);
   } else {
     return str;
