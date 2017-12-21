@@ -42,6 +42,30 @@ class Formatter {
     });
   };
 
+  static executionResultOutput(rawOutput, contractABI, methodName){
+    if (_.isUndefined(contractABI)) {
+      throw new Error(`contractABI is undefined.`);
+    }
+
+    if (_.isUndefined(methodName)) {
+      throw new Error(`methodName is undefined.`);
+    }
+
+    const methodABI = _.filter(contractABI, {'name': methodName});
+
+    var result = null;
+
+    _.each(rawOutput, (index, item) => {
+      if(item === 'executionResult'){
+        let resultEntry = rawOutput[item];
+        var decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultEntry.output));
+        result = decodedOutput;
+        return false;
+      }
+    });
+
+    return result;
+  };
 }
 
 module.exports = Formatter;
