@@ -36,7 +36,8 @@ class Contract {
       ],
     };
 
-    return this.parent.provider.request(options);
+    return this.parent.provider.request(options)
+      .then((result) => Formatter.executionResultOutput(result, this.abi, methodName));
   }
 
   /*
