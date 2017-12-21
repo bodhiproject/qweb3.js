@@ -46,24 +46,26 @@ class Formatter {
     if (_.isUndefined(contractABI)) {
       throw new Error(`contractABI is undefined.`);
     }
-
     if (_.isUndefined(methodName)) {
       throw new Error(`methodName is undefined.`);
     }
 
-    const methodABI = _.filter(contractABI, {'name': methodName});
+    console.log('rawOutput', rawOutput);
 
+    const methodABI = _.filter(contractABI, {'name': methodName});
     var result = null;
 
     _.each(rawOutput, (index, item) => {
-      if(item === 'executionResult'){
+      if (item === 'executionResult') {
         let resultEntry = rawOutput[item];
         var decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultEntry.output));
+        console.log(decodedOutput);
         result = decodedOutput;
         return false;
       }
     });
 
+    console.log('returning result', result);
     return result;
   };
 }
