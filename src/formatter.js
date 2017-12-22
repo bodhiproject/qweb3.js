@@ -40,8 +40,6 @@ class Formatter {
       throw new Error(`methodName is undefined.`);
     }
 
-    console.log('rawOutput', rawOutput);
-
     const methodABI = _.filter(contractABI, {'name': methodName});
     var result = null;
 
@@ -55,7 +53,6 @@ class Formatter {
       }
     });
 
-    console.log('returning result', result);
     return result;
   };
 }
