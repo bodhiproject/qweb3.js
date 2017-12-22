@@ -1,3 +1,6 @@
+// External Imports
+const _ = require('lodash');
+
 // Internal Imports
 const Qtum  = require('./qtum');
 const HttpProvider = require('./httpprovider');
