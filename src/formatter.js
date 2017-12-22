@@ -19,26 +19,26 @@ class Formatter {
           const topicHash = item.topics[0];
           const eventTopicObj = _.find(EventMetadata, { eventHash: topicHash });
 
-          if (eventTopicObj === undefined) {
-            throw new Error(`could not find event with topic hash: ${topicHash}`);
+          if (eventTopicObj) {
+            // Each field of log needs to appended with '0x' to be parsed
+            item.address = Utils.formatHexStr(item.address);
+            item.data = Utils.formatHexStr(item.data);
+            item.topics = _.map(item.topics, Utils.formatHexStr);
+
+            const methodAbi = _.find(eventTopicObj.abi, { name: eventTopicObj.name });
+            const decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
+
+            // Strip out hex prefix for addresses
+            _.each(methodAbi.inputs, (inputItem) => {
+              if (inputItem.type === 'address') {
+                decodedLog[inputItem.name] = Utils.trimHexPrefix(decodedLog[inputItem.name]);
+              }
+            });
+
+            resultEntry.log[index] = decodedLog;
+          } else {
+            console.warn(`could not find event with topic hash: ${topicHash}`);
           }
-
-          // Each field of log needs to appended with '0x' to be parsed
-          item.address = Utils.formatHexStr(item.address);
-          item.data = Utils.formatHexStr(item.data);
-          item.topics = _.map(item.topics, Utils.formatHexStr);
-
-          const methodAbi = _.find(eventTopicObj.abi, { name: eventTopicObj.name });
-          const decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
-
-          // Strip out hex prefix for addresses
-          _.each(methodAbi.inputs, (inputItem) => {
-            if (inputItem.type === 'address') {
-              decodedLog[inputItem.name] = Utils.trimHexPrefix(decodedLog[inputItem.name]);
-            }
-          });
-
-          resultEntry.log[index] = decodedLog;
         });
       }
 
