@@ -19,6 +19,10 @@ class Formatter {
           const topicHash = item.topics[0];
           const eventTopicObj = _.find(EventMetadata, { eventHash: topicHash });
 
+          if (eventTopicObj === undefined) {
+            throw new Error(`could not find event with topic hash: ${topicHash}`);
+          }
+
           // Each field of log needs to appended with '0x' to be parsed
           item.address = Utils.formatHexStr(item.address);
           item.data = Utils.formatHexStr(item.data);
