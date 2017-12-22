@@ -57,11 +57,13 @@ class Formatter {
       if (item === 'executionResult') {
         let resultEntry = rawOutput[item];
         var decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultEntry.output));
-        console.log(decodedOutput);
+        console.log('decodedOutput', decodedOutput);
         result = decodedOutput;
         return false;
       }
     });
+
+    _.each()
 
     return result;
   };
