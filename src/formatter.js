@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const EthjsAbi = require('ethjs-abi');
 const Utils = require('./utils');
+const EventMetadata = require('./event_metadata');
 
 class Formatter {
 
@@ -16,7 +17,7 @@ class Formatter {
       if (!_.isEmpty(resultEntry.log)) {
         _.each(resultEntry.log, (item, index) => {
           const topicHash = item.topics[0];
-          const eventTopicObj = _.find(EventTopics, { eventHash: topicHash });
+          const eventTopicObj = _.find(EventMetadata, { eventHash: topicHash });
 
           // Each field of log needs to appended with '0x' to be parsed
           item.address = Utils.formatHexStr(item.address);
