@@ -51,19 +51,24 @@ class Formatter {
     }
 
     const methodABI = _.filter(contractABI, {'name': methodName});
-    var result = null;
+    let result = null;
 
-    _.each(rawOutput, (index, item) => {
+    _.each(rawOutput, (item, index) => {
       if (item === 'executionResult') {
-        let resultEntry = rawOutput[item];
-        var decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultEntry.output));
-        console.log('decodedOutput', decodedOutput);
+        const resultObj = rawOutput[index];
+        const decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultObj.output));
+
+        // Strip out hex prefix for addresses
+        _.each(methodABI.inputs, (inputItem, index) => {
+          if (inputItem.type === 'address') {
+            decodedOutput[index.toString()] = Utils.trimHexPrefix(decodedOutput[index.toString()]);
+          }
+        });
+
         result = decodedOutput;
         return false;
       }
     });
-
-    _.each()
 
     return result;
   };
