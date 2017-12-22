@@ -1,4 +1,4 @@
-/* Internal Import */
+// Internal Imports
 const Qtum  = require('./qtum');
 const HttpProvider = require('./httpprovider');
 const Contract = require('./contract');
@@ -91,7 +91,6 @@ class Qweb3 {
    * @return {Promise} Promise containing returned logs or Error
    */
   searchLogs(fromBlock, toBlock, addresses, topics) {
-    // Validation
     if (!_.isNumber(fromBlock)) {
       throw new Error(`fromBlock expects a number. Got ${fromBlock} instead.`);
     }

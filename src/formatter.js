@@ -7,8 +7,8 @@ class Formatter {
 
 	/**
    * Formats the output of searchlog by decoding eventName, indexed and unindexed params
-   * @param  {object} rawOutput   Raw seachlog output
-   * @return {object}             Decoded searchlog output
+   * @param  {object} rawOutput Raw seachlog output
+   * @return {object} Decoded searchlog output
    */
   static searchLogOutput(rawOutput) {
     return _.map(rawOutput, (resultEntry) => {  
@@ -52,7 +52,14 @@ class Formatter {
     });
   };
 
-  static executionResultOutput(rawOutput, contractABI, methodName){
+  /**
+   * Formats the output of a callcontract call.
+   * @param  {object} rawOutput Raw output of callcontract
+   * @param  {object} contractABI The ABI of the contract that was called
+   * @param  {string} methodName The name of the method that was called
+   * @return {object} Decoded callcontract output
+   */
+  static callOutput(rawOutput, contractABI, methodName) {
     if (_.isUndefined(contractABI)) {
       throw new Error(`contractABI is undefined.`);
     }

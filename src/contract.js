@@ -1,9 +1,8 @@
-/* External Import */
+// External Imports
 const _ = require('lodash');
-const EthjsAbi = require('ethjs-abi');
-const Formatter = require('./formatter');
 
-/* Internal Import */
+// Internal Imports
+const Formatter = require('./formatter');
 const Utils = require('./utils.js');
 
 const SEND_AMOUNT = 0;
@@ -37,7 +36,7 @@ class Contract {
     };
 
     return this.parent.provider.request(options)
-      .then((result) => Formatter.executionResultOutput(result, this.abi, methodName));
+      .then((result) => Formatter.callOutput(result, this.abi, methodName));
   }
 
   /*
