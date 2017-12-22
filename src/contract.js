@@ -107,58 +107,6 @@ class Contract {
   }
 
   /**
-   * Search logs with given filters
-   * @param  {number} fromBlock Number of from block
-   * @param  {number} toBlock   Number of to block
-   * @param  {string or array}  addresses   One or more addresses to search against
-   * @param  {string or array}  topics      One or more topic hash to search against
-   * @return {Promise}           Promise containing result object or Error
-   */
-  searchLogs(fromBlock, toBlock, addresses, topics) {
-    // Validation
-    if (!_.isNumber(fromBlock)) {
-      throw new Error(`fromBlock expects a number. Got ${fromBlock} instead.`);
-    }
-
-    if (!_.isNumber(toBlock)) {
-      throw new Error(`toBlock expects a number. Got ${toBlock} instead.`);
-    }
-
-    const addrObj = { addresses: undefined };
-
-    if (_.isString(addresses)) {
-      addrObj.addresses = [addresses];
-    } else if (_.isArray(addresses)) {
-      addrObj.addresses = addresses;
-    } else {
-      throw new Error('addresses expects a string or an array.');
-    }
-
-    const topicsObj = { topics: undefined };
-
-    if (_.isString(topics)) {
-      topicsObj.topics = [topics];
-    } else if (_.isArray(topics)) {
-      topicsObj.topics = topics;
-    } else {
-      throw new Error('topics expects a string or an array.');
-    }
-
-    const options = {
-      method: 'searchlogs',
-      params: [
-        fromBlock,
-        toBlock,
-        addrObj,
-        topicsObj,
-      ],
-    };
-
-    return this.parent.provider.request(options)
-      .then((results) => Formatter.searchLogOutput(results, this.abi));
-  }
-
-  /**
    * Validates arguments by ABI schema and throws errors is mismatch
    * @param  {[type]}  name   Method name
    * @param  {[type]}  params Method parameters
