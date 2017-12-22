@@ -26,7 +26,13 @@ class Formatter {
             item.topics = _.map(item.topics, Utils.formatHexStr);
 
             const methodAbi = _.find(eventTopicObj.abi, { name: eventTopicObj.name });
-            const decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
+            let decodedLog;
+            try {
+              decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
+            } catch(err) { // catch throws in decodeLogItem
+              console.warn(err.message);
+              return;
+            }
 
             // Strip out hex prefix for addresses
             _.each(methodAbi.inputs, (inputItem) => {
