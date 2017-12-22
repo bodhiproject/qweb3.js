@@ -53,11 +53,10 @@ class Formatter {
     const methodABI = _.filter(contractABI, {'name': methodName});
     let result = null;
 
-    _.each(rawOutput, (item, index) => {
-      if (item === 'executionResult') {
-        const resultObj = rawOutput[index];
+    _.each(rawOutput, (value, key) => {
+      if (key === 'executionResult') {
+        const resultObj = rawOutput[key];
         const decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultObj.output));
-        console.log('decodedOutput', decodedOutput);
 
         // Strip out hex prefix for addresses
         _.each(methodABI.inputs, (inputItem, index) => {
@@ -67,8 +66,6 @@ class Formatter {
         });
 
         result = decodedOutput;
-        console.log('result', result);
-        
         return false;
       }
     });
