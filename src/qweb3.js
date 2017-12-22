@@ -129,7 +129,7 @@ class Qweb3 {
       ],
     };
 
-    return this.parent.provider.request(options)
+    return this.provider.request(options)
       .then((results) => Formatter.searchLogOutput(results));
   }
 }
