@@ -57,6 +57,7 @@ class Formatter {
       if (item === 'executionResult') {
         const resultObj = rawOutput[index];
         const decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultObj.output));
+        console.log('decodedOutput', decodedOutput);
 
         // Strip out hex prefix for addresses
         _.each(methodABI.inputs, (inputItem, index) => {
@@ -66,6 +67,8 @@ class Formatter {
         });
 
         result = decodedOutput;
+        console.log('result', result);
+        
         return false;
       }
     });
