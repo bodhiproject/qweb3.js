@@ -92,9 +92,10 @@ class Qweb3 {
    * @param  {string or array} addresses One or more addresses to search against
    * @param  {string or array} topics One or more topic hashes to search against
    * @param  {object} contractMetadata Metadata of all contracts and their events with topic hashes
+   * @param  {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
    * @return {Promise} Promise containing returned logs or Error
    */
-  searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata) {
+  searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, removeHexPrefix) {
     if (!_.isNumber(fromBlock)) {
       throw new Error(`fromBlock expects a number. Got ${fromBlock} instead.`);
     }
@@ -131,7 +132,7 @@ class Qweb3 {
     };
 
     return this.provider.request(options)
-      .then((results) => Formatter.searchLogOutput(results, contractMetadata));
+      .then((results) => Formatter.searchLogOutput(results, contractMetadata, removeHexPrefix));
   }
 }
 
