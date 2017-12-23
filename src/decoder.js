@@ -1,5 +1,6 @@
 const Web3Utils = require('web3-utils');
 const bs58 = require('bs58');
+const Utils = require('./utils');
 
 class Decoder {
 
