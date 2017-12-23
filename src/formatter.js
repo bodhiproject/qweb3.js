@@ -49,7 +49,7 @@ class Formatter {
 
             _.each(methodAbi.inputs, (inputItem) => {
               if (removeHexPrefix) {
-                value = decodedLog[inputItem.name];
+                let value = decodedLog[inputItem.name];
                 value = Decoder.removeHexPrefix(value);
                 decodedLog[inputItem.name] = value;
               }
