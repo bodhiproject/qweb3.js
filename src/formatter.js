@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const EthjsAbi = require('ethjs-abi');
+const Web3Utils = require('web3-utils');
 const Utils = require('./utils');
 
 class Formatter {
@@ -44,12 +45,21 @@ class Formatter {
               return;
             }
 
-            // Strip out hex prefix for addresses
+            
             _.each(methodAbi.inputs, (inputItem) => {
+              // Strip out hex prefix for addresses
               if (inputItem.type === 'address') {
                 decodedLog[inputItem.name] = Utils.trimHexPrefix(decodedLog[inputItem.name]);
               }
-            });
+
+              // Convert int to hex
+              if (inputItem.type.startsWith('uint')) {
+                const uint = decodedLog[inputItem.name];
+                if (!Web3Utils.isHex(uint)) {
+                  decodedLog[inputItem.name] = Web3Utils.toHex(uint);
+                }
+              }
+            }); 
 
             resultEntry.log[index] = decodedLog;
           } else {
