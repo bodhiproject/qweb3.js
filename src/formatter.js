@@ -50,15 +50,6 @@ class Formatter {
               if (inputItem.type === 'address') {
                 decodedLog[inputItem.name] = Utils.trimHexPrefix(decodedLog[inputItem.name]);
               }
-
-              // Convert int to hex
-              if (inputItem.type.startsWith('uint')) {
-                const uint = decodedLog[inputItem.name];
-                if (!Web3Utils.isHex(uint)) {
-                  const uintHex = Web3Utils.toHex(uint);
-                  decodedLog[inputItem.name] = Utils.trimHexPrefix(uintHex);
-                }
-              }
             }); 
 
             resultEntry.log[index] = decodedLog;
