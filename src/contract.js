@@ -18,11 +18,12 @@ class Contract {
 
   /**
    * @dev Executes a callcontract on a view/pure method via the qtum-cli.
-   * @param  {string} methodName Name of contract method
-   * @param  {array} params      Parameters of contract method
-   * @return {Promise}           Promise containing result object or Error
+   * @param {string} methodName Name of contract method
+   * @param {array} params Parameters of contract method
+   * @param {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
+   * @return {Promise} Promise containing result object or Error
    */
-  call(methodName, params) {
+  call(methodName, params, removeHexPrefix) {
     const { methodArgs, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, false);
 
@@ -36,7 +37,7 @@ class Contract {
     };
 
     return this.parent.provider.request(options)
-      .then((result) => Formatter.callOutput(result, this.abi, methodName));
+      .then((result) => Formatter.callOutput(result, this.abi, methodName, removeHexPrefix));
   }
 
   /*
