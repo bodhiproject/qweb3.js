@@ -9,9 +9,10 @@ class Formatter {
    * Formats the output of searchlog by decoding eventName, indexed and unindexed params
    * @param {object} rawOutput Raw seachlog output
    * @param {object} contractMetadata Metadata of all contracts and their events with topic hashes
+   * @param {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
    * @return {object} Decoded searchlog output
    */
-  static searchLogOutput(rawOutput, contractMetadata) {
+  static searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
     return _.map(rawOutput, (resultEntry) => {  
       let formatted = _.assign({}, resultEntry);
 
@@ -46,18 +47,20 @@ class Formatter {
             }
 
             _.each(methodAbi.inputs, (inputItem) => {
-              const value = decodedLog[inputItem.name];
+              if (removeHexPrefix) {
+                const value = decodedLog[inputItem.name];
 
-              if (value instanceof Array) {
-                _.each(value, (arrayItem, index) => {
-                  if (Web3Utils.isHex(arrayItem)) {
-                    value[index] = Utils.trimHexPrefix(arrayItem);
-                    decodedLog[inputItem.name] = value;
+                if (value instanceof Array) {
+                  _.each(value, (arrayItem, index) => {
+                    if (Web3Utils.isHex(arrayItem)) {
+                      value[index] = Utils.trimHexPrefix(arrayItem);
+                      decodedLog[inputItem.name] = value;
+                    }
+                  });
+                } else {
+                  if (Web3Utils.isHex(value)) {
+                    decodedLog[inputItem.name] = Utils.trimHexPrefix(value);   
                   }
-                });
-              } else {
-                if (Web3Utils.isHex(value)) {
-                  decodedLog[inputItem.name] = Utils.trimHexPrefix(value);   
                 }
               }
             }); 
