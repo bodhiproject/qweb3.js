@@ -1,9 +1,8 @@
-/* External Import */
+// External Imports
 const _ = require('lodash');
-const EthjsAbi = require('ethjs-abi');
-const Formatter = require('./formatter');
 
-/* Internal Import */
+// Internal Imports
+const Formatter = require('./formatter');
 const Utils = require('./utils.js');
 
 const SEND_AMOUNT = 0;
@@ -19,9 +18,9 @@ class Contract {
 
   /**
    * @dev Executes a callcontract on a view/pure method via the qtum-cli.
-   * @param  {string} methodName Name of contract method
-   * @param  {array} params      Parameters of contract method
-   * @return {Promise}           Promise containing result object or Error
+   * @param {string} methodName Name of contract method
+   * @param {array} params Parameters of contract method
+   * @return {Promise} Promise containing result object or Error
    */
   call(methodName, params) {
     const { methodArgs, senderAddress } = params;
@@ -37,7 +36,7 @@ class Contract {
     };
 
     return this.parent.provider.request(options)
-      .then((result) => Formatter.executionResultOutput(result, this.abi, methodName));
+      .then((result) => Formatter.callOutput(result, this.abi, methodName, true));
   }
 
   /*
@@ -104,58 +103,6 @@ class Contract {
     });
 
     return dataHex;
-  }
-
-  /**
-   * Search logs with given filters
-   * @param  {number} fromBlock Number of from block
-   * @param  {number} toBlock   Number of to block
-   * @param  {string or array}  addresses   One or more addresses to search against
-   * @param  {string or array}  topics      One or more topic hash to search against
-   * @return {Promise}           Promise containing result object or Error
-   */
-  searchLogs(fromBlock, toBlock, addresses, topics) {
-    // Validation
-    if (!_.isNumber(fromBlock)) {
-      throw new Error(`fromBlock expects a number. Got ${fromBlock} instead.`);
-    }
-
-    if (!_.isNumber(toBlock)) {
-      throw new Error(`toBlock expects a number. Got ${toBlock} instead.`);
-    }
-
-    const addrObj = { addresses: undefined };
-
-    if (_.isString(addresses)) {
-      addrObj.addresses = [addresses];
-    } else if (_.isArray(addresses)) {
-      addrObj.addresses = addresses;
-    } else {
-      throw new Error('addresses expects a string or an array.');
-    }
-
-    const topicsObj = { topics: undefined };
-
-    if (_.isString(topics)) {
-      topicsObj.topics = [topics];
-    } else if (_.isArray(topics)) {
-      topicsObj.topics = topics;
-    } else {
-      throw new Error('topics expects a string or an array.');
-    }
-
-    const options = {
-      method: 'searchlogs',
-      params: [
-        fromBlock,
-        toBlock,
-        addrObj,
-        topicsObj,
-      ],
-    };
-
-    return this.parent.provider.request(options)
-      .then((results) => Formatter.searchLogOutput(results, this.abi));
   }
 
   /**

@@ -1,64 +1,105 @@
 const _ = require('lodash');
 const EthjsAbi = require('ethjs-abi');
+const Web3Utils = require('web3-utils');
 const Utils = require('./utils');
+const Decoder = require('./decoder');
 
 class Formatter {
 
 	/**
-	 * Formats the output of searchlog by decoding eventName, indexed and unindexed params
-	 * @param  {object} rawOutput   Raw seachlog output
-	 * @param  {object} contractABI
-	 * @return {object}             Decoded searchlog output
-	 */
-  static searchLogOutput(rawOutput, contractABI) {
-
-    if (_.isUndefined(contractABI)) {
-      throw new Error(`contractABI is undefined.`);
-    }
-
-    // logDecoder is function created by EthjsAbi with ABI object
-    const logDecoder = EthjsAbi.logDecoder(contractABI);
-
-    return _.map(rawOutput, (resultEntry) => {
-
+   * Formats the output of searchlog by decoding eventName, indexed and unindexed params
+   * @param {object} rawOutput Raw seachlog output
+   * @param {object} contractMetadata Metadata of all contracts and their events with topic hashes
+   * @param {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
+   * @return {object} Decoded searchlog output
+   */
+  static searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
+    return _.map(rawOutput, (resultEntry) => {  
       let formatted = _.assign({}, resultEntry);
 
-      // TODO: Format general fields of searchlogs
-
-      // Format 'log' field of searchlogs
-      // Each field of log needs to appended with '0x' to be parsed
       if (!_.isEmpty(resultEntry.log)) {
+        _.each(resultEntry.log, (item, index) => {
+          const eventHash = item.topics[0];
 
-        const rawlogs = _.map(resultEntry.log, (logEntry) => ({
-          address: Utils.formatHexStr(logEntry.address),
-          data: Utils.formatHexStr(logEntry.data),
-          topics: _.map(logEntry.topics, Utils.formatHexStr)
-        }));
+          let eventName;
+          let metadataObj;
+          _.each(contractMetadata, (contractItem, index) => {
+            eventName = (_.invert(contractItem))[eventHash]; 
 
-        formatted.log = logDecoder(rawlogs);
+            if (eventName) {
+              metadataObj = contractItem;
+              return false;
+            }
+          });
+
+          if (metadataObj) {
+            // Each field of log needs to appended with '0x' to be parsed
+            item.address = Utils.formatHexStr(item.address);
+            item.data = Utils.formatHexStr(item.data);
+            item.topics = _.map(item.topics, Utils.formatHexStr);
+
+            const methodAbi = _.find(metadataObj.abi, { name: eventName });
+            let decodedLog;
+            try {
+              decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
+            } catch(err) { // catch throws in decodeLogItem
+              console.warn(err.message);
+              return;
+            }
+
+            // Strip hex prefix
+            if (removeHexPrefix) {
+              _.each(methodAbi.inputs, (inputItem) => {
+                let value = decodedLog[inputItem.name];
+                value = Decoder.removeHexPrefix(value);
+                decodedLog[inputItem.name] = value;
+              }); 
+            }
+
+            resultEntry.log[index] = decodedLog;
+          } else {
+            console.warn(`could not find event with topic hash: ${eventHash}`);
+          }
+        });
       }
 
       return formatted;
     });
   };
 
-  static executionResultOutput(rawOutput, contractABI, methodName){
+  /**
+   * Formats the output of a callcontract call.
+   * @param  {object} rawOutput Raw output of callcontract
+   * @param  {object} contractABI The ABI of the contract that was called
+   * @param  {string} methodName The name of the method that was called
+   * @param   {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
+   * @return {object} Decoded callcontract output
+   */
+  static callOutput(rawOutput, contractABI, methodName, removeHexPrefix) {
     if (_.isUndefined(contractABI)) {
       throw new Error(`contractABI is undefined.`);
     }
-
     if (_.isUndefined(methodName)) {
       throw new Error(`methodName is undefined.`);
     }
 
     const methodABI = _.filter(contractABI, {'name': methodName});
+    let result = null;
 
-    var result = null;
+    _.each(rawOutput, (value, key) => {
+      if (key === 'executionResult') {
+        const resultObj = rawOutput[key];
+        const decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultObj.output));
 
-    _.each(rawOutput, (index, item) => {
-      if(item === 'executionResult'){
-        let resultEntry = rawOutput[item];
-        var decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultEntry.output));
+        // Strip hex prefix
+        if (removeHexPrefix) {
+          _.each(methodABI.inputs, (inputItem, index) => {
+            let value = decodedOutput[index.toString()];
+            value = Decoder.removeHexPrefix(value);
+            decodedOutput[index.toString()] = value;
+          });
+        }
+
         result = decodedOutput;
         return false;
       }
