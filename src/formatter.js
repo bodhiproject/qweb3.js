@@ -7,25 +7,36 @@ class Formatter {
 
 	/**
    * Formats the output of searchlog by decoding eventName, indexed and unindexed params
-   * @param  {object} rawOutput Raw seachlog output
+   * @param {object} rawOutput Raw seachlog output
+   * @param {object} contractMetadata Metadata of all contracts and their events with topic hashes
    * @return {object} Decoded searchlog output
    */
-  static searchLogOutput(rawOutput) {
+  static searchLogOutput(rawOutput, contractMetadata) {
     return _.map(rawOutput, (resultEntry) => {  
       let formatted = _.assign({}, resultEntry);
 
       if (!_.isEmpty(resultEntry.log)) {
         _.each(resultEntry.log, (item, index) => {
-          const topicHash = item.topics[0];
-          const eventTopicObj = _.find(EventMetadata, { eventHash: topicHash });
+          const eventHash = item.topics[0];
 
-          if (eventTopicObj) {
+          let eventName;
+          let metadataObj;
+          _.each(contractMetadata, (contractItem, index) => {
+            eventName = (_.invert(contractItem))[eventHash]; 
+
+            if (eventName) {
+              metadataObj = contractItem;
+              return false;
+            }
+          });
+
+          if (metadataObj) {
             // Each field of log needs to appended with '0x' to be parsed
             item.address = Utils.formatHexStr(item.address);
             item.data = Utils.formatHexStr(item.data);
             item.topics = _.map(item.topics, Utils.formatHexStr);
 
-            const methodAbi = _.find(eventTopicObj.abi, { name: eventTopicObj.name });
+            const methodAbi = _.find(metadataObj.abi, { name: eventName });
             let decodedLog;
             try {
               decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
@@ -43,7 +54,7 @@ class Formatter {
 
             resultEntry.log[index] = decodedLog;
           } else {
-            console.warn(`could not find event with topic hash: ${topicHash}`);
+            console.warn(`could not find event with topic hash: ${eventHash}`);
           }
         });
       }

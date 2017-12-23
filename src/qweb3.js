@@ -91,9 +91,10 @@ class Qweb3 {
    * @param  {number} toBlock Ending block to search. Use -1 for latest.
    * @param  {string or array} addresses One or more addresses to search against
    * @param  {string or array} topics One or more topic hashes to search against
+   * @param  {object} contractMetadata Metadata of all contracts and their events with topic hashes
    * @return {Promise} Promise containing returned logs or Error
    */
-  searchLogs(fromBlock, toBlock, addresses, topics) {
+  searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata) {
     if (!_.isNumber(fromBlock)) {
       throw new Error(`fromBlock expects a number. Got ${fromBlock} instead.`);
     }
@@ -130,7 +131,7 @@ class Qweb3 {
     };
 
     return this.provider.request(options)
-      .then((results) => Formatter.searchLogOutput(results));
+      .then((results) => Formatter.searchLogOutput(results, contractMetadata));
   }
 }
 
