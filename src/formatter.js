@@ -46,9 +46,19 @@ class Formatter {
             }
 
             _.each(methodAbi.inputs, (inputItem) => {
-              // Strip out hex prefix for addresses
-              if (inputItem.type === 'address') {
-                decodedLog[inputItem.name] = Utils.trimHexPrefix(decodedLog[inputItem.name]);
+              const value = decodedLog[inputItem.name];
+
+              if (value instanceof Array) {
+                _.each(value, (arrayItem, index) => {
+                  if (Web3Utils.isHex(arrayItem)) {
+                    value[index] = Utils.trimHexPrefix(arrayItem);
+                    decodedLog[inputItem.name] = value;
+                  }
+                });
+              } else {
+                if (Web3Utils.isHex(value)) {
+                  decodedLog[inputItem.name] = Utils.trimHexPrefix(value);   
+                }
               }
             }); 
 
