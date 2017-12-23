@@ -6,11 +6,11 @@ const Utils = require('./utils');
 class Decoder {
 
   static toQtumAddress(hexAddress) {
-    if (!hexAddress) {
-      throw new Error(`hexAddress should not be undefined.`);
+    if (hexAddress === undefined || _.isEmpty(hexAddress)) {
+      throw new Error(`hexAddress should not be undefined or empty`);
     }
     if (!Web3Utils.isHex(hexAddress)) {
-      throw new Error(`Invalid hex address.`);
+      throw new Error(`Invalid hex address`);
     }
 
     const bytes = Buffer.from(hexAddress, 'hex');
