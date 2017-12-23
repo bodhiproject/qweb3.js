@@ -45,7 +45,6 @@ class Formatter {
               return;
             }
 
-            
             _.each(methodAbi.inputs, (inputItem) => {
               // Strip out hex prefix for addresses
               if (inputItem.type === 'address') {
@@ -56,7 +55,8 @@ class Formatter {
               if (inputItem.type.startsWith('uint')) {
                 const uint = decodedLog[inputItem.name];
                 if (!Web3Utils.isHex(uint)) {
-                  decodedLog[inputItem.name] = Web3Utils.toHex(uint);
+                  const uintHex = Web3Utils.toHex(uint);
+                  decodedLog[inputItem.name] = Utils.trimHexPrefix(uintHex);
                 }
               }
             }); 
