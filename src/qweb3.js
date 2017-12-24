@@ -25,8 +25,7 @@ class Qweb3 {
   isConnected() {
     return this.provider.request({
       method: 'getinfo',
-    })
-      .then(res => Promise.resolve(!!res), err => Promise.resolve(false));
+    }).then(res => Promise.resolve(!!res), err => Promise.resolve(false));
   }
 
   /**
