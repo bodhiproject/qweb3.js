@@ -3,8 +3,6 @@ const Web3Utils = require('web3-utils');
 const crypto = require('crypto');
 const bs58 = require('bs58');
 const Utils = require('./utils');
-const Qweb3 = require('../modules/qweb3/index');
-const qclient = new Qweb3(Config.QTUM_RPC_ADDRESS);
 
 const MainnetNetworkByte = '3A';
 const TestnetNetworkByte = '78';

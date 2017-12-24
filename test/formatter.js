@@ -96,7 +96,7 @@ describe('Formatter', () => {
         }
       });
 
-      console.log(util.inspect(formatted, { depth: null }));
+      // console.log(util.inspect(formatted, { depth: null }));
       done();
     });
   });
