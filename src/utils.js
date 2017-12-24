@@ -725,6 +725,7 @@ module.exports = {
   paramsCheck: paramsCheck,
   toHex: toHex,
   formatHexStr: formatHexStr,
+  toUtf8: toUtf8,
   toAscii: toAscii,
   trimHexPrefix: trimHexPrefix,
   getFunctionHash: getFunctionHash,
