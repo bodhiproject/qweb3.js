@@ -14,7 +14,7 @@ class Formatter {
    * @return {object} Decoded searchlog output
    */
   static searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
-    return _.map(rawOutput, (resultEntry) => {  
+    return _.map(rawOutput, (resultEntry) => {
       let formatted = _.assign({}, resultEntry);
 
       if (!_.isEmpty(resultEntry.log)) {
@@ -24,7 +24,7 @@ class Formatter {
           let eventName;
           let metadataObj;
           _.each(contractMetadata, (contractItem, index) => {
-            eventName = (_.invert(contractItem))[eventHash]; 
+            eventName = (_.invert(contractItem))[eventHash];
 
             if (eventName) {
               metadataObj = contractItem;
@@ -53,19 +53,17 @@ class Formatter {
                 let value = decodedLog[inputItem.name];
                 value = Decoder.removeHexPrefix(value);
                 decodedLog[inputItem.name] = value;
-              }); 
+              });
             }
 
             resultEntry.log[index] = decodedLog;
-          } else {
-            console.warn(`could not find event with topic hash: ${eventHash}`);
           }
         });
       }
 
       return formatted;
     });
-  };
+  }
 
   /**
    * Formats the output of a callcontract call.
@@ -106,7 +104,7 @@ class Formatter {
     });
 
     return result;
-  };
+  }
 }
 
 module.exports = Formatter;
