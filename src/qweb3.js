@@ -41,6 +41,18 @@ class Qweb3 {
     });
   }
 
+  /**
+   * Converts a hex address to qtum address.
+   * @param {hexAddress} Qtum address in hex format.
+   * @return {Promise} Qtum address or Error.
+   */
+  fromHexAddress(hexAddress) {
+    return this.provider.request({
+      method: 'fromhexaddress',
+      params: [hexAddress],
+    });
+  }
+
   /*
   * @dev Returns the current block height that is synced with the client.
   * @return {Promise} Current block count or Error.
