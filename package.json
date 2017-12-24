@@ -41,14 +41,14 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "istanbul": "^0.4.4",
-    "mocha": ">=2.3.3"
+    "mocha": "^4.0.1"
   },
   "scripts": {
     "start": "babel-node --inspect src/index.js --presets es2015,stage-2",
     "build": "",
     "watch": "",
     "lint:fix": "eslint --fix -- src/. test/.",
-    "test": "mocha --compilers js:babel-register ./test/**/*.js"
+    "test": "mocha --compilers js:babel-register ./test/"
   },
   "homepage": "http://www.bodhi.network/",
   "bugs": {
