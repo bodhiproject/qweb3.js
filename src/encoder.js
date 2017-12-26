@@ -1,7 +1,66 @@
 const Web3Utils = require('web3-utils');
 const Utils = require('./utils');
+const bs58 = require('bs58');
 
 class Encoder {
+
+  /*
+   * Converts an object of a method from the ABI to a function hash.
+   * @param methodObj The json object of the method taken from the ABI.
+   * @return The function hash.
+   */
+  static getFunctionHash(methodObj) {
+    if (!methodObj) {
+      throw new Error(`methodObj should not be undefined.`);
+    }
+
+    let name = methodObj.name;
+    let params = '';
+    for (let i = 0; i < methodObj.inputs.length; i++) {
+      params = params.concat(methodObj.inputs[i].type);
+
+      if (i < methodObj.inputs.length - 1) {
+        params = params.concat(',');
+      }
+    };
+    let signature = name.concat('(').concat(params).concat(')');
+
+    // Return only the first 4 bytes
+    return Web3Utils.sha3(signature).slice(2, 10);
+  }
+
+  /*
+   * Converts a Qtum or hex address to a padded hex string.
+   * @param address The Qtum/hex address to convert.
+   * @return The 32 bytes padded-left hex string.
+   */
+  static addressToHex(address) {
+    if (!address) {
+      throw new Error(`address should not be undefined.`);
+    }
+
+    // Remove '0x' from beginning of address
+    let addr = Utils.trimHexPrefix(address);
+
+    let hexStr;
+    try {
+      const bytes = bs58.decode(addr);
+      hexStr = bytes.toString('hex');
+
+      // Removes:
+      // First byte = version
+      // Last 4 bytes = checksum
+      hexStr = hexStr.slice(2, 42);
+    } catch(err) {
+      if (err.message.match(/Non-base58 character/)) {
+        hexStr = addr;
+      } else {
+        throw new Error('Invalid address: not Qtum or hex address');
+      }
+    }
+
+    return Web3Utils.padLeft(hexStr, Utils.numOfChars(32));
+  }
 
   /*
    * Converts a string into a hex string up to the max length.
@@ -9,7 +68,7 @@ class Encoder {
    * @param {number} maxCharLen The total length of the hex string allowed.
    * @return The converted string to single padded-right hex string.
    */
-  function stringToHex(string, maxCharLen) {
+  static stringToHex(string, maxCharLen) {
     if (string === undefined) {
       throw new Error(`string should not be undefined`);
     }
@@ -26,7 +85,7 @@ class Encoder {
    * @param numOfItems The total number of items the string array should have.
    * @return The converted string array to single padded-right hex string.
    */
-  function stringArrayToHex(strArray, numOfItems) {
+  static stringArrayToHex(strArray, numOfItems) {
     if (!Array.isArray(strArray)) {
       throw new Error(`strArray is not an array type.`);
     }
@@ -34,7 +93,7 @@ class Encoder {
       throw new Error(`numOfItems should be greater than 0.`);
     }
 
-    let chars = numOfChars(32);
+    let chars = Utils.numOfChars(32);
     let array = new Array(10);
     for (let i = 0; i < numOfItems; i++) {
       let hexString;
@@ -49,6 +108,16 @@ class Encoder {
     }
 
     return array.join('');
+  }
+
+  /*
+   * Converts a uint256 to hex padded-left to 32 bytes.
+   * @param uint256 The number to convert.
+   * @return The converted uint256 to padded-left hex string.
+   */
+  static uintToHex(uint) {
+    let hexNumber = Web3Utils.toHex(uint);
+    return Web3Utils.padLeft(hexNumber, Utils.numOfChars(32)).slice(2);
   }
 }
 

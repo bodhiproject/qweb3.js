@@ -82,13 +82,13 @@ class Contract {
     }
 
     let dataHex = '';
-    dataHex = dataHex.concat(Utils.getFunctionHash(methodObj));
+    dataHex = dataHex.concat(Encoder.getFunctionHash(methodObj));
 
     let hex;
     _.each(methodObj.inputs, (item, index) => {
       switch (item.type) {
         case 'address':
-          hex = Utils.addressToHex(args[index]);
+          hex = Encoder.addressToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
         case 'bytes32[10]':
@@ -96,11 +96,11 @@ class Contract {
           dataHex = dataHex.concat(hex);
           break;
         case 'uint8':
-          hex = Utils.uint8ToHex(args[index]);
+          hex = Encoder.uintToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
         case 'uint256':
-          hex = Utils.uint256ToHex(args[index]);
+          hex = Encoder.uintToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
       }
