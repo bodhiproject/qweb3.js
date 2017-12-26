@@ -10,6 +10,9 @@ const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
 const SEND_GASPRICE = 0.0000004;
 
+const MAX_BYTES_PER_ARRAY_SLOT = 64;
+const ARRAY_CAPACITY = 10;
+
 class Contract {
   constructor(parent, address, abi) {
     this.parent = parent;
@@ -89,7 +92,7 @@ class Contract {
           dataHex = dataHex.concat(hex);
           break;
         case 'bytes32[10]':
-          hex = Encoder.stringToHex(args[index]);
+          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
           dataHex = dataHex.concat(hex);
           break;
         case 'uint8':
