@@ -99,7 +99,7 @@ class Encoder {
     for (let i = 0; i < numOfItems; i++) {
       let hexString;
       if (strArray[i] != undefined) {
-        hexString = Web3Utils.toHex(strArray[i]);
+        hexString = Web3Utils.toHex(strArray[i].toString());
       } else {
         hexString = Web3Utils.toHex('');
       }
