@@ -2,7 +2,6 @@ const BigNumber = require('bignumber.js');
 const utf8 = require('utf8');
 const _ = require('lodash');
 const Web3Utils = require('web3-utils');
-const bs58 = require('bs58');
 
 var unitMap = {
   'noether': '0',
@@ -566,149 +565,12 @@ function trimHexPrefix(str) {
 }
 
 /*
- * Converts an object of a method from the ABI to a function hash.
- * @param methodObj The json object of the method taken from the ABI.
- * @return The function hash.
- */
-function getFunctionHash(methodObj) {
-  if (!methodObj) {
-    throw new Error(`methodObj should not be undefined.`);
-  }
-
-  let name = methodObj.name;
-  let params = '';
-  for (let i = 0; i < methodObj.inputs.length; i++) {
-    params = params.concat(methodObj.inputs[i].type);
-
-    if (i < methodObj.inputs.length - 1) {
-      params = params.concat(',');
-    }
-  };
-  let signature = name.concat('(').concat(params).concat(')');
-
-  // Return only the first 4 bytes
-  return Web3Utils.sha3(signature).slice(2, 10);
-}
-
-/*
- * Converts a Qtum or hex address to a padded hex string.
- * @param address The Qtum/hex address to convert.
- * @return The 32 bytes padded-left hex string.
- */
-function addressToHex(address) {
-  if (!address) {
-    throw new Error(`address should not be undefined.`);
-  }
-
-  // Remove '0x' from beginning of address
-  let addr = this.trimHexPrefix(address);
-
-  let hexStr;
-  try {
-    const bytes = bs58.decode(addr);
-    hexStr = bytes.toString('hex');
-
-    // Removes:
-    // First byte = version
-    // Last 4 bytes = checksum
-    hexStr = hexStr.slice(2, 42);
-  } catch(err) {
-    if (err.message.match(/Non-base58 character/)) {
-      hexStr = addr;
-    } else {
-      throw new Error('Invalid address: not Qtum or hex address');
-    }
-  }
-
-  return Web3Utils.padLeft(hexStr, numOfChars(32));
-}
-
-/*
- * Converts a string to hex string padded-right to the number of bytes specified.
- * @param str The string to convert to hex.
- * @param paddedBytes The number of bytes to pad-right.
- * @return The converted padded-right hex string.
- */
-function stringToHex(str, paddedBytes) {
-  if (paddedBytes <= 0) {
-    throw new Error(`paddedBytes should be greater than 0.`);
-  }
-
-  let hexString = Web3Utils.toHex(str);
-  if (hexString.indexOf('0x') === 0) {
-    // Remove the 0x hex prefix
-    hexString = hexString.slice(2);
-  }
-  return Web3Utils.padRight(hexString, numOfChars(paddedBytes));
-}
-
-/*
- * Converts an array of string elements (max 32 bytes) into a concatenated hex string.
- * @param strArray The string array to convert to hex.
- * @param numOfItems The total number of items the string array should have.
- * @return The converted string array to single padded-right hex string.
- */
-function stringArrayToHex(strArray, numOfItems) {
-  if (!Array.isArray(strArray)) {
-    throw new Error(`strArray is not an array type.`);
-  }
-  if (numOfItems <= 0) {
-    throw new Error(`numOfItems should be greater than 0.`);
-  }
-
-  let chars = numOfChars(32);
-  let array = new Array(10);
-  for (let i = 0; i < numOfItems; i++) {
-    let hexString;
-    if (strArray[i] != undefined) {
-      hexString = Web3Utils.toHex(strArray[i]);
-    } else {
-      hexString = Web3Utils.toHex('');
-    }
-
-    // Remove the 0x hex prefix
-    array[i] = Web3Utils.padRight(hexString, chars).slice(2);
-  }
-
-  return array.join('');
-}
-
-/*
- * Converts a uint256 to hex padded-left to 32 bytes.
- * @param uint256 The number to convert.
- * @return The converted uint256 to padded-left hex string.
- */
-function uint8ToHex(uint8) {
-  let hexNumber = Web3Utils.toHex(uint8);
-  return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
-}
-
-/*
- * Converts a uint256 to hex padded-left to 32 bytes.
- * @param uint256 The number to convert.
- * @return The converted uint256 to padded-left hex string.
- */
-function uint256ToHex(uint256) {
-  let hexNumber = Web3Utils.toHex(uint256);
-  return Web3Utils.padLeft(hexNumber, numOfChars(32)).slice(2);
-}
-
-/*
  * Converts a hex string to a number.
  * @param string The hex string to convert.
  * @return The converted hex string to number.
  */
 function hexToNumber(str) {
   return Web3Utils.hexToNumber(str);
-}
-
-/*
- * Returns the number of characters in the bytes specified.
- * @param bytes The number of bytes.
- * @return The int number of characters given the bytes.
- */
-function numOfChars(bytes) {
-  return bytes * 2;
 }
 
 /*
@@ -728,12 +590,6 @@ module.exports = {
   toUtf8: toUtf8,
   toAscii: toAscii,
   trimHexPrefix: trimHexPrefix,
-  getFunctionHash: getFunctionHash,
-  addressToHex: addressToHex,
-  stringToHex: stringToHex,
-  stringArrayToHex: stringArrayToHex,
-  uint8ToHex: uint8ToHex,
-  uint256ToHex: uint256ToHex,
   hexToNumber: hexToNumber,
   chunkString: chunkString,
 };

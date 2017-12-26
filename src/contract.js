@@ -4,10 +4,14 @@ const _ = require('lodash');
 // Internal Imports
 const Formatter = require('./formatter');
 const Utils = require('./utils.js');
+const Encoder = require('./encoder');
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
 const SEND_GASPRICE = 0.0000004;
+
+const MAX_BYTES_PER_ARRAY_SLOT = 64;
+const ARRAY_CAPACITY = 10;
 
 class Contract {
   constructor(parent, address, abi) {
@@ -78,27 +82,36 @@ class Contract {
     }
 
     let dataHex = '';
-    dataHex = dataHex.concat(Utils.getFunctionHash(methodObj));
+    dataHex = dataHex.concat(Encoder.getFunctionHash(methodObj));
 
     let hex;
     _.each(methodObj.inputs, (item, index) => {
       switch (item.type) {
-        case 'address':
-          hex = Utils.addressToHex(args[index]);
+        case 'address': {
+          hex = Encoder.addressToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
-        case 'bytes32[10]':
-          hex = Utils.stringArrayToHex(args[index], 10);
+        } 
+        case 'bytes32[10]': { // TODO: handle any length arrays
+          if (args[index] instanceof Array) {
+            hex = Encoder.stringArrayToHex(args[index], ARRAY_CAPACITY);
+            dataHex = dataHex.concat(hex);
+          } else {
+            hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
+            dataHex = dataHex.concat(hex);
+          }
+          break;
+        }
+        case 'uint8': {
+          hex = Encoder.uint8ToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
-        case 'uint8':
-          hex = Utils.uint8ToHex(args[index]);
+        }
+        case 'uint256': {
+          hex = Encoder.uint256ToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
-        case 'uint256':
-          hex = Utils.uint256ToHex(args[index]);
-          dataHex = dataHex.concat(hex);
-          break;
+        }
       }
     });
 
