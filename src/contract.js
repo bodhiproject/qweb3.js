@@ -87,11 +87,12 @@ class Contract {
     let hex;
     _.each(methodObj.inputs, (item, index) => {
       switch (item.type) {
-        case 'address':
+        case 'address': {
           hex = Encoder.addressToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
-        case 'bytes32[10]':
+        } 
+        case 'bytes32[10]': {
           if (args[index] instanceof Array) {
             hex = Encoder.stringArrayToHex(args[index], ARRAY_CAPACITY);
             dataHex = dataHex.concat(hex);
@@ -100,14 +101,17 @@ class Contract {
             dataHex = dataHex.concat(hex);
           }
           break;
-        case 'uint8':
-          hex = Encoder.uintToHex(args[index]);
+        }
+        case 'uint8': {
+          hex = Encoder.uint8ToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
-        case 'uint256':
-          hex = Encoder.uintToHex(args[index]);
+        }
+        case 'uint256': {
+          hex = Encoder.uint256ToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
+        }
       }
     });
 
