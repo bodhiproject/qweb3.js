@@ -92,7 +92,7 @@ class Contract {
           dataHex = dataHex.concat(hex);
           break;
         } 
-        case 'bytes32[10]': {
+        case 'bytes32[10]': { // TODO: handle any length arrays
           if (args[index] instanceof Array) {
             hex = Encoder.stringArrayToHex(args[index], ARRAY_CAPACITY);
             dataHex = dataHex.concat(hex);
