@@ -1,7 +1,7 @@
 {
   "name": "qweb3",
   "namespace": "bodhi",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Qtum JavaScript API comunicating to qtum node over RPC",
   "main": "./index.js",
   "repository": {
@@ -13,8 +13,8 @@
     "lib": "./lib"
   },
   "engines": {
-    "node": "8.6.0",
-    "npm": "5.3.0"
+    "node": "9.3.0",
+    "npm": "5.5.1"
   },
   "dependencies": {
     "babel-cli": "https://registry.npmjs.org/babel-cli/-/babel-cli-6.24.1.tgz",
@@ -44,7 +44,7 @@
     "mocha": "^4.0.1"
   },
   "scripts": {
-    "start": "babel-node --inspect src/index.js --presets es2015,stage-2",
+    "start": "",
     "build": "",
     "watch": "",
     "lint:fix": "eslint --fix -- src/. test/.",
@@ -56,15 +56,15 @@
   },
   "keywords": [
     "qtum",
-    "jsonrpc",
+    "bodhi",
     "javascript",
-    "API"
+    "jsonrpc",
   ],
   "author": "bodhi.network",
   "authors": [
     {
-      "name": "Chris Li",
-      "email": "chris@bodhi.network",
+      "name": "Frank Hu",
+      "email": "frank@bodhi.network",
       "url": "https://www.bodhi.network/"
     }
   ]
