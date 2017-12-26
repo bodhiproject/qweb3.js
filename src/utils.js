@@ -565,25 +565,6 @@ function trimHexPrefix(str) {
 }
 
 /*
- * Converts a string to hex string padded-right to the number of bytes specified.
- * @param str The string to convert to hex.
- * @param paddedBytes The number of bytes to pad-right.
- * @return The converted padded-right hex string.
- */
-function stringToHex(str, paddedBytes) {
-  if (paddedBytes <= 0) {
-    throw new Error(`paddedBytes should be greater than 0.`);
-  }
-
-  let hexString = Web3Utils.toHex(str);
-  if (hexString.indexOf('0x') === 0) {
-    // Remove the 0x hex prefix
-    hexString = hexString.slice(2);
-  }
-  return Web3Utils.padRight(hexString, numOfChars(paddedBytes));
-}
-
-/*
  * Converts a hex string to a number.
  * @param string The hex string to convert.
  * @return The converted hex string to number.
@@ -602,15 +583,6 @@ function chunkString(str, length) {
   return str.match(new RegExp('.{1,' + length + '}', 'g'));
 }
 
-/*
- * Returns the number of characters in the bytes specified.
- * @param bytes The number of bytes.
- * @return The int number of characters given the bytes.
- */
-function numOfChars(bytes) {
-  return bytes * 2;
-}
-
 module.exports = {
   paramsCheck: paramsCheck,
   toHex: toHex,
@@ -620,5 +592,4 @@ module.exports = {
   trimHexPrefix: trimHexPrefix,
   hexToNumber: hexToNumber,
   chunkString: chunkString,
-  numOfChars: numOfChars,
 };

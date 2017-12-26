@@ -59,7 +59,7 @@ class Encoder {
       }
     }
 
-    return Web3Utils.padLeft(hexStr, Utils.numOfChars(32));
+    return Web3Utils.padLeft(hexStr, this.numOfChars(32));
   }
 
   /*
@@ -93,7 +93,7 @@ class Encoder {
       throw new Error(`numOfItems should be greater than 0.`);
     }
 
-    let chars = Utils.numOfChars(32);
+    let chars = this.numOfChars(32);
     let array = new Array(10);
     for (let i = 0; i < numOfItems; i++) {
       let hexString;
@@ -117,7 +117,16 @@ class Encoder {
    */
   static uintToHex(uint) {
     let hexNumber = Web3Utils.toHex(uint);
-    return Web3Utils.padLeft(hexNumber, Utils.numOfChars(32)).slice(2);
+    return Web3Utils.padLeft(hexNumber, this.numOfChars(32)).slice(2);
+  }
+
+  /*
+   * Returns the number of characters in the bytes specified.
+   * @param bytes The number of bytes.
+   * @return The int number of characters given the bytes.
+   */
+  static numOfChars(bytes) {
+    return bytes * 2;
   }
 }
 
