@@ -105,7 +105,7 @@ class Encoder {
       }
 
       // Remove the 0x hex prefix
-      array[i] = Web3Utils.padRight(hexString, PADDED_BYTES).slice(2, PADDED_BYTES);
+      array[i] = Web3Utils.padRight(hexString, PADDED_BYTES).slice(2, PADDED_BYTES + 2);
     }
 
     return array.join('');
