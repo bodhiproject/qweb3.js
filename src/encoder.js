@@ -2,6 +2,8 @@ const Web3Utils = require('web3-utils');
 const Utils = require('./utils');
 const bs58 = require('bs58');
 
+const PADDED_BYTES = 64;
+
 class Encoder {
 
   /*
@@ -59,7 +61,7 @@ class Encoder {
       }
     }
 
-    return Web3Utils.padLeft(hexStr, this.numOfChars(32));
+    return Web3Utils.padLeft(hexStr, PADDED_BYTES);
   }
 
   /*
@@ -73,8 +75,8 @@ class Encoder {
       throw new Error(`string should not be undefined`);
     }
 
-    let hexString = Web3Utils.toHex(string).slice(2);
-    hexString = Web3Utils.padRight(hexString, maxCharLen).slice(0, maxCharLen);
+    let hexString = Web3Utils.toHex(string);
+    hexString = Web3Utils.padRight(hexString, maxCharLen).slice(2, maxCharLen);
 
     return hexString;
   }
@@ -93,7 +95,6 @@ class Encoder {
       throw new Error(`numOfItems should be greater than 0.`);
     }
 
-    let chars = this.numOfChars(32);
     let array = new Array(10);
     for (let i = 0; i < numOfItems; i++) {
       let hexString;
@@ -104,7 +105,7 @@ class Encoder {
       }
 
       // Remove the 0x hex prefix
-      array[i] = Web3Utils.padRight(hexString, chars).slice(2);
+      array[i] = Web3Utils.padRight(hexString, PADDED_BYTES).slice(2, PADDED_BYTES);
     }
 
     return array.join('');
@@ -117,16 +118,7 @@ class Encoder {
    */
   static uintToHex(uint) {
     let hexNumber = Web3Utils.toHex(uint);
-    return Web3Utils.padLeft(hexNumber, this.numOfChars(32)).slice(2);
-  }
-
-  /*
-   * Returns the number of characters in the bytes specified.
-   * @param bytes The number of bytes.
-   * @return The int number of characters given the bytes.
-   */
-  static numOfChars(bytes) {
-    return bytes * 2;
+    return Web3Utils.padLeft(hexNumber, PADDED_BYTES).slice(2);
   }
 }
 
