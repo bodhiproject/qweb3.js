@@ -76,7 +76,7 @@ class Encoder {
     }
 
     let hexString = Web3Utils.toHex(string);
-    hexString = Web3Utils.padRight(hexString, maxCharLen).slice(2, maxCharLen);
+    hexString = Web3Utils.padRight(hexString, maxCharLen).slice(2, maxCharLen + 2);
 
     return hexString;
   }
