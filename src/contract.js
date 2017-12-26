@@ -4,6 +4,7 @@ const _ = require('lodash');
 // Internal Imports
 const Formatter = require('./formatter');
 const Utils = require('./utils.js');
+const Encoder = require('./encoder');
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
@@ -88,7 +89,7 @@ class Contract {
           dataHex = dataHex.concat(hex);
           break;
         case 'bytes32[10]':
-          hex = Utils.stringArrayToHex(args[index], 10);
+          hex = Encoder.stringToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
         case 'uint8':
