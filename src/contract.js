@@ -92,8 +92,13 @@ class Contract {
           dataHex = dataHex.concat(hex);
           break;
         case 'bytes32[10]':
-          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
-          dataHex = dataHex.concat(hex);
+          if (args[index] instanceof Array) {
+            hex = Encoder.stringArrayToHex(args[index], ARRAY_CAPACITY);
+            dataHex = dataHex.concat(hex);
+          } else {
+            hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
+            dataHex = dataHex.concat(hex);
+          }
           break;
         case 'uint8':
           hex = Encoder.uintToHex(args[index]);
