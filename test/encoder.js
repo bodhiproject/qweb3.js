@@ -24,16 +24,28 @@ describe('Encoder', function() {
     it('should convert a qtum address', async function() {
       assert.equal(await Encoder.addressToHex('qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'), 
         '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3');
+      assert.equal(await Encoder.addressToHex('qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8'), 
+        '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868');
+      assert.equal(await Encoder.addressToHex('qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3'), 
+        '000000000000000000000000718c3ab4d6a28c92c570a1c12bfc17c3512bb05b');
     });
 
-    it('should pad a qtum hex address', async function() {
+    it('should pad a hex address', async function() {
       assert.equal(await Encoder.addressToHex('17e7888aa7412a735f336d2f6d784caefabb6fa3'), 
         '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3');
+      assert.equal(await Encoder.addressToHex('18b1a0dc71e4de23c20dc4163f9696d2d9d63868'), 
+        '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868');
+      assert.equal(await Encoder.addressToHex('718c3ab4d6a28c92c570a1c12bfc17c3512bb05b'), 
+        '000000000000000000000000718c3ab4d6a28c92c570a1c12bfc17c3512bb05b');
     });
 
     it('can handle an address with a hex prefix', async function() {
       assert.equal(await Encoder.addressToHex('0x17e7888aa7412a735f336d2f6d784caefabb6fa3'), 
         '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3');
+      assert.equal(await Encoder.addressToHex('0x18b1a0dc71e4de23c20dc4163f9696d2d9d63868'), 
+        '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868');
+      assert.equal(await Encoder.addressToHex('0x718c3ab4d6a28c92c570a1c12bfc17c3512bb05b'), 
+        '000000000000000000000000718c3ab4d6a28c92c570a1c12bfc17c3512bb05b');
     });
 
     it('throws if address is undefined', async function() {

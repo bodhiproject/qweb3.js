@@ -45,24 +45,16 @@ class Encoder {
     // Remove '0x' from beginning of address
     let addr = Utils.trimHexPrefix(address);
 
-    let hexStr;
-    try {
+    let hexAddr;
+    if (Web3Utils.isHex(addr)) {
+      hexAddr = addr;
+    } else {
       const bytes = bs58.decode(addr);
-      hexStr = bytes.toString('hex');
-
-      // Removes:
-      // First byte = version
-      // Last 4 bytes = checksum
-      hexStr = hexStr.slice(2, 42);
-    } catch(err) {
-      if (err.message.match(/Non-base58 character/)) {
-        hexStr = addr;
-      } else {
-        throw new Error('Invalid address: not Qtum or hex address');
-      }
+      hexAddr = bytes.toString('hex');
+      hexAddr = hexAddr.slice(2, 42); // Removes first byte (version) & last 4 bytes (checksum)
     }
 
-    return Web3Utils.padLeft(hexStr, PADDED_BYTES);
+    return Web3Utils.padLeft(hexAddr, PADDED_BYTES);
   }
 
   /*
