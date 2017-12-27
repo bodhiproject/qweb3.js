@@ -39,4 +39,18 @@ describe('Contract', function() {
       assert.equal(res[0].replace(/\0/g, ''), 'Who will win the 2018 NBA Finals Championships?');
     });
   });
+
+  describe('send()', function() {
+    it('sends a transaction', async function() {
+      contract = new qweb3.Contract('dacd16bde8ff9f7689cb8d3363324c77fbb80950', ContractMetadata.TopicEvent.abi);
+
+      const res = await contract.send('withdrawWinnings', {
+        methodArgs: [],
+        senderAddress: Config.SENDER_ADDRESS,
+      });
+      assert.isDefined(res.txid);
+      assert.isDefined(res.sender);
+      assert.isDefined(res.hash160);
+    });
+  });
 });
