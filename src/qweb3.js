@@ -2,20 +2,14 @@
 const _ = require('lodash');
 
 // Internal Imports
-const Qtum  = require('./qtum');
 const HttpProvider = require('./httpprovider');
-const Contract = require('./contract');
 const Formatter = require('./formatter');
 
 class Qweb3 {
   constructor(url) {
     const self = this;
-
     // TODO: url string validation
     this.provider = new HttpProvider(url);
-    this.qtum = new Qtum(this);
-
-    this.Contract = (address, abi) => new Contract(self, address, abi);
   }
 
   /**
