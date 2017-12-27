@@ -5,7 +5,7 @@ const Encoder = require('../src/encoder');
 
 describe('Encoder', function() {
 
-  describe('getFunctionHash', function() {
+  describe('getFunctionHash()', function() {
     const funcObj = {"constant": false,"inputs": [{"name": "_resultIndex","type": "uint8"},{"name": "_sender","type": "address"},{"name": "_amount","type": "uint256"}],"name": "voteFromOracle","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "nonpayable","type": "function"};
 
     it('should convert a function obj to hash string', async function() {
@@ -20,7 +20,7 @@ describe('Encoder', function() {
     });
   });
 
-  describe('addressToHex', function() {
+  describe('addressToHex()', function() {
     it('should convert a qtum address', async function() {
       assert.equal(await Encoder.addressToHex('qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'), 
         '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3');
@@ -53,7 +53,7 @@ describe('Encoder', function() {
     });
   });
 
-  describe('stringToHex', function() {
+  describe('stringToHex()', function() {
     it('should convert a string to hex', async function() {
       const hex = await Encoder.stringToHex('Hello World', 640);
       assert.equal(hex, '48656c6c6f20576f726c64000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
@@ -71,7 +71,7 @@ describe('Encoder', function() {
     });
   });
 
-  describe('stringArrayToHex', function() {
+  describe('stringArrayToHex()', function() {
     it('should convert a string array to hex', async function() {
       const hex = await Encoder.stringArrayToHex(['a', 'b', 'c'], 10);
       assert.equal(hex, '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
@@ -94,7 +94,7 @@ describe('Encoder', function() {
     });
   });
 
-  describe('uintToHex', function() {
+  describe('uintToHex()', function() {
     it('should convert a uint to hex', async function() {
       const hex = await Encoder.uintToHex(1000000);
       assert.equal(hex.toLowerCase(), '00000000000000000000000000000000000000000000000000000000000f4240');
@@ -107,7 +107,7 @@ describe('Encoder', function() {
     });
   });
 
-  describe('padHexString', function() {
+  describe('padHexString()', function() {
     it('should pad an existing hex string', async function() {
       var paddedStr = await Encoder.padHexString('5f5e100');
       assert.equal(paddedStr, '0000000000000000000000000000000000000000000000000000000005f5e100');
