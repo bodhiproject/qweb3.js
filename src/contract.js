@@ -2,6 +2,7 @@
 const _ = require('lodash');
 
 // Internal Imports
+const HttpProvider = require('./httpprovider');
 const Formatter = require('./formatter');
 const Utils = require('./utils.js');
 const Encoder = require('./encoder');
@@ -14,8 +15,8 @@ const MAX_BYTES_PER_ARRAY_SLOT = 64;
 const ARRAY_CAPACITY = 10;
 
 class Contract {
-  constructor(parent, address, abi) {
-    this.parent = parent;
+  constructor(url, address, abi) {
+    this.provider = new HttpProvider(url);
     this.address = Utils.trimHexPrefix(address);
     this.abi = abi;
   }
@@ -39,7 +40,7 @@ class Contract {
       ],
     };
 
-    return this.parent.provider.request(options)
+    return this.provider.request(options)
       .then((result) => Formatter.callOutput(result, this.abi, methodName, true));
   }
 
@@ -67,7 +68,7 @@ class Contract {
       ],
     };
 
-    return this.parent.provider.request(options);
+    return this.provider.request(options);
   }
 
   /*
