@@ -99,10 +99,13 @@ class Encoder {
    */
   static stringArrayToHex(strArray, numOfItems) {
     if (!Array.isArray(strArray)) {
-      throw new Error(`strArray is not an array type.`);
+      throw new Error(`strArray is not an Array`);
+    }
+    if (!Validator.isNumber(numOfItems)) {
+      throw new Error(`numOfItems is not a Number`);
     }
     if (numOfItems <= 0) {
-      throw new Error(`numOfItems should be greater than 0.`);
+      throw new Error(`numOfItems should be greater than 0`);
     }
 
     let array = new Array(10);

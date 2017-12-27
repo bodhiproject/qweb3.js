@@ -49,4 +49,27 @@ describe('Encoder', function() {
       assert.throws(() => Encoder.stringToHex('Hello world!', 'abc'), Error);
     });
   });
+
+  describe('stringArrayToHex', function() {
+    it('should convert a string array to hex', async function() {
+      const hex = await Encoder.stringArrayToHex(['a', 'b', 'c'], 10);
+      assert.equal(hex, '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, 640);
+    });
+
+    it('throws if strArray is undefined or not an Array', async function() {
+      assert.throws(() => Encoder.stringArrayToHex(undefined, 10), Error);
+      assert.throws(() => Encoder.stringArrayToHex('a', 10), Error);
+    });
+
+    it('throws if numOfItems is not a Number', async function() {
+      assert.throws(() => Encoder.stringArrayToHex(['a', 'b', 'c']), Error);
+      assert.throws(() => Encoder.stringArrayToHex(['a', 'b', 'c'], 'a'), Error);
+    });
+
+    it('throws if numOfItems is <= 0', async function() {
+      assert.throws(() => Encoder.stringArrayToHex(['a', 'b', 'c'], 0), Error);
+      assert.throws(() => Encoder.stringArrayToHex(['a', 'b', 'c'], -1), Error);
+    });
+  });
 });
