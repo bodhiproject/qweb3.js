@@ -33,19 +33,13 @@ describe('Encoder', function() {
       assert.equal(hex.length, 640);
     });
 
-    it('throws if string is undefined', async function() {
+    it('throws if string is undefined or not a String', async function() {
       assert.throws(() => Encoder.stringToHex(undefined, 640), Error);
-    });
-
-    it('throws if string is not a String', async function() {
       assert.throws(() => Encoder.stringToHex(12345, 640), Error);
     });
 
-    it('throws if maxCharLen is undefined', async function() {
+    it('throws if maxCharLen is undefined or not a Number', async function() {
       assert.throws(() => Encoder.stringToHex('Hello world!'), Error);
-    });
-
-    it('throws if maxCharLen is not a Number', async function() {
       assert.throws(() => Encoder.stringToHex('Hello world!', 'abc'), Error);
     });
   });

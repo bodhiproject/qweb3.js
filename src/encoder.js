@@ -72,17 +72,11 @@ class Encoder {
    * @return The converted string to single padded-right hex string.
    */
   static stringToHex(string, maxCharLen) {
-    if (string === undefined) {
-      throw new Error(`string should not be undefined`);
-    }
     if (!Validator.isString(string)) {
-      throw new Error(`string should be should String type`);
-    }
-    if (maxCharLen === undefined) {
-      throw new Error(`maxCharLen should not be undefined`);
+      throw new Error(`string should be a String`);
     }
     if (!Validator.isNumber(maxCharLen)) {
-      throw new Error(`maxCharLen should be Number type`);
+      throw new Error(`maxCharLen should be a Number`);
     }
 
     let hexString = Web3Utils.toHex(string);
