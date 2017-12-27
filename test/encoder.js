@@ -5,6 +5,21 @@ const Encoder = require('../src/encoder');
 
 describe('Encoder', function() {
 
+  describe('getFunctionHash', function() {
+    const funcObj = {"constant": false,"inputs": [{"name": "_resultIndex","type": "uint8"},{"name": "_sender","type": "address"},{"name": "_amount","type": "uint256"}],"name": "voteFromOracle","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "nonpayable","type": "function"};
+
+    it('should convert a function obj to hash string', async function() {
+      const hash = await Encoder.getFunctionHash(funcObj);
+      assert.equal(hash, '006a8a32');
+      assert.equal(hash.length, 8);
+    });
+
+    it('throws if methodObj is undefined', async function() {
+      assert.throws(() => Encoder.getFunctionHash(), Error);
+      assert.throws(() => Encoder.getFunctionHash(undefined), Error);
+    });
+  });
+
   describe('addressToHex', function() {
     it('should convert a qtum address', async function() {
       assert.equal(await Encoder.addressToHex('qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'), 
