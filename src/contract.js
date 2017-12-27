@@ -29,7 +29,7 @@ class Contract {
    */
   call(methodName, params) {
     const { methodArgs, senderAddress } = params;
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, false);
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
 
     const options = {
       method: 'callcontract',
@@ -55,7 +55,7 @@ class Contract {
     Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
     const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, true);
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
     const options = {
       method: 'sendtocontract',
       params: [
@@ -120,37 +120,28 @@ class Contract {
   }
 
   /**
-   * Validates arguments by ABI schema and throws errors is mismatch
-   * @param  {[type]}  name   Method name
-   * @param  {[type]}  params Method parameters
-   * @param  {Boolean} isSend True if send() and false if call()
-   * @return {object}         method JSON in ABI and processed argument array
+   * Validates arguments by ABI schema and throws errors if mismatch.
+   * @param {String} methodName The method name.
+   * @param {Array} methodArgs The method arguments.
+   * @return {Object} The method object in ABI and processed argument array.
    */
-  validateMethodAndArgs(name, params, isSend) {
-    const methodObj = _.find(this.abi, { name });
+  validateMethodAndArgs(methodName, methodArgs) {
+    const methodObj = _.find(this.abi, { name: methodName });
 
-    // Check whether name is defined in ABI
     if (_.isUndefined(methodObj)) {
-      throw new Error(`Method ${name} not defined in ABI.`);
+      throw new Error(`Method ${methodName} not defined in ABI.`);
     }
-
-    if (methodObj.inputs.length != params.length) {
-      throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
-    }
-
-    // Error out if a call method is not defined with view or constant keyword
-    if (!isSend && methodObj.stateMutability !== 'view' && !methodObj.constant) {
-      throw new Error(`${name} isn't defined with view or constant keyword. Use contract.send() instead.`);
+    if (methodObj.inputs.length != methodArgs.length) {
+      throw new Error(`Number of arguments supplied does not match ABI method args.`);
     }
 
     let args;
-
-    if (_.isUndefined(params)) {
+    if (_.isUndefined(methodArgs)) {
       args = [];
-    } else if (_.isArray(params)) {
-      args = params;
+    } else if (_.isArray(methodArgs)) {
+      args = methodArgs;
     } else {
-      args = [params];
+      args = [methodArgs];
     }
 
     return {

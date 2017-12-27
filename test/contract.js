@@ -82,4 +82,28 @@ describe('Contract', function() {
         ['a', 'b', 'c'], 'c350', 'c738']), Error);
     });
   });
+
+  describe('validateMethodAndArgs()', function() {
+    const args = ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', ['a', 'b', 'c'], 'c350', 'c738'];
+
+    beforeEach(function() {
+      contract = new qweb3.Contract(ContractMetadata.EventFactory.address, ContractMetadata.EventFactory.abi);
+    });
+
+    it('validates the methods and returns the methodObj and args', async function() {
+      const methodAndArgs = contract.validateMethodAndArgs('createTopic', args);
+      const methodObj = _.find(contract.abi, { name: 'createTopic' });
+      assert.equal(methodAndArgs.method, methodObj);
+      assert.equal(methodAndArgs.args, args);
+    });
+
+    it('throws if methodName is not found in ABI', async function() {
+      assert.throws(() => contract.validateMethodAndArgs('vote', args), Error);
+    });
+
+    it('throws if methodArgs does not match args in ABI', async function() {
+      assert.throws(() => contract.validateMethodAndArgs('createTopic', ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', 
+        ['a', 'b', 'c'], 'c350']), Error);
+    });
+  });
 });
