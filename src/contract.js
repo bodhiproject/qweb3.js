@@ -104,7 +104,7 @@ class Contract {
           break;
         }
         case 'uint8': {
-          hex = Encoder.uint8ToHex(args[index]);
+          hex = Encoder.uintToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
         }

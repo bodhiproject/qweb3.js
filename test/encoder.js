@@ -66,4 +66,17 @@ describe('Encoder', function() {
       assert.throws(() => Encoder.stringArrayToHex(['a', 'b', 'c'], -1), Error);
     });
   });
+
+  describe('uintToHex', function() {
+    it('should convert a uint to hex', async function() {
+      const hex = await Encoder.uintToHex(1000000);
+      assert.equal(hex.toLowerCase(), '00000000000000000000000000000000000000000000000000000000000f4240');
+      assert.equal(hex.length, 64);
+    });
+
+    it('throws if num is undefined or not a Number', async function() {
+      assert.throws(() => Encoder.uintToHex(), Error);
+      assert.throws(() => Encoder.uintToHex('a'), Error);
+    });
+  });
 });

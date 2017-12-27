@@ -119,16 +119,16 @@ class Encoder {
   }
 
   /*
-   * Converts a uint8 to hex padded-left to 32 bytes.
-   * @param uint8 The number to convert.
-   * @return The converted uint8 to padded-left hex string.
+   * Converts a uint to hex padded-left to 32 bytes.
+   * @param num The number to convert.
+   * @return The converted uint to padded-left hex string.
    */
-  static uint8ToHex(uint8) {
-    if (uint8 === undefined) {
-      throw new Error(`uint8 should not be undefined`);
+  static uintToHex(num) {
+    if (!Validator.isNumber(num)) {
+      throw new Error(`num is not a Number`);
     }
 
-    let hexNumber = Web3Utils.toHex(uint8);
+    let hexNumber = Web3Utils.toHex(num);
     return Web3Utils.padLeft(hexNumber, PADDED_BYTES).slice(2);
   }
 
