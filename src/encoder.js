@@ -133,19 +133,19 @@ class Encoder {
   }
 
   /*
-   * Converts a uint256 to hex padded-left to 32 bytes.
-   * @param {String} uint256 The uint256 hex string to pad.
+   * Pads a hex string padded-left to 32 bytes.
+   * @param {String} hexStr The hex string to pad.
    * @return {String} The padded-left hex string.
    */
-  static uint256ToHex(uint256) {
-    if (uint256 === undefined) {
-      throw new Error(`uint256 should not be undefined`);
+  static padHexString(hexStr) {
+    if (hexStr === undefined) {
+      throw new Error(`hexStr should not be undefined`);
     }
-    if (!Web3Utils.isHex(uint256)) {
-      throw new TypeError(`uint256 should be a hex string`);
+    if (!Web3Utils.isHex(hexStr)) {
+      throw new TypeError(`hexStr should be a hex string`);
     }
 
-    let trimmed = Utils.trimHexPrefix(uint256);
+    let trimmed = Utils.trimHexPrefix(hexStr);
     return Web3Utils.padLeft(trimmed, PADDED_BYTES);
   }
 }

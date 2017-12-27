@@ -109,7 +109,7 @@ class Contract {
           break;
         }
         case 'uint256': {
-          hex = Encoder.uint256ToHex(args[index]);
+          hex = Encoder.padHexString(args[index]);
           dataHex = dataHex.concat(hex);
           break;
         }

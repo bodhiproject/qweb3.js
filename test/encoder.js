@@ -79,4 +79,25 @@ describe('Encoder', function() {
       assert.throws(() => Encoder.uintToHex('a'), Error);
     });
   });
+
+  describe('padHexString', function() {
+    it('should pad an existing hex string', async function() {
+      var paddedStr = await Encoder.padHexString('5f5e100');
+      assert.equal(paddedStr, '0000000000000000000000000000000000000000000000000000000005f5e100');
+      assert.equal(paddedStr.length, 64);
+
+      paddedStr = await Encoder.padHexString('0x5f5e100');
+      assert.equal(paddedStr, '0000000000000000000000000000000000000000000000000000000005f5e100');
+      assert.equal(paddedStr.length, 64);
+    });
+
+    it('throws if hexStr is undefined', async function() {
+      assert.throws(() => Encoder.padHexString(), Error);
+      assert.throws(() => Encoder.padHexString(undefined), Error);
+    });
+
+    it('throws if hexStr is not hex', async function() {
+      assert.throws(() => Encoder.padHexString('hello world'), Error);
+    });
+  });
 });
