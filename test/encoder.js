@@ -25,4 +25,28 @@ describe('Encoder', function() {
       assert.throws(() => Encoder.addressToHex(), Error);
     });
   });
+
+  describe('stringToHex', function() {
+    it('should convert a string to hex', async function() {
+      const hex = await Encoder.stringToHex('Hello World', 640);
+      assert.equal(hex, '48656c6c6f20576f726c64000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, 640);
+    });
+
+    it('throws if string is undefined', async function() {
+      assert.throws(() => Encoder.stringToHex(undefined, 640), Error);
+    });
+
+    it('throws if string is not a String', async function() {
+      assert.throws(() => Encoder.stringToHex(12345, 640), Error);
+    });
+
+    it('throws if maxCharLen is undefined', async function() {
+      assert.throws(() => Encoder.stringToHex('Hello world!'), Error);
+    });
+
+    it('throws if maxCharLen is not a Number', async function() {
+      assert.throws(() => Encoder.stringToHex('Hello world!', 'abc'), Error);
+    });
+  });
 });

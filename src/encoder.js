@@ -1,5 +1,6 @@
 const Web3Utils = require('web3-utils');
 const Utils = require('./utils');
+const Validator = require('./validator');
 const bs58 = require('bs58');
 
 const PADDED_BYTES = 64;
@@ -73,6 +74,15 @@ class Encoder {
   static stringToHex(string, maxCharLen) {
     if (string === undefined) {
       throw new Error(`string should not be undefined`);
+    }
+    if (!Validator.isString(string)) {
+      throw new Error(`string should be should String type`);
+    }
+    if (maxCharLen === undefined) {
+      throw new Error(`maxCharLen should not be undefined`);
+    }
+    if (!Validator.isNumber(maxCharLen)) {
+      throw new Error(`maxCharLen should be Number type`);
     }
 
     let hexString = Web3Utils.toHex(string);
