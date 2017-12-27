@@ -2,7 +2,7 @@ import { assert, expect } from 'chai';
 import 'babel-polyfill';
 import Qweb3 from '../src/qweb3';
 import Config from './config/config';
-import Contracts from './data/contracts';
+import ContractMetadata from './data/contract_metadata';
 
 describe('Qweb3', () => {
   const QTUM_ADDRESS = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
@@ -61,35 +61,35 @@ describe('Qweb3', () => {
   describe('searchLogs()', function() {
     it('returns an array of logs', async function() {
       const res = await qweb3.searchLogs(50000, 50100, [], 
-        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], Contracts, true);
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true);
       assert.isDefined(res);
       assert.isArray(res);
     });
 
     it('throws if fromBlock is not a number', async function() {
       assert.throws(() => qweb3.searchLogs('a', 50100, [], 
-        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], Contracts, true), Error);
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
     });
 
     it('throws if toBlock is not a number', async function() {
       assert.throws(() => qweb3.searchLogs(50000, 'a', [], 
-        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], Contracts, true), Error);
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
     });
 
     it('throws if addresses is not a string or array', async function() {
       assert.throws(() => qweb3.searchLogs(50000, 50100, undefined, 
-        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], Contracts, true), Error);
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
 
       assert.throws(() => qweb3.searchLogs(50000, 50100, 1, 
-        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], Contracts, true), Error);
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
     });
 
     it('throws if topics is not a string or array', async function() {
       assert.throws(() => qweb3.searchLogs(50000, 50100, undefined, 
-        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], Contracts, true), Error);
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
 
       assert.throws(() => qweb3.searchLogs(50000, 50100, 1, 
-        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], Contracts, true), Error);
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
     });
   });
 });
