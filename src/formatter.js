@@ -91,10 +91,8 @@ class Formatter {
 
         // Strip hex prefix
         if (removeHexPrefix) {
-          _.each(methodABI.inputs, (inputItem, index) => {
-            let value = decodedOutput[index.toString()];
-            value = Decoder.removeHexPrefix(value);
-            decodedOutput[index.toString()] = value;
+          _.each(decodedOutput, (value, key) => {
+            decodedOutput[key] = Decoder.removeHexPrefix(decodedOutput[key]);
           });
         }
 

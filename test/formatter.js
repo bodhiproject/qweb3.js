@@ -2,49 +2,11 @@ import 'babel-polyfill';
 import { assert } from 'chai';
 import _ from 'lodash';
 
-import Utils from '../src/utils';
 import Formatter from '../src/formatter';
 import ContractMetadata from './data/contract_metadata';
 
-const CONTRACT_ADDRESS = 'f6464ab9222b959a50765ac5c4889f8c3fe24241';
-const CONTRACT_ABI = [{
-  constant: true,
-  inputs: [{ name: '', type: 'bytes32' }],
-  name: 'topics',
-  outputs: [{ name: '', type: 'address' }],
-  payable: false,
-  stateMutability: 'view',
-  type: 'function',
-}, {
-  constant: false,
-  inputs: [{ name: '_resultSetter', type: 'address' }, { name: '_name', type: 'bytes' }, { name: '_resultNames', type: 'bytes32[]' }, { name: '_bettingEndBlock', type: 'uint256' }],
-  name: 'createTopic',
-  outputs: [{ name: 'tokenAddress', type: 'address' }],
-  payable: false,
-  stateMutability: 'nonpayable',
-  type: 'function',
-}, {
-  constant: true,
-  inputs: [{ name: '_name', type: 'bytes' }, { name: '_resultNames', type: 'bytes32[]' }, { name: '_bettingEndBlock', type: 'uint256' }],
-  name: 'doesTopicExist',
-  outputs: [{ name: '', type: 'bool' }],
-  payable: false,
-  stateMutability: 'view',
-  type: 'function',
-}, {
-  inputs: [{ name: '_addressManager', type: 'address' }],
-  payable: false,
-  stateMutability: 'nonpayable',
-  type: 'constructor',
-}, {
-  anonymous: false,
-  inputs: [{ indexed: true, name: '_creator', type: 'address' }, { indexed: false, name: '_topicEvent', type: 'address' }, { indexed: false, name: '_name', type: 'bytes' }, { indexed: false, name: '_resultNames', type: 'bytes32[]' }, { indexed: false, name: '_bettingEndBlock', type: 'uint256' }],
-  name: 'TopicCreated',
-  type: 'event',
-}];
-
 describe('Formatter', () => {
-  describe('searchLogOutput', function() {
+  describe('searchLogOutput()', function() {
     const rawOutput = [
       {
         "blockHash": "1bfca6e1c401865982121000a60a5f7f32839e124486891fd2d34bd6e1052de2",
@@ -136,59 +98,84 @@ describe('Formatter', () => {
     });
   });
 
-  describe('methods', () => {
-
-    /** Validate that Formatter.searchLogOutput resturns expected results */
-    it('searchLogOutput', (done) => {
-      let logs = [{
-        "blockHash": "10aa1bf45327d879bdb00db388986098b6a4cbbb6d8d5f823b65dd35968e5015",
-        "blockNumber": 31774,
-        "transactionHash": "481d49ee544b65e769e71f2ecaa4a2b07133d0e0081abf80efaf9fdfefd59db7",
-        "transactionIndex": 2,
-        "from": "e34f17c07c3c023095788c7ebb6d5b845608beea",
-        "to": "f6464ab9222b959a50765ac5c4889f8c3fe24241",
-        "cumulativeGasUsed": 724281,
-        "gasUsed": 724281,
-        "contractAddress": "f6464ab9222b959a50765ac5c4889f8c3fe24241",
-        "log": [{
-            "address": "c72a8213cf1b2e832a1c791f4f2843d5c03447a8",
-            "topics": [
-              "99a22f51dd06fe2274374184655c153b53126acd2028c2d9cda50d7be5dfff0e"
-            ],
-            "data": "0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a6669727374546f70696300000000000000000000000000000000000000000000"
-          },
-          {
-            "address": "f6464ab9222b959a50765ac5c4889f8c3fe24241",
-            "topics": [
-              "382e62114f64d453f3b5c053e57839bdd9a0bfb9d63acd772a7b1572ffdd5df7",
-              "000000000000000000000000e34f17c07c3c023095788c7ebb6d5b845608beea"
-            ],
-            "data": "000000000000000000000000c72a8213cf1b2e832a1c791f4f2843d5c03447a8000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000080e8000000000000000000000000000000000000000000000000000000000000000a6669727374546f706963000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002726573756c743100000000000000000000000000000000000000000000000000726573756c743200000000000000000000000000000000000000000000000000"
-          }
-        ]
-      }];
-
-      let formatted = Formatter.searchLogOutput(logs, CONTRACT_ABI);
-
-      // Bodhi contract specific - convert byte and byte32 to string
-      _.each(formatted, (resultEntry) => {
-        if (!_.isEmpty(resultEntry.log)) {
-          _.each(resultEntry.log, (logEntry) => {
-            _.each(logEntry, (value, key) => {
-              // Convert value of field '_name' (byte32[]) and '_resultNames' (byte32[])
-              if (key === '_name') {
-                logEntry[key] = Utils.toAscii(value);
-              } else if (key === '_resultNames') {
-                logEntry[key] = _.map(value, (val) => Utils.toAscii(val));
-              } else if (key === '_bettingEndBlock') {
-                logEntry[key] = value.toNumber();
-              }
-            });
-          })
+  describe('callOutput()', function() {
+    it('returns the formatted call output for a struct', async function() {
+      const rawOutput = {
+        "address": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
+        "executionResult": {
+          "gasUsed": 22381,
+          "excepted": "None",
+          "newAddress": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
+          "output": "00000000000000000000000000000000000000000000000000000000000000010000000000000000000000009ece13d31f24b1c45107924f9c3fda2eb55eeda7",
+          "codeDeposit": 0,
+          "gasRefunded": 0,
+          "depositSize": 0,
+          "gasForDeposit": 0
+        },
+        "transactionReceipt": {
+          "stateRoot": "c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82",
+          "gasUsed": 22381,
+          "bloom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "log": [
+          ]
         }
-      });
+      };
 
-      done();
+      const formatted = Formatter.callOutput(rawOutput, ContractMetadata.TopicEvent.abi, 'oracles', true);
+      assert.equal(formatted.oracleAddress, '9ece13d31f24b1c45107924f9c3fda2eb55eeda7');
+      assert.isTrue(formatted.didSetResult);
+    });
+
+    it('returns the formatted call output for uint', async function() {
+      const rawOutput = {
+        "address": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
+        "executionResult": {
+          "gasUsed": 22303,
+          "excepted": "None",
+          "newAddress": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
+          "output": "0000000000000000000000000000000000000000000000000000000000000004",
+          "codeDeposit": 0,
+          "gasRefunded": 0,
+          "depositSize": 0,
+          "gasForDeposit": 0
+        },
+        "transactionReceipt": {
+          "stateRoot": "c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82",
+          "gasUsed": 22303,
+          "bloom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "log": [
+          ]
+        }
+      };
+
+      const formatted = Formatter.callOutput(rawOutput, ContractMetadata.TopicEvent.abi, 'numOfResults', true);
+      assert.equal(formatted[0], 4);
+    });
+
+    it('returns the formatted call output for address', async function() {
+      const rawOutput = {
+        "address": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
+        "executionResult": {
+          "gasUsed": 22169,
+          "excepted": "None",
+          "newAddress": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
+          "output": "00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3",
+          "codeDeposit": 0,
+          "gasRefunded": 0,
+          "depositSize": 0,
+          "gasForDeposit": 0
+        },
+        "transactionReceipt": {
+          "stateRoot": "c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82",
+          "gasUsed": 22169,
+          "bloom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "log": [
+          ]
+        }
+      };
+
+      const formatted = Formatter.callOutput(rawOutput, ContractMetadata.TopicEvent.abi, 'owner', true);
+      assert.equal(formatted[0], '17e7888aa7412a735f336d2f6d784caefabb6fa3');
     });
   });
 });
