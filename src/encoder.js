@@ -1,3 +1,4 @@
+import _ from 'lodash';
 const Web3Utils = require('web3-utils');
 const Utils = require('./utils');
 const Validator = require('./validator');
@@ -64,10 +65,10 @@ class Encoder {
    * @return The converted string to single padded-right hex string.
    */
   static stringToHex(string, maxCharLen) {
-    if (!Validator.isString(string)) {
+    if (!_.isString(string)) {
       throw new Error(`string should be a String`);
     }
-    if (!Validator.isNumber(maxCharLen)) {
+    if (!_.isNumber(maxCharLen)) {
       throw new Error(`maxCharLen should be a Number`);
     }
 
@@ -87,7 +88,7 @@ class Encoder {
     if (!Array.isArray(strArray)) {
       throw new Error(`strArray is not an Array`);
     }
-    if (!Validator.isNumber(numOfItems)) {
+    if (!_.isNumber(numOfItems)) {
       throw new Error(`numOfItems is not a Number`);
     }
     if (numOfItems <= 0) {
@@ -116,7 +117,7 @@ class Encoder {
    * @return The converted uint to padded-left hex string.
    */
   static uintToHex(num) {
-    if (!Validator.isNumber(num)) {
+    if (!_.isNumber(num)) {
       throw new Error(`num is not a Number`);
     }
 

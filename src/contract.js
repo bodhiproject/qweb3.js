@@ -109,6 +109,8 @@ class Contract {
           break;
         }
         case 'uint256': {
+          // uint256 args should be passed in as hex to prevent data loss due to max values.
+          // only padding occurs here instead of number to hex conversion.
           hex = Encoder.padHexString(args[index]);
           dataHex = dataHex.concat(hex);
           break;
