@@ -1,6 +1,6 @@
+import _ from 'lodash';
 const BigNumber = require('bignumber.js');
 const utf8 = require('utf8');
-const _ = require('lodash');
 const Web3Utils = require('web3-utils');
 
 /**

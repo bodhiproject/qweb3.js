@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 const EthjsAbi = require('ethjs-abi');
 const Web3Utils = require('web3-utils');
 const Utils = require('./utils');

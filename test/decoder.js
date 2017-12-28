@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai';
-const Decoder = require('../src/decoder');
+import Decoder from '../src/decoder';
 
 describe('Decoder', function() {
   describe('toQtumAddress()', function() {

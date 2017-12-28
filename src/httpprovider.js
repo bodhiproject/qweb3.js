@@ -1,7 +1,7 @@
 /* External Import */
 const url = require('url');
 const fetch = require('node-fetch');
-const _ = require('lodash');
+import _ from 'lodash';
 
 /* Internal Import */
 const Utils = require('./utils.js');

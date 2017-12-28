@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 const Web3Utils = require('web3-utils');
 const crypto = require('crypto');
 const bs58 = require('bs58');

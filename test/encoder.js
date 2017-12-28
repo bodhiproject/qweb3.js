@@ -1,7 +1,6 @@
 import 'babel-polyfill';
 import { assert } from 'chai';
-
-const Encoder = require('../src/encoder');
+import Encoder from '../src/encoder';
 
 describe('Encoder', function() {
 

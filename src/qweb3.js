@@ -1,5 +1,5 @@
 // External Imports
-const _ = require('lodash');
+import _ from 'lodash';
 
 // Internal Imports
 const HttpProvider = require('./httpprovider');

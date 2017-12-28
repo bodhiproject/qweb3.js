@@ -1,7 +1,6 @@
 import _ from 'lodash';
 const Web3Utils = require('web3-utils');
 const Utils = require('./utils');
-const Validator = require('./validator');
 const bs58 = require('bs58');
 
 const PADDED_BYTES = 64;

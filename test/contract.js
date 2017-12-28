@@ -1,36 +1,33 @@
 import 'babel-polyfill';
 import { assert } from 'chai';
-const _ = require('lodash');
+import _ from 'lodash';
 
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
-import Qweb3 from '../src/qweb3';
+import Contract from '../src/contract';
 
 describe('Contract', function() {
-  let qweb3;
   let contract;
-
-  beforeEach(function() {
-    qweb3 = new Qweb3(Config.QTUM_RPC_ADDRESS);
-  });
 
   describe('constructor', function() {
     it('inits all the values', async function() {
-      contract = new qweb3.Contract(ContractMetadata.EventFactory.address, ContractMetadata.EventFactory.abi);
-      assert.equal(contract.parent, qweb3);
+      contract = new Contract(Config.QTUM_RPC_ADDRESS, ContractMetadata.EventFactory.address, 
+        ContractMetadata.EventFactory.abi);
+      assert.isDefined(contract.provider);
       assert.equal(contract.address, ContractMetadata.EventFactory.address);
       assert.equal(contract.abi, ContractMetadata.EventFactory.abi);
     });
 
     it('removes the hex prefix from the address', async function() {
-      contract = new qweb3.Contract('0x1234567890', ContractMetadata.EventFactory.abi);
+      contract = new Contract(Config.QTUM_RPC_ADDRESS, '0x1234567890', ContractMetadata.EventFactory.abi);
       assert.equal(contract.address, '1234567890');
     });
   });
 
   describe('call()', function() {
     it('returns the values', async function() {
-      contract = new qweb3.Contract('dacd16bde8ff9f7689cb8d3363324c77fbb80950', ContractMetadata.TopicEvent.abi);
+      contract = new Contract(Config.QTUM_RPC_ADDRESS, 'dacd16bde8ff9f7689cb8d3363324c77fbb80950', 
+        ContractMetadata.TopicEvent.abi);
       
       var res = await contract.call('getEventName', { 
         methodArgs: [], 
@@ -42,7 +39,8 @@ describe('Contract', function() {
 
   describe('send()', function() {
     it('sends a transaction', async function() {
-      contract = new qweb3.Contract('dacd16bde8ff9f7689cb8d3363324c77fbb80950', ContractMetadata.TopicEvent.abi);
+      contract = new Contract(Config.QTUM_RPC_ADDRESS, 'dacd16bde8ff9f7689cb8d3363324c77fbb80950', 
+        ContractMetadata.TopicEvent.abi);
 
       const res = await contract.send('withdrawWinnings', {
         methodArgs: [],
@@ -56,7 +54,8 @@ describe('Contract', function() {
 
   describe('constructDataHex()', function() {
     beforeEach(function() {
-      contract = new qweb3.Contract(ContractMetadata.EventFactory.address, ContractMetadata.EventFactory.abi);
+      contract = new Contract(Config.QTUM_RPC_ADDRESS, ContractMetadata.EventFactory.address, 
+        ContractMetadata.EventFactory.abi);
     });
 
     it('constructs the datahex', async function() {
@@ -87,7 +86,8 @@ describe('Contract', function() {
     const args = ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', ['a', 'b', 'c'], 'c350', 'c738'];
 
     beforeEach(function() {
-      contract = new qweb3.Contract(ContractMetadata.EventFactory.address, ContractMetadata.EventFactory.abi);
+      contract = new Contract(Config.QTUM_RPC_ADDRESS, ContractMetadata.EventFactory.address, 
+        ContractMetadata.EventFactory.abi);
     });
 
     it('validates the methods and returns the methodObj and args', async function() {

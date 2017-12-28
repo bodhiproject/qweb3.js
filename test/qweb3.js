@@ -1,5 +1,5 @@
-import { assert, expect } from 'chai';
 import 'babel-polyfill';
+import { assert, expect } from 'chai';
 import Qweb3 from '../src/qweb3';
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
