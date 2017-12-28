@@ -1,8 +1,8 @@
-const _ = require('lodash');
-const EthjsAbi = require('ethjs-abi');
-const Web3Utils = require('web3-utils');
-const Utils = require('./utils');
-const Decoder = require('./decoder');
+import _ from 'lodash';
+import EthjsAbi from 'ethjs-abi';
+import Web3Utils from 'web3-utils';
+import Utils from './utils';
+import Decoder from './decoder';
 
 class Formatter {
 
@@ -91,10 +91,8 @@ class Formatter {
 
         // Strip hex prefix
         if (removeHexPrefix) {
-          _.each(methodABI.inputs, (inputItem, index) => {
-            let value = decodedOutput[index.toString()];
-            value = Decoder.removeHexPrefix(value);
-            decodedOutput[index.toString()] = value;
+          _.each(decodedOutput, (value, key) => {
+            decodedOutput[key] = Decoder.removeHexPrefix(decodedOutput[key]);
           });
         }
 

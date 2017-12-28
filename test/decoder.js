@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai';
-const Decoder = require('../src/decoder');
+import Decoder from '../src/decoder';
 
 describe('Decoder', function() {
   describe('toQtumAddress()', function() {
@@ -20,7 +20,7 @@ describe('Decoder', function() {
     });
   });
 
-  describe('removeHexPrefix', function() {
+  describe('removeHexPrefix()', function() {
     it('returns the value without the hex prefix', function() {
       const hexValue = '0x1111111111111111111111111111111111111111';
       assert.equal(Decoder.removeHexPrefix(hexValue), hexValue.slice(2));

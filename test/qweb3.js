@@ -1,7 +1,8 @@
+import 'babel-polyfill';
 import { assert, expect } from 'chai';
 import Qweb3 from '../src/qweb3';
 import Config from './config/config';
-import Contracts from './data/contracts';
+import ContractMetadata from './data/contract_metadata';
 
 describe('Qweb3', () => {
   const QTUM_ADDRESS = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
@@ -12,103 +13,83 @@ describe('Qweb3', () => {
   });
 
   describe('isConnected()', function() {
-    it('returns true when connected', function() {
-      qweb3.isConnected()
-      .then(function(res) {
-        assert.isTrue(res);
-      });
+    it('returns true when connected', async function() {
+      assert.isTrue(await qweb3.isConnected());
     });
   });
 
   describe('getHexAddress()', function() {
-    it('returns the hex address', function() {
-      qweb3.getHexAddress(QTUM_ADDRESS)
-      .then(function(res) {
-        assert.equal(res, '17e7888aa7412a735f336d2f6d784caefabb6fa3');
-      });
+    it('returns the hex address', async function() {
+      assert.equal(await qweb3.getHexAddress(QTUM_ADDRESS), '17e7888aa7412a735f336d2f6d784caefabb6fa3');
     });
   });
 
   describe('fromHexAddress()', function() {
-    it('returns the qtum address', function() {
-      qweb3.getHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3')
-      .then(function(res) {
-        assert.equal(res, QTUM_ADDRESS);
-      });
+    it('returns the qtum address', async function() {
+      assert.equal(await qweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3'), QTUM_ADDRESS);
     });
   });
 
   describe('getBlockCount()', function() {
-    it('returns the blockcount', function() {
-      qweb3.getBlockCount()
-      .then(function(res) {
-        assert.isDefined(res);
-        assert.isNumber(res);
-      });
+    it('returns the blockcount', async function() {
+      const res = await qweb3.getBlockCount();
+      assert.isDefined(res);
+      assert.isNumber(res);
     });
   });
 
   describe('getTransaction()', function() {
-    it('returns the transaction info', function() {
-      qweb3.getTransaction('481d49ee544b65e769e71f2ecaa4a2b07133d0e0081abf80efaf9fdfefd59db7')
-      .then(function(res) {
-        assert.isDefined(res);
-      });
+    it('returns the transaction info', async function() {
+      assert.isDefined(await qweb3.getTransaction('4c24f818a41c5c4288f5ca288a21477063c67df055946bb54650efad288add56'));
     });
   });
 
   describe('getTransactionReceipt()', function() {
-    it('returns the transaction receipt', function() {
-      qweb3.getTransaction('481d49ee544b65e769e71f2ecaa4a2b07133d0e0081abf80efaf9fdfefd59db7')
-      .then(function(res) {
-        assert.isDefined(res);
-      });
+    it('returns the transaction receipt', async function() {
+      assert.isDefined(await qweb3.getTransaction('4c24f818a41c5c4288f5ca288a21477063c67df055946bb54650efad288add56'));
     });
   });
 
   describe('listUnspent()', function() {
-    it('returns an unspent output array', function() {
-      qweb3.listUnspent()
-      .then(function(res) {
-        assert.isDefined(res);
-        assert.isArray(res);
-      });
+    it('returns an unspent output array', async function() {
+      const res = await qweb3.listUnspent();
+      assert.isDefined(res);
+      assert.isArray(res);
     });
   });
 
   describe('searchLogs()', function() {
-    it('returns an array of logs', function() {
-      qweb3.searchLogs(50000, 50100, [], ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], Contracts, true)
-      .then(function(res) {
-        assert.isDefined(res);
-        assert.isArray(res);
-      });
+    it('returns an array of logs', async function() {
+      const res = await qweb3.searchLogs(50000, 50100, [], 
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true);
+      assert.isDefined(res);
+      assert.isArray(res);
     });
 
-    it('throws if fromBlock is not a number', function() {
-      expect(() => qweb3.searchLogs('a', 50100, [], ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], 
-        Contracts, true)).to.throw();
+    it('throws if fromBlock is not a number', async function() {
+      assert.throws(() => qweb3.searchLogs('a', 50100, [], 
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
     });
 
-    it('throws if toBlock is not a number', function() {
-      expect(() => qweb3.searchLogs(50000, 'a', [], ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], 
-        Contracts, true)).to.throw();
+    it('throws if toBlock is not a number', async function() {
+      assert.throws(() => qweb3.searchLogs(50000, 'a', [], 
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
     });
 
-    it('throws if addresses is not a string or array', function() {
-      expect(() => qweb3.searchLogs(50000, 50100, undefined, ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], 
-        Contracts, true)).to.throw();
+    it('throws if addresses is not a string or array', async function() {
+      assert.throws(() => qweb3.searchLogs(50000, 50100, undefined, 
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
 
-      expect(() => qweb3.searchLogs(50000, 50100, 1, ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], 
-        Contracts, true)).to.throw();
+      assert.throws(() => qweb3.searchLogs(50000, 50100, 1, 
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
     });
 
-    it('throws if topics is not a string or array', function() {
-      expect(() => qweb3.searchLogs(50000, 50100, undefined, ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], 
-        Contracts, true)).to.throw();
+    it('throws if topics is not a string or array', async function() {
+      assert.throws(() => qweb3.searchLogs(50000, 50100, undefined, 
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
 
-      expect(() => qweb3.searchLogs(50000, 50100, 1, ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], 
-        Contracts, true)).to.throw();
+      assert.throws(() => qweb3.searchLogs(50000, 50100, 1, 
+        ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true), Error);
     });
   });
 });

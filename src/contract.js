@@ -1,11 +1,8 @@
-// External Imports
-const _ = require('lodash');
-
-// Internal Imports
-const HttpProvider = require('./httpprovider');
-const Formatter = require('./formatter');
-const Utils = require('./utils.js');
-const Encoder = require('./encoder');
+import _ from 'lodash';
+import HttpProvider from './httpprovider';
+import Formatter from './formatter';
+import Utils from './utils.js';
+import Encoder from './encoder';
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
@@ -29,7 +26,7 @@ class Contract {
    */
   call(methodName, params) {
     const { methodArgs, senderAddress } = params;
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, false);
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
 
     const options = {
       method: 'callcontract',
@@ -55,7 +52,7 @@ class Contract {
     Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
     const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
-    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs, true);
+    const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
     const options = {
       method: 'sendtocontract',
       params: [
@@ -104,12 +101,14 @@ class Contract {
           break;
         }
         case 'uint8': {
-          hex = Encoder.uint8ToHex(args[index]);
+          hex = Encoder.uintToHex(args[index]);
           dataHex = dataHex.concat(hex);
           break;
         }
         case 'uint256': {
-          hex = Encoder.uint256ToHex(args[index]);
+          // uint256 args should be passed in as hex to prevent data loss due to max values.
+          // only padding occurs here instead of number to hex conversion.
+          hex = Encoder.padHexString(args[index]);
           dataHex = dataHex.concat(hex);
           break;
         }
@@ -120,37 +119,28 @@ class Contract {
   }
 
   /**
-   * Validates arguments by ABI schema and throws errors is mismatch
-   * @param  {[type]}  name   Method name
-   * @param  {[type]}  params Method parameters
-   * @param  {Boolean} isSend True if send() and false if call()
-   * @return {object}         method JSON in ABI and processed argument array
+   * Validates arguments by ABI schema and throws errors if mismatch.
+   * @param {String} methodName The method name.
+   * @param {Array} methodArgs The method arguments.
+   * @return {Object} The method object in ABI and processed argument array.
    */
-  validateMethodAndArgs(name, params, isSend) {
-    const methodObj = _.find(this.abi, { name });
+  validateMethodAndArgs(methodName, methodArgs) {
+    const methodObj = _.find(this.abi, { name: methodName });
 
-    // Check whether name is defined in ABI
     if (_.isUndefined(methodObj)) {
-      throw new Error(`Method ${name} not defined in ABI.`);
+      throw new Error(`Method ${methodName} not defined in ABI.`);
     }
-
-    if (methodObj.inputs.length != params.length) {
-      throw new Error(`Number of arguments supplied does not match ABI number of arguments.`);
-    }
-
-    // Error out if a call method is not defined with view or constant keyword
-    if (!isSend && methodObj.stateMutability !== 'view' && !methodObj.constant) {
-      throw new Error(`${name} isn't defined with view or constant keyword. Use contract.send() instead.`);
+    if (methodObj.inputs.length != methodArgs.length) {
+      throw new Error(`Number of arguments supplied does not match ABI method args.`);
     }
 
     let args;
-
-    if (_.isUndefined(params)) {
+    if (_.isUndefined(methodArgs)) {
       args = [];
-    } else if (_.isArray(params)) {
-      args = params;
+    } else if (_.isArray(methodArgs)) {
+      args = methodArgs;
     } else {
-      args = [params];
+      args = [methodArgs];
     }
 
     return {
