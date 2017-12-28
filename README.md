@@ -1,42 +1,59 @@
 # Qweb3.js - Web3.js for Qtum
 
-Qweb3 is a library for Dapps to interract with Qtum network. Behind the scene Qweb3 communicates to a local Qtum node through RPC calls.
+Qweb3 is a library for dApps to interract with Qtum network. Behind the scenes, Qweb3 communicates to a local Qtum node through Qtum-cli RPC calls.
 
 ## Get Started
-1. `git clone https://github.com/bodhiproject/qweb3.js.git`
-2. `cd qweb3`
+1. Clone repo
+
+	- SSH: `git clone git@github.com:bodhiproject/qweb3.js.git`
+	- HTTPS: `git clone https://github.com/bodhiproject/qweb3.js.git`
+
+2. `cd qweb3.js`
 3. `npm install`
-4. Run tests with `npm run test`
+4. Run tests with `npm test`
 
-## Qweb3.js API Reference
+## Qweb3.js
+Instantiate a new instance of `qweb3.js` if you want to execute the following on qtum-cli:
 
-### QTUM
-  * qweb3.qtum.getTransaction
+* **isConnected()**
+	
+	Checks if you are connected properly to the local qtum node.
 
-### Accounts (Not Implemented yet)
+* **getHexAddress(address)**
+	
+	Converts a Qtum address to hex format.
 
-  * Create
-	qweb3.bot.accounts.create()
+* **fromHexAddress(hexAddress)**
 
-  * GetBalance
-	qweb3.bot.getBalance(address)
+	Converts a hex address to Qtum format.
 
-### Contract
-  * qweb3.Contract.call();
-  * qweb3.Contract.send();
-  * qweb3.Contract.searchLogs();
-  * Subscribe
+* **getBlockCount()**
+	
+	Gets the current block height of your local Qtum node.
 
-### Utility
-  * qweb3.bot.fromBotoshi();
+* **getTransaction(txid)**
 
-## Developing
-### Tips
-  * Eslint is used to examine Javascript syntax. Use `npm run lint:fix` to auto-fix spacing, and check code.
+	Gets the transaction details of the transaction id.
 
-## Testing
-Testing is done with mocha + babel-register plugin. An excample to run all tests in ./test/qweb3.js would be
-`mocha --compilers js:babel-register "./test/qweb3.js"`
+* **getTransactionReceipt(txid)**
 
-In addition, you can add "-g" option to run a specific test, and use "--inspect-brk" to debug in Chrome Dev Tool.
-`mocha --compilers js:babel-register "./test/qweb3.js" -g "getTransaction" --inspect-brk`
+	Gets the transaction receipt of the transaction id.
+
+* **listUnspent()**
+
+	Gets the unspent outputs that can be used.
+
+* **searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, removeHexPrefix)**
+	
+	Gets the logs given the params on the blockchain.
+
+## Contract.js
+Instantiate a new instance of `contract.js` if you want to execute the following on qtum-cli:
+
+* **call(methodName, params)**
+	
+	Executes a `callcontract`.
+
+* **send(methodName, params)**
+
+	Executes a `sendtocontract`.
