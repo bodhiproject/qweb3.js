@@ -1,10 +1,7 @@
-/* External Import */
-const url = require('url');
-const fetch = require('node-fetch');
+import url from 'url';
+import fetch from 'node-fetch';
 import _ from 'lodash';
-
-/* Internal Import */
-const Utils = require('./utils.js');
+import Utils from './utils.js';
 
 class HttpProvider {
   constructor(urlString) {

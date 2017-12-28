@@ -1,11 +1,12 @@
 import _ from 'lodash';
-const Web3Utils = require('web3-utils');
-const crypto = require('crypto');
-const bs58 = require('bs58');
-const Utils = require('./utils');
+import Web3Utils from 'web3-utils';
+import crypto from 'crypto';
+import bs58 from 'bs58';
+import Utils from './utils';
 
 const MainnetNetworkByte = '3A';
 const TestnetNetworkByte = '78';
+
 class Decoder {
 
   static toQtumAddress(hexAddress, isMainnet=false) {

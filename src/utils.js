@@ -1,7 +1,7 @@
 import _ from 'lodash';
-const BigNumber = require('bignumber.js');
-const utf8 = require('utf8');
-const Web3Utils = require('web3-utils');
+import BigNumber from 'bignumber.js';
+import utf8 from 'utf8';
+import Web3Utils from 'web3-utils';
 
 /**
  * Should be called to get utf8 from it's hex representation
