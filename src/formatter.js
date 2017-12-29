@@ -39,6 +39,11 @@ class Formatter {
             item.topics = _.map(item.topics, Utils.formatHexStr);
 
             const methodAbi = _.find(metadataObj.abi, { name: eventName });
+            if (methodAbi === undefined) {
+              console.warn(`Error: Could not find method in ABI for ${eventName}`);
+              return;
+            }
+            
             let decodedLog;
             try {
               decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
