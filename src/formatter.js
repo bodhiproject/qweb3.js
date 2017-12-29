@@ -43,7 +43,7 @@ class Formatter {
               console.warn(`Error: Could not find method in ABI for ${eventName}`);
               return;
             }
-            
+
             let decodedLog;
             try {
               decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
