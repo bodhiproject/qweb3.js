@@ -39,7 +39,7 @@ class Formatter {
             item.topics = _.map(item.topics, Utils.formatHexStr);
 
             const methodAbi = _.find(metadataObj.abi, { name: eventName });
-            if (methodAbi === undefined) {
+            if (_.isUndefined(methodAbi)) {
               console.warn(`Error: Could not find method in ABI for ${eventName}`);
               return;
             }
