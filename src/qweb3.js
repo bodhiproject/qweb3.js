@@ -186,6 +186,51 @@ class Qweb3 {
       method: 'listunspent',
     });
   }
+
+  /**
+   * Locks the encrypted wallet.
+   * @return {Promise} Success or Error.
+   */
+  walletLock() {
+    return this.provider.request({
+      method: 'walletlock',
+      params: [],
+    });
+  }
+
+  /**
+   * Unlocks the encrypted wallet with the wallet passphrase.
+   * @param {String} passphrase The wallet passphrase.
+   * @param {Number} timeout The number of seconds to keep the wallet unlocked.
+   * @param {Boolean} stakingOnly Unlock wallet for staking only.
+   * @return {Promise} Success or Error.
+   */
+  walletPassphrase(passphrase, timeout, stakingOnly) {
+    return this.provider.request({
+      method: 'walletpassphrase',
+      params: [
+        passphrase, 
+        timeout, 
+        stakingOnly
+      ],
+    });
+  }
+
+  /**
+   * Changes the encrypted wallets passphrase.
+   * @param {String} oldPassphrase The old wallet passphrase.
+   * @param {String} newPassphrase The new wallet passphrase.
+   * @return {Promise} Success or Error.
+   */
+  walletPassphraseChange(oldPassphrase, newPassphrase) {
+    return this.provider.request({
+      method: 'walletpassphrasechange',
+      params: [
+        oldPassphrase, 
+        newPassphrase
+      ],
+    });
+  }
 }
 
 module.exports = Qweb3;
