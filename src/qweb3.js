@@ -31,6 +31,17 @@ class Qweb3 {
     });
   }
 
+  /*
+  * @dev Returns the transaction receipt given the txid.
+  * @return {Promise} Transaction receipt or Error.
+  */
+  getTransactionReceipt(txid) {
+    return this.provider.request({
+      method: 'gettransactionreceipt',
+      params: [txid],
+    });
+  }
+
   /**
    * Search logs with given filters
    * @param  {number} fromBlock Starting block to search.
@@ -106,6 +117,19 @@ class Qweb3 {
     });
   }
 
+  /********** UTIL **********/
+  /**
+   * Validates if a valid Qtum address.
+   * @param {address} Qtum address to validate.
+   * @return {Promise} JSON payload with validation info or Error.
+   */
+  validateAddress(address) {
+    return this.provider.request({
+      method: 'validateaddress',
+      params: [address],
+    });
+  }
+
   /********** WALLET **********/
   /*
   * Gets the Qtum address based on the account name.
@@ -117,7 +141,7 @@ class Qweb3 {
       params: [acctName],
     });
   }
-  
+
   /**
    * Get transaction details by txid
    * @param  {string} txid transaction Id (64 digits hexString),
@@ -127,17 +151,6 @@ class Qweb3 {
   getTransaction(txid) {
     return this.provider.request({
       method: 'gettransaction',
-      params: [txid],
-    });
-  }
-
-  /*
-  * @dev Returns the transaction receipt given the txid.
-  * @return {Promise} Transaction receipt or Error.
-  */
-  getTransactionReceipt(txid) {
-    return this.provider.request({
-      method: 'gettransactionreceipt',
       params: [txid],
     });
   }
