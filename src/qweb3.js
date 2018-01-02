@@ -142,6 +142,17 @@ class Qweb3 {
     });
   }
 
+  /*
+  * Gets the Qtum address with the account name.
+  * @return {Promise} Qtum address array or Error
+  */
+  getAddressesByAccount(acctName) {
+    return this.provider.request({
+      method: 'getaddressesbyaccount',
+      params: [acctName],
+    });
+  }
+
   /**
    * Get transaction details by txid
    * @param  {string} txid transaction Id (64 digits hexString),
