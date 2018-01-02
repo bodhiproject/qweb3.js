@@ -37,7 +37,6 @@ class HttpProvider {
 
     this.reqId += 1;
 
-    // return fetch(`${this.url.href}`, reqOpts)
     return fetch(`${this.url.protocol}//${this.url.host}`, reqOpts)
       .then(this.parseJSON)
       .then(this.checkStatus);
@@ -45,9 +44,7 @@ class HttpProvider {
 
   /**
    * Returns resolved Promise if Http response contains result; otherwise returns rejected upon error.
-   *
-   * @param  {object} response   JSON response from a HTTP request
-   *
+   * @param {object} response JSON response from a HTTP request
    * @return {object|undefined} Returns either the response, or throws an error
    */
   checkStatus(response) {
@@ -61,10 +58,8 @@ class HttpProvider {
 
   /**
    * Parses the JSON returned by a network request
-   *
    * @param  {object} response A response from a network request
-   *
-   * @return {object}          The parsed JSON from the request
+   * @return {object} The parsed JSON from the request
    */
   parseJSON(response) {
     return response.json();
