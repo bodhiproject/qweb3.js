@@ -132,8 +132,19 @@ class Qweb3 {
 
   /********** WALLET **********/
   /*
+  * Gets the account name associated with the Qtum address.
+  * @return {Promise} Account name or Error.
+  */
+  getAccount(address) {
+    return this.provider.request({
+      method: 'getaccount',
+      params: [address],
+    });
+  }
+
+  /*
   * Gets the Qtum address based on the account name.
-  * @return {Promise} Qtum address or Error
+  * @return {Promise} Qtum address or Error.
   */
   getAccountAddress(acctName) {
     return this.provider.request({
@@ -144,7 +155,7 @@ class Qweb3 {
 
   /*
   * Gets the Qtum address with the account name.
-  * @return {Promise} Qtum address array or Error
+  * @return {Promise} Qtum address array or Error.
   */
   getAddressesByAccount(acctName) {
     return this.provider.request({
@@ -155,9 +166,9 @@ class Qweb3 {
 
   /**
    * Get transaction details by txid
-   * @param  {string} txid transaction Id (64 digits hexString),
-   *                       e.g. dfafd59050fbe825d884b1e9279924f42bfa9506ca11e3d1910141054858f338
-   * @return {Promise}     Promise containing result object or Error
+   * @param  {string} txid transaction Id (64 digits hexString); 
+   *  e.g. dfafd59050fbe825d884b1e9279924f42bfa9506ca11e3d1910141054858f338
+   * @return {Promise} Promise containing result object or Error
    */
   getTransaction(txid) {
     return this.provider.request({
