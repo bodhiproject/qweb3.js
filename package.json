@@ -39,7 +39,7 @@
   },
   "scripts": {
     "start": "",
-    "build": "",
+    "build": "babel src -d dist --presents env",
     "watch": "",
     "lint:fix": "eslint --fix -- src/. test/.",
     "test": "mocha --compilers js:babel-register ./test/"
