@@ -87,6 +87,17 @@ class Qweb3 {
     });
   }
 
+  /*
+  * Gets the Qtum address based on the account name.
+  * @return {Promise} Qtum address or Error
+  */
+  getAccountAddress(acctName) {
+    return this.provider.request({
+      method: 'getaccountaddress',
+      params: [acctName],
+    });
+  }
+
   /**
    * Search logs with given filters
    * @param  {number} fromBlock Starting block to search.
