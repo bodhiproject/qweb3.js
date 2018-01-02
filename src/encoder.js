@@ -1,145 +1,189 @@
-import _ from 'lodash';
-import Web3Utils from 'web3-utils';
-import bs58 from 'bs58';
-import Utils from './utils';
+'use strict';
 
-const PADDED_BYTES = 64;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-class Encoder {
+var _lodash = require('lodash');
 
-  /*
-   * Converts an object of a method from the ABI to a function hash.
-   * @param methodObj The json object of the method taken from the ABI.
-   * @return The function hash.
-   */
-  static getFunctionHash(methodObj) {
-    if (!methodObj) {
-      throw new Error(`methodObj should not be undefined.`);
-    }
+var _lodash2 = _interopRequireDefault(_lodash);
 
-    let name = methodObj.name;
-    let params = '';
-    for (let i = 0; i < methodObj.inputs.length; i++) {
-      params = params.concat(methodObj.inputs[i].type);
+var _web3Utils = require('web3-utils');
 
-      if (i < methodObj.inputs.length - 1) {
-        params = params.concat(',');
+var _web3Utils2 = _interopRequireDefault(_web3Utils);
+
+var _bs = require('bs58');
+
+var _bs2 = _interopRequireDefault(_bs);
+
+var _utils = require('./utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var PADDED_BYTES = 64;
+
+var Encoder = function () {
+  function Encoder() {
+    _classCallCheck(this, Encoder);
+  }
+
+  _createClass(Encoder, null, [{
+    key: 'getFunctionHash',
+
+
+    /*
+     * Converts an object of a method from the ABI to a function hash.
+     * @param methodObj The json object of the method taken from the ABI.
+     * @return The function hash.
+     */
+    value: function getFunctionHash(methodObj) {
+      if (!methodObj) {
+        throw new Error('methodObj should not be undefined.');
       }
-    };
-    let signature = name.concat('(').concat(params).concat(')');
 
-    // Return only the first 4 bytes
-    return Web3Utils.sha3(signature).slice(2, 10);
-  }
+      var name = methodObj.name;
+      var params = '';
+      for (var i = 0; i < methodObj.inputs.length; i++) {
+        params = params.concat(methodObj.inputs[i].type);
 
-  /*
-   * Converts a Qtum or hex address to a padded hex string.
-   * @param address The Qtum/hex address to convert.
-   * @return The 32 bytes padded-left hex string.
-   */
-  static addressToHex(address) {
-    if (!address) {
-      throw new Error(`address should not be undefined.`);
+        if (i < methodObj.inputs.length - 1) {
+          params = params.concat(',');
+        }
+      };
+      var signature = name.concat('(').concat(params).concat(')');
+
+      // Return only the first 4 bytes
+      return _web3Utils2.default.sha3(signature).slice(2, 10);
     }
 
-    // Remove '0x' from beginning of address
-    let addr = Utils.trimHexPrefix(address);
+    /*
+     * Converts a Qtum or hex address to a padded hex string.
+     * @param address The Qtum/hex address to convert.
+     * @return The 32 bytes padded-left hex string.
+     */
 
-    let hexAddr;
-    if (Web3Utils.isHex(addr)) {
-      hexAddr = addr;
-    } else {
-      const bytes = bs58.decode(addr);
-      hexAddr = bytes.toString('hex');
-      hexAddr = hexAddr.slice(2, 42); // Removes first byte (version) & last 4 bytes (checksum)
-    }
+  }, {
+    key: 'addressToHex',
+    value: function addressToHex(address) {
+      if (!address) {
+        throw new Error('address should not be undefined.');
+      }
 
-    return Web3Utils.padLeft(hexAddr, PADDED_BYTES);
-  }
+      // Remove '0x' from beginning of address
+      var addr = _utils2.default.trimHexPrefix(address);
 
-  /*
-   * Converts a string into a hex string up to the max length.
-   * @param {string} string The string to convert to hex.
-   * @param {number} maxCharLen The total length of the hex string allowed.
-   * @return The converted string to single padded-right hex string.
-   */
-  static stringToHex(string, maxCharLen) {
-    if (!_.isString(string)) {
-      throw new Error(`string should be a String`);
-    }
-    if (!_.isNumber(maxCharLen)) {
-      throw new Error(`maxCharLen should be a Number`);
-    }
-
-    let hexString = Web3Utils.toHex(string);
-    hexString = Web3Utils.padRight(hexString, maxCharLen).slice(2, maxCharLen + 2);
-
-    return hexString;
-  }
-
-  /*
-   * Converts an array of string elements (max 32 bytes) into a concatenated hex string.
-   * @param strArray The string array to convert to hex.
-   * @param numOfItems The total number of items the string array should have.
-   * @return The converted string array to single padded-right hex string.
-   */
-  static stringArrayToHex(strArray, numOfItems) {
-    if (!Array.isArray(strArray)) {
-      throw new Error(`strArray is not an Array`);
-    }
-    if (!_.isNumber(numOfItems)) {
-      throw new Error(`numOfItems is not a Number`);
-    }
-    if (numOfItems <= 0) {
-      throw new Error(`numOfItems should be greater than 0`);
-    }
-
-    let array = new Array(10);
-    for (let i = 0; i < numOfItems; i++) {
-      let hexString;
-      if (strArray[i] != undefined) {
-        hexString = Web3Utils.toHex(strArray[i].toString());
+      var hexAddr = void 0;
+      if (_web3Utils2.default.isHex(addr)) {
+        hexAddr = addr;
       } else {
-        hexString = Web3Utils.toHex('');
+        var bytes = _bs2.default.decode(addr);
+        hexAddr = bytes.toString('hex');
+        hexAddr = hexAddr.slice(2, 42); // Removes first byte (version) & last 4 bytes (checksum)
       }
 
-      // Remove the 0x hex prefix
-      array[i] = Web3Utils.padRight(hexString, PADDED_BYTES).slice(2, PADDED_BYTES + 2);
+      return _web3Utils2.default.padLeft(hexAddr, PADDED_BYTES);
     }
 
-    return array.join('');
-  }
+    /*
+     * Converts a string into a hex string up to the max length.
+     * @param {string} string The string to convert to hex.
+     * @param {number} maxCharLen The total length of the hex string allowed.
+     * @return The converted string to single padded-right hex string.
+     */
 
-  /*
-   * Converts a uint to hex padded-left to 32 bytes.
-   * @param num The number to convert.
-   * @return The converted uint to padded-left hex string.
-   */
-  static uintToHex(num) {
-    if (!_.isNumber(num)) {
-      throw new Error(`num is not a Number`);
+  }, {
+    key: 'stringToHex',
+    value: function stringToHex(string, maxCharLen) {
+      if (!_lodash2.default.isString(string)) {
+        throw new Error('string should be a String');
+      }
+      if (!_lodash2.default.isNumber(maxCharLen)) {
+        throw new Error('maxCharLen should be a Number');
+      }
+
+      var hexString = _web3Utils2.default.toHex(string);
+      hexString = _web3Utils2.default.padRight(hexString, maxCharLen).slice(2, maxCharLen + 2);
+
+      return hexString;
     }
 
-    let hexNumber = Web3Utils.toHex(num);
-    return Web3Utils.padLeft(hexNumber, PADDED_BYTES).slice(2);
-  }
+    /*
+     * Converts an array of string elements (max 32 bytes) into a concatenated hex string.
+     * @param strArray The string array to convert to hex.
+     * @param numOfItems The total number of items the string array should have.
+     * @return The converted string array to single padded-right hex string.
+     */
 
-  /*
-   * Pads a hex string padded-left to 32 bytes.
-   * @param {String} hexStr The hex string to pad.
-   * @return {String} The padded-left hex string.
-   */
-  static padHexString(hexStr) {
-    if (hexStr === undefined) {
-      throw new Error(`hexStr should not be undefined`);
-    }
-    if (!Web3Utils.isHex(hexStr)) {
-      throw new TypeError(`hexStr should be a hex string`);
+  }, {
+    key: 'stringArrayToHex',
+    value: function stringArrayToHex(strArray, numOfItems) {
+      if (!Array.isArray(strArray)) {
+        throw new Error('strArray is not an Array');
+      }
+      if (!_lodash2.default.isNumber(numOfItems)) {
+        throw new Error('numOfItems is not a Number');
+      }
+      if (numOfItems <= 0) {
+        throw new Error('numOfItems should be greater than 0');
+      }
+
+      var array = new Array(10);
+      for (var i = 0; i < numOfItems; i++) {
+        var hexString = void 0;
+        if (strArray[i] != undefined) {
+          hexString = _web3Utils2.default.toHex(strArray[i].toString());
+        } else {
+          hexString = _web3Utils2.default.toHex('');
+        }
+
+        // Remove the 0x hex prefix
+        array[i] = _web3Utils2.default.padRight(hexString, PADDED_BYTES).slice(2, PADDED_BYTES + 2);
+      }
+
+      return array.join('');
     }
 
-    let trimmed = Utils.trimHexPrefix(hexStr);
-    return Web3Utils.padLeft(trimmed, PADDED_BYTES);
-  }
-}
+    /*
+     * Converts a uint to hex padded-left to 32 bytes.
+     * @param num The number to convert.
+     * @return The converted uint to padded-left hex string.
+     */
+
+  }, {
+    key: 'uintToHex',
+    value: function uintToHex(num) {
+      if (!_lodash2.default.isNumber(num)) {
+        throw new Error('num is not a Number');
+      }
+
+      var hexNumber = _web3Utils2.default.toHex(num);
+      return _web3Utils2.default.padLeft(hexNumber, PADDED_BYTES).slice(2);
+    }
+
+    /*
+     * Pads a hex string padded-left to 32 bytes.
+     * @param {String} hexStr The hex string to pad.
+     * @return {String} The padded-left hex string.
+     */
+
+  }, {
+    key: 'padHexString',
+    value: function padHexString(hexStr) {
+      if (hexStr === undefined) {
+        throw new Error('hexStr should not be undefined');
+      }
+      if (!_web3Utils2.default.isHex(hexStr)) {
+        throw new TypeError('hexStr should be a hex string');
+      }
+
+      var trimmed = _utils2.default.trimHexPrefix(hexStr);
+      return _web3Utils2.default.padLeft(trimmed, PADDED_BYTES);
+    }
+  }]);
+
+  return Encoder;
+}();
 
 module.exports = Encoder;
