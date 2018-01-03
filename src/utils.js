@@ -1,24 +1,7 @@
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _bignumber = require('bignumber.js');
-
-var _bignumber2 = _interopRequireDefault(_bignumber);
-
-var _utf = require('utf8');
-
-var _utf2 = _interopRequireDefault(_utf);
-
-var _web3Utils = require('web3-utils');
-
-var _web3Utils2 = _interopRequireDefault(_web3Utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import _ from 'lodash';
+import BigNumber from 'bignumber.js';
+import utf8 from 'utf8';
+import Web3Utils from 'web3-utils';
 
 /**
  * Should be called to get utf8 from it's hex representation
@@ -27,21 +10,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @param {String} string in hex
  * @returns {String} ascii string representation of hex value
  */
-var toUtf8 = function toUtf8(hex) {
+var toUtf8 = function(hex) {
   // Find termination
   var str = "";
   var i = 0,
-      l = hex.length;
+    l = hex.length;
   if (hex.substring(0, 2) === '0x') {
     i = 2;
   }
   for (; i < l; i += 2) {
     var code = parseInt(hex.substr(i, 2), 16);
-    if (code === 0) break;
+    if (code === 0)
+      break;
     str += String.fromCharCode(code);
   }
 
-  return _utf2.default.decode(str);
+  return utf8.decode(str);
 };
 
 /**
@@ -52,12 +36,13 @@ var toUtf8 = function toUtf8(hex) {
  * @param {Number} optional padding
  * @returns {String} hex representation of input string
  */
-var fromUtf8 = function fromUtf8(str) {
-  str = _utf2.default.encode(str);
+var fromUtf8 = function(str) {
+  str = utf8.encode(str);
   var hex = "";
   for (var i = 0; i < str.length; i++) {
     var code = str.charCodeAt(i);
-    if (code === 0) break;
+    if (code === 0)
+      break;
     var n = code.toString(16);
     hex += n.length < 2 ? '0' + n : n;
   }
@@ -73,7 +58,7 @@ var fromUtf8 = function fromUtf8(str) {
  * @param {Number} optional padding
  * @returns {String} hex representation of input string
  */
-var fromAscii = function fromAscii(str) {
+var fromAscii = function(str) {
   var hex = "";
   for (var i = 0; i < str.length; i++) {
     var code = str.charCodeAt(i);
@@ -91,7 +76,7 @@ var fromAscii = function fromAscii(str) {
  * @param {String|Number|BigNumber}
  * @return {String}
  */
-var fromDecimal = function fromDecimal(value) {
+var fromDecimal = function(value) {
   var number = toBigNumber(value);
   var result = number.toString(16);
 
@@ -105,16 +90,17 @@ var fromDecimal = function fromDecimal(value) {
  * @param {Number|String|BigNumber} a number, string, HEX string or BigNumber
  * @return {BigNumber} BigNumber
  */
-var toBigNumber = function toBigNumber(number) {
+var toBigNumber = function(number) {
   /*jshint maxcomplexity:5 */
   number = number || 0;
-  if (isBigNumber(number)) return number;
+  if (isBigNumber(number))
+    return number;
 
   if (isString(number) && (number.indexOf('0x') === 0 || number.indexOf('-0x') === 0)) {
-    return new _bignumber2.default(number.replace('0x', ''), 16);
+    return new BigNumber(number.replace('0x', ''), 16);
   }
 
-  return new _bignumber2.default(number.toString(10), 10);
+  return new BigNumber(number.toString(10), 10);
 };
 
 /**
@@ -124,8 +110,9 @@ var toBigNumber = function toBigNumber(number) {
  * @param {Object}
  * @return {Boolean}
  */
-var isBigNumber = function isBigNumber(object) {
-  return object instanceof _bignumber2.default || object && object.constructor && object.constructor.name === 'BigNumber';
+var isBigNumber = function(object) {
+  return object instanceof BigNumber ||
+    (object && object.constructor && object.constructor.name === 'BigNumber');
 };
 
 /**
@@ -135,8 +122,9 @@ var isBigNumber = function isBigNumber(object) {
  * @param {Object}
  * @return {Boolean}
  */
-var isString = function isString(object) {
-  return typeof object === 'string' || object && object.constructor && object.constructor.name === 'String';
+var isString = function(object) {
+  return typeof object === 'string' ||
+    (object && object.constructor && object.constructor.name === 'String');
 };
 
 /**
@@ -146,8 +134,8 @@ var isString = function isString(object) {
  * @param {Object}
  * @return {Boolean}
  */
-var isObject = function isObject(object) {
-  return object !== null && !Array.isArray(object) && (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object';
+var isObject = function(object) {
+  return object !== null && !(Array.isArray(object)) && typeof object === 'object';
 };
 
 /**
@@ -157,7 +145,7 @@ var isObject = function isObject(object) {
  * @param {Object}
  * @return {Boolean}
  */
-var isBoolean = function isBoolean(object) {
+var isBoolean = function(object) {
   return typeof object === 'boolean';
 };
 
@@ -168,7 +156,7 @@ var isBoolean = function isBoolean(object) {
  * @param {Object}
  * @return {Boolean}
  */
-var isArray = function isArray(object) {
+var isArray = function(object) {
   return Array.isArray(object);
 };
 
@@ -179,7 +167,7 @@ var isArray = function isArray(object) {
  * @param {String}
  * @return {Boolean}
  */
-var isJson = function isJson(str) {
+var isJson = function(str) {
   try {
     return !!JSON.parse(str);
   } catch (e) {
@@ -194,7 +182,7 @@ var isJson = function isJson(str) {
  * @param {String} hex encoded topic
  * @return {Boolean}
  */
-var isTopic = function isTopic(topic) {
+var isTopic = function(topic) {
   if (!/^(0x)?[0-9a-f]{64}$/i.test(topic)) {
     return false;
   } else if (/^(0x)?[0-9a-f]{64}$/.test(topic) || /^(0x)?[0-9A-F]{64}$/.test(topic)) {
@@ -213,39 +201,39 @@ var isTopic = function isTopic(topic) {
  * @return {}
  */
 function paramsCheck(methodName, params, required, validators) {
-  if (_lodash2.default.isUndefined(params)) {
-    throw new Error('params is undefined in params of ' + methodName + '; expected: ' + (_lodash2.default.isEmpty(required) ? undefined : required.join(',')));
+  if (_.isUndefined(params)) {
+    throw new Error(`params is undefined in params of ${methodName}; expected: ${_.isEmpty(required) ? undefined : required.join(',')}`);
   }
 
   if (required) {
-    if (_lodash2.default.isArray(required)) {
-      _lodash2.default.each(required, function (value) {
-        if (_lodash2.default.isUndefined(params[value])) {
-          throw new Error(value + ' is undefined in params of ' + methodName);
+    if (_.isArray(required)) {
+      _.each(required, (value) => {
+        if (_.isUndefined(params[value])) {
+          throw new Error(`${value} is undefined in params of ${methodName}`);
         }
       });
-    } else if (_lodash2.default.isUndefined(params[required])) {
-      throw new Error(required + ' is undefined in params of ' + methodName);
+    } else if (_.isUndefined(params[required])) {
+      throw new Error(`${required} is undefined in params of ${methodName}`);
     }
   }
 
-  if (!_lodash2.default.isEmpty(validators)) {
-    _lodash2.default.each(validators, function (validFunc, key) {
+  if (!_.isEmpty(validators)) {
+    _.each(validators, (validFunc, key) => {
       // Check whether each validator is a function
       if (typeof validFunc !== 'function') {
         throw new Error('validators are defined but not functions ...');
       }
 
       // Check whether key defined in validator is in params
-      if (_lodash2.default.indexOf(params, key) < 0) {
-        throw new Error(key + ' in validator is not found in params.');
+      if (_.indexOf(params, key) < 0) {
+        throw new Error(`${key} in validator is not found in params.`);
       }
 
       // Run validator funcs and check result
       // If result === 'undefined', pass; otherwise throw error with message
-      var error = validFunc(params[key], key);
+      const error = validFunc(params[key], key);
       if (error instanceof Error) {
-        throw new Error('validation for ' + key + ' failed; message:' + error.message);
+        throw new Error(`validation for ${key} failed; message:${error.message}`);
       }
     });
   }
@@ -263,15 +251,23 @@ function paramsCheck(methodName, params, required, validators) {
 function toHex(val) {
   /*jshint maxcomplexity: 8 */
 
-  if (_lodash2.default.isBoolean(val)) return fromDecimal(+val);
+  if (_.isBoolean(val))
+    return fromDecimal(+val);
 
-  if (isBigNumber(val)) return fromDecimal(val);
+  if (isBigNumber(val))
+    return fromDecimal(val);
 
-  if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object') return fromUtf8(JSON.stringify(val));
+  if (typeof val === 'object')
+    return fromUtf8(JSON.stringify(val));
 
   // if its a negative number, pass it through fromDecimal
   if (isString(val)) {
-    if (val.indexOf('-0x') === 0) return fromDecimal(val);else if (val.indexOf('0x') === 0) return val;else if (!isFinite(val)) return fromAscii(val);
+    if (val.indexOf('-0x') === 0)
+      return fromDecimal(val);
+    else if (val.indexOf('0x') === 0)
+      return val;
+    else if (!isFinite(val))
+      return fromAscii(val);
   }
 
   return fromDecimal(val);
@@ -284,7 +280,7 @@ function toHex(val) {
  */
 function formatHexStr(value) {
   // TODO: validate format of hex string
-  if (_lodash2.default.startsWith(value, '0x')) {
+  if (_.startsWith(value, '0x')) {
     return value;
   } else {
     return "0x" + value;
@@ -302,7 +298,7 @@ function toAscii(hex) {
   // Find termination
   var str = "";
   var i = 0,
-      l = hex.length;
+    l = hex.length;
   if (hex.substring(0, 2) === '0x') {
     i = 2;
   }
@@ -344,5 +340,5 @@ module.exports = {
   toUtf8: toUtf8,
   toAscii: toAscii,
   trimHexPrefix: trimHexPrefix,
-  chunkString: chunkString
+  chunkString: chunkString,
 };
