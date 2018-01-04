@@ -1,5 +1,7 @@
 import Qweb3 from './qweb3';
 import Contract from './contract';
+import Decoder from './decoder';
+import Utils from './utils';
 
 // dont override global variable
 if (typeof window !== 'undefined' && typeof window.Qweb3 === 'undefined') {
@@ -8,5 +10,7 @@ if (typeof window !== 'undefined' && typeof window.Qweb3 === 'undefined') {
 
 export {
   Qweb3,
-  Contract
+  Contract,
+  Decoder,
+  Utils
 };
