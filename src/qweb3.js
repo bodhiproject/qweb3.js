@@ -233,4 +233,4 @@ class Qweb3 {
   }
 }
 
-module.exports = Qweb3;
+export default Qweb3;
