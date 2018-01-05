@@ -34,9 +34,9 @@ class Formatter {
 
           if (metadataObj) {
             // Each field of log needs to appended with '0x' to be parsed
-            item.address = Utils.formatHexStr(item.address);
-            item.data = Utils.formatHexStr(item.data);
-            item.topics = _.map(item.topics, Utils.formatHexStr);
+            item.address = Utils.appendHexPrefix(item.address);
+            item.data = Utils.appendHexPrefix(item.data);
+            item.topics = _.map(item.topics, Utils.appendHexPrefix);
 
             const methodAbi = _.find(metadataObj.abi, { name: eventName });
             if (_.isUndefined(methodAbi)) {
@@ -92,7 +92,7 @@ class Formatter {
     _.each(rawOutput, (value, key) => {
       if (key === 'executionResult') {
         const resultObj = rawOutput[key];
-        const decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.formatHexStr(resultObj.output));
+        const decodedOutput = EthjsAbi.decodeMethod(methodABI[0], Utils.appendHexPrefix(resultObj.output));
 
         // Strip hex prefix
         if (removeHexPrefix) {

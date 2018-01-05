@@ -63,9 +63,9 @@ var Formatter = function () {
 
             if (metadataObj) {
               // Each field of log needs to appended with '0x' to be parsed
-              item.address = _utils2.default.formatHexStr(item.address);
-              item.data = _utils2.default.formatHexStr(item.data);
-              item.topics = _lodash2.default.map(item.topics, _utils2.default.formatHexStr);
+              item.address = _utils2.default.appendHexPrefix(item.address);
+              item.data = _utils2.default.appendHexPrefix(item.data);
+              item.topics = _lodash2.default.map(item.topics, _utils2.default.appendHexPrefix);
 
               var methodAbi = _lodash2.default.find(metadataObj.abi, { name: eventName });
               if (_lodash2.default.isUndefined(methodAbi)) {
@@ -125,7 +125,7 @@ var Formatter = function () {
       _lodash2.default.each(rawOutput, function (value, key) {
         if (key === 'executionResult') {
           var resultObj = rawOutput[key];
-          var decodedOutput = _ethjsAbi2.default.decodeMethod(methodABI[0], _utils2.default.formatHexStr(resultObj.output));
+          var decodedOutput = _ethjsAbi2.default.decodeMethod(methodABI[0], _utils2.default.appendHexPrefix(resultObj.output));
 
           // Strip hex prefix
           if (removeHexPrefix) {

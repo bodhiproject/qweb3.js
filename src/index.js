@@ -1,8 +1,16 @@
-var Qweb3 = require('./qweb3');
+import Qweb3 from './qweb3';
+import Contract from './contract';
+import Decoder from './decoder';
+import Utils from './utils';
 
 // dont override global variable
 if (typeof window !== 'undefined' && typeof window.Qweb3 === 'undefined') {
-    window.Qweb3 = Qweb3;
+  window.Qweb3 = Qweb3;
 }
 
-module.exports = Qweb3;
+export default Qweb3;
+export {
+  Contract,
+  Decoder,
+  Utils
+};
