@@ -81,6 +81,7 @@ class Contract {
     const bytesRegex = /bytes([0-9]+)/;
     const bytesArrRegex = /bytes([0-9]+)(\[[0-9]+\])/;
     const numberRegex = /[0-9]+/g;
+    const dynamicArrRegex = /\[\]/;
 
     let dataHex = '';
     dataHex = dataHex.concat(Encoder.getFunctionHash(methodObj));
@@ -98,6 +99,8 @@ class Contract {
       } else if (type.startsWith('uint')) {
         hex = Encoder.uintToHex(args[index]);
         dataHex = dataHex.concat(hex);
+      } else if (type.startsWith('int')) {
+        console.error('int conversion not implemented.');
       } else if (type.match(bytesRegex)) {
         if (type.match(bytesArrRegex)) {
           const arrCapacity = _.toNumber(type.match(numberRegex)[1]);
@@ -113,6 +116,12 @@ class Contract {
           hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
           dataHex = dataHex.concat(hex);
         } 
+      } else if (type === 'bytes') {
+        console.error('dynamics bytes conversion not implemented.');
+      } else if (type === 'string') {
+        console.error('dynamic string conversion not implemented.');
+      } else if (type.match(dynamicArrRegex)) {
+        console.error('dynamic array conversion not implemented.');
       }
     });
 
