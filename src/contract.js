@@ -9,7 +9,6 @@ const SEND_GASLIMIT = 250000;
 const SEND_GASPRICE = 0.0000004;
 
 const MAX_BYTES_PER_ARRAY_SLOT = 64;
-const ARRAY_CAPACITY = 10;
 
 class Contract {
   constructor(url, address, abi) {
@@ -79,6 +78,9 @@ class Contract {
       throw new Error(`methodObj should not be undefined.`);
     }
 
+    const bytesArrRegex = /bytes([0-9]+)(\[[0-9]+\])/;
+    const numberRegex = /[0-9]+/g;
+
     let dataHex = '';
     dataHex = dataHex.concat(Encoder.getFunctionHash(methodObj));
 
@@ -95,12 +97,14 @@ class Contract {
       } else if (type.startsWith('uint')) {
         hex = Encoder.uintToHex(args[index]);
         dataHex = dataHex.concat(hex);
-      } else if (type === 'bytes32[10]') {
+      } else if (type.match(bytesArrRegex)) {
+        const arrCapacity = _.toNumber(type.match(numberRegex)[1]);
+
         if (args[index] instanceof Array) {
-          hex = Encoder.stringArrayToHex(args[index], ARRAY_CAPACITY);
+          hex = Encoder.stringArrayToHex(args[index], arrCapacity);
           dataHex = dataHex.concat(hex);
         } else {
-          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
+          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
           dataHex = dataHex.concat(hex);
         }
       }

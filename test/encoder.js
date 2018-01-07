@@ -139,8 +139,4 @@ describe('Encoder', function() {
       assert.throws(() => Encoder.padHexString('hello world'), Error);
     });
   });
-
-  it.only('test', async function() {
-    console.log(Encoder.boolToHex(true));
-  });
 });
