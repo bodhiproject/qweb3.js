@@ -116,11 +116,7 @@ class Encoder {
    * @return The converted uint to padded-left hex string.
    */
   static uintToHex(num) {
-    if (!_.isNumber(num)) {
-      throw new Error(`num is not a Number`);
-    }
-
-    let hexNumber = Web3Utils.toHex(num);
+    let hexNumber = Web3Utils.numberToHex(num);
     return Web3Utils.padLeft(hexNumber, PADDED_BYTES).slice(2);
   }
 

@@ -84,33 +84,21 @@ class Contract {
 
     let hex;
     _.each(methodObj.inputs, (item, index) => {
-      switch (item.type) {
-        case 'address': {
-          hex = Encoder.addressToHex(args[index]);
+      const type = item.type;
+
+      if (type === 'address') {
+        hex = Encoder.addressToHex(args[index]);
+        dataHex = dataHex.concat(hex);
+      } else if (type.startsWith('uint')) {
+        hex = Encoder.uintToHex(args[index]);
+        dataHex = dataHex.concat(hex);
+      } else if (type === 'bytes32[10]') {
+        if (args[index] instanceof Array) {
+          hex = Encoder.stringArrayToHex(args[index], ARRAY_CAPACITY);
           dataHex = dataHex.concat(hex);
-          break;
-        } 
-        case 'bytes32[10]': { // TODO: handle any length arrays
-          if (args[index] instanceof Array) {
-            hex = Encoder.stringArrayToHex(args[index], ARRAY_CAPACITY);
-            dataHex = dataHex.concat(hex);
-          } else {
-            hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
-            dataHex = dataHex.concat(hex);
-          }
-          break;
-        }
-        case 'uint8': {
-          hex = Encoder.uintToHex(args[index]);
+        } else {
+          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
           dataHex = dataHex.concat(hex);
-          break;
-        }
-        case 'uint256': {
-          // uint256 args should be passed in as hex to prevent data loss due to max values.
-          // only padding occurs here instead of number to hex conversion.
-          hex = Encoder.padHexString(args[index]);
-          dataHex = dataHex.concat(hex);
-          break;
         }
       }
     });

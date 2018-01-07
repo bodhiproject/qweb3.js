@@ -1,6 +1,8 @@
 import 'babel-polyfill';
+import _ from 'lodash';
 import { assert } from 'chai';
 import Encoder from '../src/encoder';
+import Web3Utils from 'web3-utils';
 
 describe('Encoder', function() {
 
@@ -95,14 +97,25 @@ describe('Encoder', function() {
 
   describe('uintToHex()', function() {
     it('should convert a uint to hex', async function() {
-      const hex = await Encoder.uintToHex(1000000);
+      let hex = await Encoder.uintToHex(1000000);
       assert.equal(hex.toLowerCase(), '00000000000000000000000000000000000000000000000000000000000f4240');
       assert.equal(hex.length, 64);
-    });
 
-    it('throws if num is undefined or not a Number', async function() {
-      assert.throws(() => Encoder.uintToHex(), Error);
-      assert.throws(() => Encoder.uintToHex('a'), Error);
+      hex = await Encoder.uintToHex('1000000');
+      assert.equal(hex.toLowerCase(), '00000000000000000000000000000000000000000000000000000000000f4240');
+      assert.equal(hex.length, 64);
+
+      hex = await Encoder.uintToHex('2386f26fc10000');
+      assert.equal(hex.toLowerCase(), '000000000000000000000000000000000000000000000000002386f26fc10000');
+      assert.equal(hex.length, 64);
+
+      hex = await Encoder.uintToHex('0x2386f26fc10000');
+      assert.equal(hex.toLowerCase(), '000000000000000000000000000000000000000000000000002386f26fc10000');
+      assert.equal(hex.length, 64);
+
+      hex = await Encoder.uintToHex(0x2386f26fc10000);
+      assert.equal(hex.toLowerCase(), '000000000000000000000000000000000000000000000000002386f26fc10000');
+      assert.equal(hex.length, 64);
     });
   });
 
