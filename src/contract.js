@@ -78,6 +78,7 @@ class Contract {
       throw new Error(`methodObj should not be undefined.`);
     }
 
+    const bytesRegex = /bytes([0-9]+)/;
     const bytesArrRegex = /bytes([0-9]+)(\[[0-9]+\])/;
     const numberRegex = /[0-9]+/g;
 
@@ -97,16 +98,21 @@ class Contract {
       } else if (type.startsWith('uint')) {
         hex = Encoder.uintToHex(args[index]);
         dataHex = dataHex.concat(hex);
-      } else if (type.match(bytesArrRegex)) {
-        const arrCapacity = _.toNumber(type.match(numberRegex)[1]);
+      } else if (type.match(bytesRegex)) {
+        if (type.match(bytesArrRegex)) {
+          const arrCapacity = _.toNumber(type.match(numberRegex)[1]);
 
-        if (args[index] instanceof Array) {
-          hex = Encoder.stringArrayToHex(args[index], arrCapacity);
-          dataHex = dataHex.concat(hex);
+          if (args[index] instanceof Array) {
+            hex = Encoder.stringArrayToHex(args[index], arrCapacity);
+            dataHex = dataHex.concat(hex);
+          } else {
+            hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
+            dataHex = dataHex.concat(hex);
+          }
         } else {
-          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
+          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
           dataHex = dataHex.concat(hex);
-        }
+        } 
       }
     });
 
