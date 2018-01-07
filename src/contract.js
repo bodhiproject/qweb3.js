@@ -89,6 +89,9 @@ class Contract {
       if (type === 'address') {
         hex = Encoder.addressToHex(args[index]);
         dataHex = dataHex.concat(hex);
+      } else if (type === 'bool') {
+        hex = Encoder.boolToHex(args[index]);
+        dataHex = dataHex.concat(hex);
       } else if (type.startsWith('uint')) {
         hex = Encoder.uintToHex(args[index]);
         dataHex = dataHex.concat(hex);

@@ -57,6 +57,14 @@ class Encoder {
     return Web3Utils.padLeft(hexAddr, PADDED_BYTES);
   }
 
+  static boolToHex(value) {
+    if (_.isUndefined(value)) {
+      throw new Error(`value should not be undefined.`);
+    }
+
+    return this.uintToHex(value ? 1 : 0);
+  }
+
   /*
    * Converts a string into a hex string up to the max length.
    * @param {string} string The string to convert to hex.
@@ -111,7 +119,7 @@ class Encoder {
   }
 
   /*
-   * Converts a uint to hex padded-left to 32 bytes.
+   * Converts a uint to hex padded-left to 32 bytes. Accepts it in either decimal or hex format.
    * @param num The number to convert.
    * @return The converted uint to padded-left hex string.
    */
