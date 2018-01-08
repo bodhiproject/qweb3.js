@@ -2,18 +2,29 @@
 
 Qweb3 is a library for dApps to interract with Qtum network. Behind the scenes, Qweb3 communicates to a local Qtum node through Qtum-cli RPC calls.
 
+https://www.npmjs.com/package/qweb3
+
 ## Get Started
-1. Clone repo
+Run the following in your project folder:
 
-	- SSH: `git clone git@github.com:bodhiproject/qweb3.js.git`
-	- HTTPS: `git clone https://github.com/bodhiproject/qweb3.js.git`
-
-2. `cd qweb3.js`
-3. `npm install`
-4. Run tests with `npm test`
+	npm install qweb3 --save
 
 ## Qweb3.js
-Instantiate a new instance of `qweb3.js` if you want to execute the following on qtum-cli:
+Instantiate a new instance of `Qweb3`: 
+```
+import Qweb3 from 'qweb3';
+
+// Pass in the path of your local Qtum node rpc port with username/password
+// In our case, username=bodhi, password=bodhi, port=13889
+const qClient = new Qweb3('http://bodhi:bodhi@localhost:13889');
+
+// Example Qweb3 call to get the current block count
+async function getBlockCount() {
+	return await qClient.getBlockCount();
+}
+```
+
+The following Qtum cli commands have been ported over:
 
 * **isConnected()**
 	
@@ -48,12 +59,56 @@ Instantiate a new instance of `qweb3.js` if you want to execute the following on
 	Gets the logs given the params on the blockchain.
 
 ## Contract.js
-Instantiate a new instance of `contract.js` if you want to execute the following on qtum-cli:
+Instantiate a new instance of `Contract`: 
+```
+import { Contract } from 'qweb3';
+
+// The path to your local Qtum node via RPC
+const rpcAddress = 'http://bodhi:bodhi@localhost:13889';
+
+// contractAddress = The address of your contract deployed on the blockchain
+const contractAddress = 'f7b958eac2bdaca0f225b86d162f263441d23c19';
+
+// contractAbi = The ABI of the contract
+const contractAbi = [{"constant":false,"inputs":[{"name":"_eventAddress","type":"address"},{"name":"_eventName","type":"bytes32[10]"},{"name":"_eventResultNames","type":"bytes32[10]"},{"name":"_numOfResults","type":"uint8"},{"name":"_lastResultIndex","type":"uint8"},{"name":"_arbitrationEndBlock","type":"uint256"},{"name":"_consensusThreshold","type":"uint256"}],"name":"createDecentralizedOracle","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_eventAddress","type":"address"},{"name":"_eventName","type":"bytes32[10]"},{"name":"_eventResultNames","type":"bytes32[10]"},{"name":"_numOfResults","type":"uint8"},{"name":"_lastResultIndex","type":"uint8"},{"name":"_arbitrationEndBlock","type":"uint256"},{"name":"_consensusThreshold","type":"uint256"}],"name":"doesDecentralizedOracleExist","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_oracle","type":"address"},{"name":"_eventAddress","type":"address"},{"name":"_eventName","type":"bytes32[10]"},{"name":"_eventResultNames","type":"bytes32[10]"},{"name":"_numOfResults","type":"uint8"},{"name":"_bettingEndBlock","type":"uint256"},{"name":"_resultSettingEndBlock","type":"uint256"},{"name":"_consensusThreshold","type":"uint256"}],"name":"createCentralizedOracle","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_oracle","type":"address"},{"name":"_eventAddress","type":"address"},{"name":"_eventName","type":"bytes32[10]"},{"name":"_eventResultNames","type":"bytes32[10]"},{"name":"_numOfResults","type":"uint8"},{"name":"_bettingEndBlock","type":"uint256"},{"name":"_resultSettingEndBlock","type":"uint256"},{"name":"_consensusThreshold","type":"uint256"}],"name":"doesCentralizedOracleExist","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"oracles","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_addressManager","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_contractAddress","type":"address"},{"indexed":true,"name":"_oracle","type":"address"},{"indexed":true,"name":"_eventAddress","type":"address"},{"indexed":false,"name":"_name","type":"bytes32[10]"},{"indexed":false,"name":"_resultNames","type":"bytes32[10]"},{"indexed":false,"name":"_numOfResults","type":"uint8"},{"indexed":false,"name":"_bettingEndBlock","type":"uint256"},{"indexed":false,"name":"_resultSettingEndBlock","type":"uint256"},{"indexed":false,"name":"_consensusThreshold","type":"uint256"}],"name":"CentralizedOracleCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_contractAddress","type":"address"},{"indexed":true,"name":"_eventAddress","type":"address"},{"indexed":false,"name":"_name","type":"bytes32[10]"},{"indexed":false,"name":"_resultNames","type":"bytes32[10]"},{"indexed":false,"name":"_numOfResults","type":"uint8"},{"indexed":false,"name":"_lastResultIndex","type":"uint8"},{"indexed":false,"name":"_arbitrationEndBlock","type":"uint256"},{"indexed":false,"name":"_consensusThreshold","type":"uint256"}],"name":"DecentralizedOracleCreated","type":"event"}]
+
+const contract = new Contract(rpcAddress, contractAddress, contractAbi);
+```
 
 * **call(methodName, params)**
 	
 	Executes a `callcontract`.
+  
+  ```
+  // callcontract on a method named 'bettingEndBlock'
+  async function exampleCall(args) {
+    const {
+      senderAddress, // address
+    } = args;
+
+    return await contract.call('bettingEndBlock', {
+      methodArgs: [],
+      senderAddress: senderAddress,
+    });
+  }
+	```
 
 * **send(methodName, params)**
 
 	Executes a `sendtocontract`.
+	
+	```
+  // sendtocontract on a method named 'setResult'
+  async function exampleSend(args) {
+    const {
+      resultIndex, // number
+      senderAddress, // address
+    } = args;
+
+    return await contract.send('setResult', {
+      methodArgs: [resultIndex],
+      gasLimit: 1000000, // setting the gas limit to 1 million
+      senderAddress: senderAddress,
+    });
+  }
+	```
