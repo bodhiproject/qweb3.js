@@ -1,8 +1,6 @@
 import 'babel-polyfill';
 import { assert } from 'chai';
 import _ from 'lodash';
-import Web3Utils from 'web3-utils';
-import BN from 'bn.js';
 
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';

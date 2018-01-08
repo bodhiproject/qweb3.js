@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import { assert } from 'chai';
 import _ from 'lodash';
 
@@ -43,7 +42,7 @@ describe('Formatter', () => {
       }
     ];
 
-    it('returns the formatted searchlog output', async function() {
+    it('returns the formatted searchlog output', function() {
       const formatted = Formatter.searchLogOutput(rawOutput, ContractMetadata, true);
 
       // CentralizedOracleCreated event
@@ -97,7 +96,7 @@ describe('Formatter', () => {
       assert.equal(log1._resultSettingEndBlock, 0xc4e0);
     });
 
-    it('skips decoding for an invalid eventName', async function() {
+    it('skips decoding for an invalid eventName', function() {
       const withdrawWinningsOutput = [
         {
           "blockHash": "b714317e141e29c9ccf7d051c55ba578cd1adf4239a968db0207673dfe911c66",
@@ -145,7 +144,7 @@ describe('Formatter', () => {
   });
 
   describe('callOutput()', function() {
-    it('returns the formatted call output for a struct', async function() {
+    it('returns the formatted call output for a struct', function() {
       const rawOutput = {
         "address": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
         "executionResult": {
@@ -172,7 +171,7 @@ describe('Formatter', () => {
       assert.isTrue(formatted.didSetResult);
     });
 
-    it('returns the formatted call output for uint', async function() {
+    it('returns the formatted call output for uint', function() {
       const rawOutput = {
         "address": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
         "executionResult": {
@@ -198,7 +197,7 @@ describe('Formatter', () => {
       assert.equal(formatted[0], 4);
     });
 
-    it('returns the formatted call output for address', async function() {
+    it('returns the formatted call output for address', function() {
       const rawOutput = {
         "address": "dacd16bde8ff9f7689cb8d3363324c77fbb80950",
         "executionResult": {

@@ -1,8 +1,5 @@
-import {
-  assert
-} from 'chai';
+import { assert } from 'chai';
 import BN from 'bn.js';
-import Web3Utils from 'web3-utils';
 
 import Encoder from '../src/encoder';
 

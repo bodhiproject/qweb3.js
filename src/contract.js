@@ -11,6 +11,11 @@ const SEND_GASPRICE = 0.0000004;
 
 const MAX_BYTES_PER_ARRAY_SLOT = 64;
 
+const REGEX_BYTES = /bytes([0-9]+)/;
+const REGEX_BYTES_ARRAY = /bytes([0-9]+)(\[[0-9]+\])/;
+const REGEX_NUMBER = /[0-9]+/g;
+const REGEX_DYNAMIC_ARRAY = /\[\]/;
+
 class Contract {
   constructor(url, address, abi) {
     this.provider = new HttpProvider(url);
@@ -79,11 +84,6 @@ class Contract {
       throw new Error(`methodObj should not be undefined.`);
     }
 
-    const bytesRegex = /bytes([0-9]+)/;
-    const bytesArrRegex = /bytes([0-9]+)(\[[0-9]+\])/;
-    const numberRegex = /[0-9]+/g;
-    const dynamicArrRegex = /\[\]/;
-
     let dataHex = '';
     dataHex = dataHex.concat(Encoder.getFunctionHash(methodObj));
 
@@ -103,9 +103,9 @@ class Contract {
       } else if (type.startsWith('int')) {
         hex = Encoder.intToHex(args[index]);
         dataHex = dataHex.concat(hex);
-      } else if (type.match(bytesRegex)) {
-        if (type.match(bytesArrRegex)) { // is fixed bytes array, ie. bytes32[10]
-          const arrCapacity = _.toNumber(type.match(numberRegex)[1]);
+      } else if (type.match(REGEX_BYTES)) {
+        if (type.match(REGEX_BYTES_ARRAY)) { // is fixed bytes array, ie. bytes32[10]
+          const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
 
           if (args[index] instanceof Array) {
             hex = Encoder.stringArrayToHex(args[index], arrCapacity);
@@ -122,7 +122,7 @@ class Contract {
         console.error('dynamics bytes conversion not implemented.');
       } else if (type === 'string') {
         console.error('dynamic string conversion not implemented.');
-      } else if (type.match(dynamicArrRegex)) {
+      } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
         console.error('dynamic array conversion not implemented.');
       }
     });
