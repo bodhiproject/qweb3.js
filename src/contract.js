@@ -104,7 +104,7 @@ class Contract {
         hex = Encoder.intToHex(args[index]);
         dataHex = dataHex.concat(hex);
       } else if (type.match(REGEX_BYTES)) {
-        if (type.match(REGEX_BYTES_ARRAY)) { // is fixed bytes array, ie. bytes32[10]
+        if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
           const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
 
           if (args[index] instanceof Array) {
@@ -114,7 +114,7 @@ class Contract {
             hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
             dataHex = dataHex.concat(hex);
           }
-        } else { // is fixed bytes, ie. bytes32
+        } else { // fixed bytes, ie. bytes32
           hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
           dataHex = dataHex.concat(hex);
         } 
