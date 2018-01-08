@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Web3Utils from 'web3-utils';
+import BN from 'bn.js';
 import bs58 from 'bs58';
 import Utils from './utils';
 
@@ -14,7 +15,7 @@ class Encoder {
    */
   static getFunctionHash(methodObj) {
     if (!methodObj) {
-      throw new Error(`methodObj should not be undefined.`);
+      throw new Error(`methodObj should not be undefined`);
     }
 
     let name = methodObj.name;
@@ -39,7 +40,7 @@ class Encoder {
    */
   static addressToHex(address) {
     if (!address) {
-      throw new Error(`address should not be undefined.`);
+      throw new Error(`address should not be undefined`);
     }
 
     // Remove '0x' from beginning of address
@@ -117,10 +118,30 @@ class Encoder {
    */
   static boolToHex(value) {
     if (_.isUndefined(value)) {
-      throw new Error(`value should not be undefined.`);
+      throw new Error(`value should not be undefined`);
     }
 
     return this.uintToHex(value ? 1 : 0);
+  }
+
+  /*
+   * Converts an int to hex padded-left to 32 bytes. Accepts it in either decimal or hex format.
+   * @param num The number to convert.
+   * @return The converted int to padded-left hex string.
+   */
+  static intToHex(num) {
+    if (_.isUndefined(num)) {
+      throw new Error(`num should not be undefined`);
+    }
+
+    const numTwosComp = new BN(num).toTwos(256).toJSON();
+    if (num > 0) {
+      // Positive ints are padded with 0
+      return Web3Utils.padLeft(numTwosComp, PADDED_BYTES, '0');
+    } else {
+      // Negative ints are padded with f
+      return Web3Utils.padLeft(numTwosComp, PADDED_BYTES, 'f');
+    }
   }
 
   /*
@@ -129,6 +150,10 @@ class Encoder {
    * @return The converted uint to padded-left hex string.
    */
   static uintToHex(num) {
+    if (_.isUndefined(num)) {
+      throw new Error(`num should not be undefined`);
+    }
+
     let hexNumber = Web3Utils.numberToHex(num);
     return Web3Utils.padLeft(hexNumber, PADDED_BYTES).slice(2);
   }
@@ -139,7 +164,7 @@ class Encoder {
    * @return {String} The padded-left hex string.
    */
   static padHexString(hexStr) {
-    if (hexStr === undefined) {
+    if (_.isUndefined(hexStr)) {
       throw new Error(`hexStr should not be undefined`);
     }
     if (!Web3Utils.isHex(hexStr)) {
