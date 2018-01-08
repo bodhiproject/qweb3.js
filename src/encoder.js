@@ -59,6 +59,56 @@ class Encoder {
   }
 
   /*
+   * Converts a boolean to hex padded-left to 32 bytes. Accepts it in true/false or 1/0 format.
+   * @param value The boolean to convert.
+   * @return The converted boolean to padded-left hex string.
+   */
+  static boolToHex(value) {
+    if (_.isUndefined(value)) {
+      throw new Error(`value should not be undefined`);
+    }
+
+    return this.uintToHex(value ? 1 : 0);
+  }
+
+  /*
+   * Converts an int to hex padded-left to 32 bytes. 
+   * @dev Accepts either decimal or string (as decimal, not hex) format, ie. 12345, '-12345'
+   * @param num The number to convert.
+   * @return The converted int to padded-left hex string.
+   */
+  static intToHex(num) {
+    if (_.isUndefined(num)) {
+      throw new Error(`num should not be undefined`);
+    }
+
+    const numTwosComp = new BN(num).toTwos(256).toJSON();
+    if (_.indexOf(num.toString()) === -1) {
+      // Positive ints are padded with 0
+      return Web3Utils.padLeft(numTwosComp, PADDED_BYTES, '0');
+    } else {
+      // Negative ints are padded with f
+      return Web3Utils.padLeft(numTwosComp, PADDED_BYTES, 'f');
+    }
+  }
+
+  /*
+   * Converts a uint to hex padded-left to 32 bytes. 
+   * @dev Accepts decimal, string, or hex string formats (without 0x hex prefix), ie. 12345678, '12345678', 'bd614e'
+   * @param num The number to convert.
+   * @return The converted uint to padded-left hex string.
+   */
+  static uintToHex(num) {
+    if (_.isUndefined(num)) {
+      throw new Error(`num should not be undefined`);
+    }
+
+    const bigNum = new BN(num, 16).toJSON();
+    const hexNum = Web3Utils.numberToHex(bigNum);
+    return Web3Utils.padLeft(hexNum, PADDED_BYTES).slice(2);
+  }
+
+  /*
    * Converts a string into a hex string up to the max length.
    * @param {string} string The string to convert to hex.
    * @param {number} maxCharLen The total length of the hex string allowed.
@@ -109,55 +159,6 @@ class Encoder {
     }
 
     return array.join('');
-  }
-
-  /*
-   * Converts a boolean to hex padded-left to 32 bytes. Accepts it in true/false or 1/0 format.
-   * @param value The boolean to convert.
-   * @return The converted boolean to padded-left hex string.
-   */
-  static boolToHex(value) {
-    if (_.isUndefined(value)) {
-      throw new Error(`value should not be undefined`);
-    }
-
-    return this.uintToHex(value ? 1 : 0);
-  }
-
-  /*
-   * Converts an int to hex padded-left to 32 bytes. 
-   * @dev Accepts either decimal or string (as decimal, not hex) format, ie. 12345, '-12345'
-   * @param num The number to convert.
-   * @return The converted int to padded-left hex string.
-   */
-  static intToHex(num) {
-    if (_.isUndefined(num)) {
-      throw new Error(`num should not be undefined`);
-    }
-
-    const numTwosComp = new BN(num).toTwos(256).toJSON();
-    if (_.indexOf(num.toString()) === -1) {
-      // Positive ints are padded with 0
-      return Web3Utils.padLeft(numTwosComp, PADDED_BYTES, '0');
-    } else {
-      // Negative ints are padded with f
-      return Web3Utils.padLeft(numTwosComp, PADDED_BYTES, 'f');
-    }
-  }
-
-  /*
-   * Converts a uint to hex padded-left to 32 bytes. 
-   * @dev Accepts decimal, string, or hex format, ie. 12345678, '12345678', 'bd614e', 0xbc614e
-   * @param num The number to convert.
-   * @return The converted uint to padded-left hex string.
-   */
-  static uintToHex(num) {
-    if (_.isUndefined(num)) {
-      throw new Error(`num should not be undefined`);
-    }
-
-    let hexNumber = Web3Utils.numberToHex(num);
-    return Web3Utils.padLeft(hexNumber, PADDED_BYTES).slice(2);
   }
 
   /*

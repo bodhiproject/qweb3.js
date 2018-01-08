@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import HttpProvider from './httpprovider';
 import Formatter from './formatter';
 import Utils from './utils.js';
@@ -100,7 +101,8 @@ class Contract {
         hex = Encoder.uintToHex(args[index]);
         dataHex = dataHex.concat(hex);
       } else if (type.startsWith('int')) {
-        console.error('int conversion not implemented.');
+        hex = Encoder.intToHex(args[index]);
+        dataHex = dataHex.concat(hex);
       } else if (type.match(bytesRegex)) {
         if (type.match(bytesArrRegex)) { // is fixed bytes array, ie. bytes32[10]
           const arrCapacity = _.toNumber(type.match(numberRegex)[1]);

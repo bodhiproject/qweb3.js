@@ -1,8 +1,10 @@
 import { assert } from 'chai';
+import BN from 'bn.js';
 
 import Encoder from '../src/encoder';
 
 describe('Encoder', function() {
+  const UINT256_MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
   describe('getFunctionHash()', function() {
     const funcObj = {"constant": false,"inputs": [{"name": "_resultIndex","type": "uint8"},{"name": "_sender","type": "address"},{"name": "_amount","type": "uint256"}],"name": "voteFromOracle","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "nonpayable","type": "function"};
@@ -163,26 +165,26 @@ describe('Encoder', function() {
     });
   });
 
-  describe('uintToHex()', function() {
+  describe.only('uintToHex()', function() {
     it('should convert uint to hex', function() {
-      let hex = Encoder.uintToHex(1000000);
-      assert.equal(hex.toLowerCase(), '00000000000000000000000000000000000000000000000000000000000f4240');
+      let hex = Encoder.uintToHex(0);
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, 64);
 
       hex = Encoder.uintToHex('1000000');
-      assert.equal(hex.toLowerCase(), '00000000000000000000000000000000000000000000000000000000000f4240');
+      assert.equal(hex, '00000000000000000000000000000000000000000000000000000000000f4240');
       assert.equal(hex.length, 64);
 
       hex = Encoder.uintToHex('2386f26fc10000');
-      assert.equal(hex.toLowerCase(), '000000000000000000000000000000000000000000000000002386f26fc10000');
+      assert.equal(hex, '000000000000000000000000000000000000000000000000002386f26fc10000');
       assert.equal(hex.length, 64);
 
-      hex = Encoder.uintToHex('0x2386f26fc10000');
-      assert.equal(hex.toLowerCase(), '000000000000000000000000000000000000000000000000002386f26fc10000');
+      hex = Encoder.uintToHex('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
       assert.equal(hex.length, 64);
 
-      hex = Encoder.uintToHex(0x2386f26fc10000);
-      assert.equal(hex.toLowerCase(), '000000000000000000000000000000000000000000000000002386f26fc10000');
+      hex = Encoder.uintToHex(new BN(UINT256_MAX));
+      assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
       assert.equal(hex.length, 64);
     });
 

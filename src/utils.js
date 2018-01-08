@@ -1,7 +1,5 @@
 import _ from 'lodash';
-import BigNumber from 'bignumber.js';
 import utf8 from 'utf8';
-import Web3Utils from 'web3-utils';
 
 class Utils {
   /**

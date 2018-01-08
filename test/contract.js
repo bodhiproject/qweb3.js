@@ -1,8 +1,8 @@
 import 'babel-polyfill';
 import { assert } from 'chai';
 import _ from 'lodash';
-import BigNumber from 'bignumber.js';
 import Web3Utils from 'web3-utils';
+import BN from 'bn.js';
 
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
@@ -145,27 +145,6 @@ describe('Contract', function() {
 
       let funcHash = Encoder.getFunctionHash(methodObj);
       let param = '000000000000000000000000000000000000000000000000000000007FFFFFFF'.toLowerCase();
-      assert.equal(dataHex, funcHash.concat(param));
-
-      methodObj = {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "name": "didWithdraw",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-      };
-      args = [new BigNumber(2).toPower(256).minus(1)]; // max uint256
-      dataHex = contract.constructDataHex(methodObj, args);
-
-      funcHash = Encoder.getFunctionHash(methodObj);
-      param = Web3Utils.numberToHex(args[0]).slice(2);
       assert.equal(dataHex, funcHash.concat(param));
     });
 
