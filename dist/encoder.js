@@ -10,6 +10,10 @@ var _web3Utils = require('web3-utils');
 
 var _web3Utils2 = _interopRequireDefault(_web3Utils);
 
+var _bn = require('bn.js');
+
+var _bn2 = _interopRequireDefault(_bn);
+
 var _bs = require('bs58');
 
 var _bs2 = _interopRequireDefault(_bs);
@@ -40,7 +44,7 @@ var Encoder = function () {
      */
     value: function getFunctionHash(methodObj) {
       if (!methodObj) {
-        throw new Error('methodObj should not be undefined.');
+        throw new Error('methodObj should not be undefined');
       }
 
       var name = methodObj.name;
@@ -68,7 +72,7 @@ var Encoder = function () {
     key: 'addressToHex',
     value: function addressToHex(address) {
       if (!address) {
-        throw new Error('address should not be undefined.');
+        throw new Error('address should not be undefined');
       }
 
       // Remove '0x' from beginning of address
@@ -84,6 +88,73 @@ var Encoder = function () {
       }
 
       return _web3Utils2.default.padLeft(hexAddr, PADDED_BYTES);
+    }
+
+    /*
+     * Converts a boolean to hex padded-left to 32 bytes. Accepts it in true/false or 1/0 format.
+     * @param value The boolean to convert.
+     * @return The converted boolean to padded-left hex string.
+     */
+
+  }, {
+    key: 'boolToHex',
+    value: function boolToHex(value) {
+      if (_lodash2.default.isUndefined(value)) {
+        throw new Error('value should not be undefined');
+      }
+
+      return this.uintToHex(value ? 1 : 0);
+    }
+
+    /*
+     * Converts an int to hex padded-left to 32 bytes. 
+     * Accepts the following formats:
+     *    decimal: 12345
+     *    string: '-12345'
+     *    BN.js: <BN: 3039>
+     * @param num The number to convert.
+     * @return The converted int to padded-left hex string.
+     */
+
+  }, {
+    key: 'intToHex',
+    value: function intToHex(num) {
+      if (_lodash2.default.isUndefined(num)) {
+        throw new Error('num should not be undefined');
+      }
+
+      // Must be converted to Two's Complement representation to handle negative numbers
+      var twosComp = new _bn2.default(num).toTwos(256).toJSON();
+      if (_lodash2.default.indexOf(num.toString()) === -1) {
+        // Positive ints are padded with 0
+        return _web3Utils2.default.padLeft(twosComp, PADDED_BYTES, '0');
+      } else {
+        // Negative ints are padded with f
+        return _web3Utils2.default.padLeft(twosComp, PADDED_BYTES, 'f');
+      }
+    }
+
+    /*
+     * Converts a uint to hex padded-left to 32 bytes. 
+     * Accepts the following formats:
+     *    decimal: 12345
+     *    string: '-12345'
+     *    hex string (without 0x hex prefix): 'bd614e'
+     *    BN.js: <BN: 3039>
+     * @param num The number to convert.
+     * @return The converted uint to padded-left hex string.
+     */
+
+  }, {
+    key: 'uintToHex',
+    value: function uintToHex(num) {
+      if (_lodash2.default.isUndefined(num)) {
+        throw new Error('num should not be undefined');
+      }
+
+      var bigNum = new _bn2.default(num, 16).toJSON();
+      var hexNum = _web3Utils2.default.numberToHex(bigNum);
+      return _web3Utils2.default.padLeft(hexNum, PADDED_BYTES).slice(2);
     }
 
     /*
@@ -146,23 +217,6 @@ var Encoder = function () {
     }
 
     /*
-     * Converts a uint to hex padded-left to 32 bytes.
-     * @param num The number to convert.
-     * @return The converted uint to padded-left hex string.
-     */
-
-  }, {
-    key: 'uintToHex',
-    value: function uintToHex(num) {
-      if (!_lodash2.default.isNumber(num)) {
-        throw new Error('num is not a Number');
-      }
-
-      var hexNumber = _web3Utils2.default.toHex(num);
-      return _web3Utils2.default.padLeft(hexNumber, PADDED_BYTES).slice(2);
-    }
-
-    /*
      * Pads a hex string padded-left to 32 bytes.
      * @param {String} hexStr The hex string to pad.
      * @return {String} The padded-left hex string.
@@ -171,7 +225,7 @@ var Encoder = function () {
   }, {
     key: 'padHexString',
     value: function padHexString(hexStr) {
-      if (hexStr === undefined) {
+      if (_lodash2.default.isUndefined(hexStr)) {
         throw new Error('hexStr should not be undefined');
       }
       if (!_web3Utils2.default.isHex(hexStr)) {

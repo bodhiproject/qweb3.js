@@ -31,7 +31,11 @@ var SEND_GASLIMIT = 250000;
 var SEND_GASPRICE = 0.0000004;
 
 var MAX_BYTES_PER_ARRAY_SLOT = 64;
-var ARRAY_CAPACITY = 10;
+
+var REGEX_BYTES = /bytes([0-9]+)/;
+var REGEX_BYTES_ARRAY = /bytes([0-9]+)(\[[0-9]+\])/;
+var REGEX_NUMBER = /[0-9]+/g;
+var REGEX_DYNAMIC_ARRAY = /\[\]/;
 
 var Contract = function () {
   function Contract(url, address, abi) {
@@ -122,39 +126,43 @@ var Contract = function () {
 
       var hex = void 0;
       _lodash2.default.each(methodObj.inputs, function (item, index) {
-        switch (item.type) {
-          case 'address':
-            {
-              hex = _encoder2.default.addressToHex(args[index]);
+        var type = item.type;
+
+        if (type === 'address') {
+          hex = _encoder2.default.addressToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+        } else if (type === 'bool') {
+          hex = _encoder2.default.boolToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+        } else if (type.startsWith('uint')) {
+          hex = _encoder2.default.uintToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+        } else if (type.startsWith('int')) {
+          hex = _encoder2.default.intToHex(args[index]);
+          dataHex = dataHex.concat(hex);
+        } else if (type.match(REGEX_BYTES)) {
+          if (type.match(REGEX_BYTES_ARRAY)) {
+            // fixed bytes array, ie. bytes32[10]
+            var arrCapacity = _lodash2.default.toNumber(type.match(REGEX_NUMBER)[1]);
+
+            if (args[index] instanceof Array) {
+              hex = _encoder2.default.stringArrayToHex(args[index], arrCapacity);
               dataHex = dataHex.concat(hex);
-              break;
-            }
-          case 'bytes32[10]':
-            {
-              // TODO: handle any length arrays
-              if (args[index] instanceof Array) {
-                hex = _encoder2.default.stringArrayToHex(args[index], ARRAY_CAPACITY);
-                dataHex = dataHex.concat(hex);
-              } else {
-                hex = _encoder2.default.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
-                dataHex = dataHex.concat(hex);
-              }
-              break;
-            }
-          case 'uint8':
-            {
-              hex = _encoder2.default.uintToHex(args[index]);
+            } else {
+              hex = _encoder2.default.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
               dataHex = dataHex.concat(hex);
-              break;
             }
-          case 'uint256':
-            {
-              // uint256 args should be passed in as hex to prevent data loss due to max values.
-              // only padding occurs here instead of number to hex conversion.
-              hex = _encoder2.default.padHexString(args[index]);
-              dataHex = dataHex.concat(hex);
-              break;
-            }
+          } else {
+            // fixed bytes, ie. bytes32
+            hex = _encoder2.default.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
+            dataHex = dataHex.concat(hex);
+          }
+        } else if (type === 'bytes') {
+          console.error('dynamics bytes conversion not implemented.');
+        } else if (type === 'string') {
+          console.error('dynamic string conversion not implemented.');
+        } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
+          console.error('dynamic array conversion not implemented.');
         }
       });
 

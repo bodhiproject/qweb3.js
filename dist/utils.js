@@ -6,17 +6,9 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _bignumber = require('bignumber.js');
-
-var _bignumber2 = _interopRequireDefault(_bignumber);
-
 var _utf = require('utf8');
 
 var _utf2 = _interopRequireDefault(_utf);
-
-var _web3Utils = require('web3-utils');
-
-var _web3Utils2 = _interopRequireDefault(_web3Utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -172,59 +164,6 @@ var Utils = function () {
       }
 
       return "0x" + hex;
-    }
-
-    /**
-     * Converts value to it's hex representation
-     *
-     * @method fromDecimal
-     * @param {String|Number|BigNumber}
-     * @return {String}
-     */
-
-  }, {
-    key: 'fromDecimal',
-    value: function fromDecimal(value) {
-      var number = toBigNumber(value);
-      var result = number.toString(16);
-
-      return number.lessThan(0) ? '-0x' + result.substr(1) : '0x' + result;
-    }
-
-    /**
-     * Takes an input and transforms it into an bignumber
-     *
-     * @method toBigNumber
-     * @param {Number|String|BigNumber} a number, string, HEX string or BigNumber
-     * @return {BigNumber} BigNumber
-     */
-
-  }, {
-    key: 'toBigNumber',
-    value: function toBigNumber(number) {
-      /*jshint maxcomplexity:5 */
-      number = number || 0;
-      if (isBigNumber(number)) return number;
-
-      if (_lodash2.default.isString(number) && (number.indexOf('0x') === 0 || number.indexOf('-0x') === 0)) {
-        return new _bignumber2.default(number.replace('0x', ''), 16);
-      }
-
-      return new _bignumber2.default(number.toString(10), 10);
-    }
-
-    /**
-     * Returns true if object is BigNumber, otherwise false
-     *
-     * @method isBigNumber
-     * @param {Object}
-     * @return {Boolean}
-     */
-
-  }, {
-    key: 'isBigNumber',
-    value: function isBigNumber(object) {
-      return object instanceof _bignumber2.default || object && object.constructor && object.constructor.name === 'BigNumber';
     }
 
     /**
