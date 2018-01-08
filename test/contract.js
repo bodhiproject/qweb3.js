@@ -1,10 +1,13 @@
 import 'babel-polyfill';
 import { assert } from 'chai';
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
+import Web3Utils from 'web3-utils';
 
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
 import Contract from '../src/contract';
+import Encoder from '../src/encoder';
 
 describe('Contract', function() {
   let contract;
@@ -74,6 +77,184 @@ describe('Contract', function() {
 
       assert.equal(dataHex, funcHash.concat(oracle).concat(name).concat(resultNames).concat(bettingEndBlock)
         .concat(resultSettingEndBlock).toLowerCase());
+    });
+
+    it('converts address types', async function() {
+      const methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "testMethod",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      const args = ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.getFunctionHash(methodObj);
+      const param = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('converts bool types', async function() {
+      const methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      const args = [true];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.getFunctionHash(methodObj);
+      const param = '0000000000000000000000000000000000000000000000000000000000000001';
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('converts uint types', async function() {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "uint32"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      let args = [2147483647]; // max uint32
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      let funcHash = Encoder.getFunctionHash(methodObj);
+      let param = '000000000000000000000000000000000000000000000000000000007FFFFFFF'.toLowerCase();
+      assert.equal(dataHex, funcHash.concat(param));
+
+      methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      args = [new BigNumber(2).toPower(256).minus(1)]; // max uint256
+      dataHex = contract.constructDataHex(methodObj, args);
+
+      funcHash = Encoder.getFunctionHash(methodObj);
+      param = Web3Utils.numberToHex(args[0]).slice(2);
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('converts fixed bytes array types', async function() {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32[10]"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      let args = [['a', 'b', 'c']];
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      let funcHash = Encoder.getFunctionHash(methodObj);
+      let param = '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+
+      methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes8[10]"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      args = [['a', 'b', 'c']];
+      dataHex = contract.constructDataHex(methodObj, args);
+
+      funcHash = Encoder.getFunctionHash(methodObj);
+      param = '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('converts fixed bytes types', async function() {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      let args = ['hello'];
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      let funcHash = Encoder.getFunctionHash(methodObj);
+      let param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+
+      methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes8"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      args = ['hello'];
+      dataHex = contract.constructDataHex(methodObj, args);
+
+      funcHash = Encoder.getFunctionHash(methodObj);
+      param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
     });
 
     it('throws if methodObj is undefined', async function() {
