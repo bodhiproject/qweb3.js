@@ -1,13 +1,39 @@
-import { assert } from 'chai';
+import {
+  assert
+} from 'chai';
 import BN from 'bn.js';
+import Web3Utils from 'web3-utils';
 
 import Encoder from '../src/encoder';
 
 describe('Encoder', function() {
   const UINT256_MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+  const UINT256_MIN = '0';
+  const INT256_MAX = '57896044618658097711785492504343953926634992332820282019728792003956564819967';
+  const INT256_MIN = '-57896044618658097711785492504343953926634992332820282019728792003956564819968';
 
   describe('getFunctionHash()', function() {
-    const funcObj = {"constant": false,"inputs": [{"name": "_resultIndex","type": "uint8"},{"name": "_sender","type": "address"},{"name": "_amount","type": "uint256"}],"name": "voteFromOracle","outputs": [{"name": "","type": "bool"}],"payable": false,"stateMutability": "nonpayable","type": "function"};
+    const funcObj = {
+      "constant": false,
+      "inputs": [{
+        "name": "_resultIndex",
+        "type": "uint8"
+      }, {
+        "name": "_sender",
+        "type": "address"
+      }, {
+        "name": "_amount",
+        "type": "uint256"
+      }],
+      "name": "voteFromOracle",
+      "outputs": [{
+        "name": "",
+        "type": "bool"
+      }],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    };
 
     it('should convert a function obj to hash string', function() {
       const hash = Encoder.getFunctionHash(funcObj);
@@ -23,29 +49,29 @@ describe('Encoder', function() {
 
   describe('addressToHex()', function() {
     it('should convert a qtum address', function() {
-      assert.equal(Encoder.addressToHex('qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'), 
+      assert.equal(Encoder.addressToHex('qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'),
         '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3');
-      assert.equal(Encoder.addressToHex('qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8'), 
+      assert.equal(Encoder.addressToHex('qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8'),
         '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868');
-      assert.equal(Encoder.addressToHex('qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3'), 
+      assert.equal(Encoder.addressToHex('qTumW1fRyySwmoPi12LpFyeRj8W6mzUQA3'),
         '000000000000000000000000718c3ab4d6a28c92c570a1c12bfc17c3512bb05b');
     });
 
     it('should pad a hex address', function() {
-      assert.equal(Encoder.addressToHex('17e7888aa7412a735f336d2f6d784caefabb6fa3'), 
+      assert.equal(Encoder.addressToHex('17e7888aa7412a735f336d2f6d784caefabb6fa3'),
         '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3');
-      assert.equal(Encoder.addressToHex('18b1a0dc71e4de23c20dc4163f9696d2d9d63868'), 
+      assert.equal(Encoder.addressToHex('18b1a0dc71e4de23c20dc4163f9696d2d9d63868'),
         '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868');
-      assert.equal(Encoder.addressToHex('718c3ab4d6a28c92c570a1c12bfc17c3512bb05b'), 
+      assert.equal(Encoder.addressToHex('718c3ab4d6a28c92c570a1c12bfc17c3512bb05b'),
         '000000000000000000000000718c3ab4d6a28c92c570a1c12bfc17c3512bb05b');
     });
 
     it('can handle an address with a hex prefix', function() {
-      assert.equal(Encoder.addressToHex('0x17e7888aa7412a735f336d2f6d784caefabb6fa3'), 
+      assert.equal(Encoder.addressToHex('0x17e7888aa7412a735f336d2f6d784caefabb6fa3'),
         '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3');
-      assert.equal(Encoder.addressToHex('0x18b1a0dc71e4de23c20dc4163f9696d2d9d63868'), 
+      assert.equal(Encoder.addressToHex('0x18b1a0dc71e4de23c20dc4163f9696d2d9d63868'),
         '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868');
-      assert.equal(Encoder.addressToHex('0x718c3ab4d6a28c92c570a1c12bfc17c3512bb05b'), 
+      assert.equal(Encoder.addressToHex('0x718c3ab4d6a28c92c570a1c12bfc17c3512bb05b'),
         '000000000000000000000000718c3ab4d6a28c92c570a1c12bfc17c3512bb05b');
     });
 
@@ -138,24 +164,32 @@ describe('Encoder', function() {
       assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
       assert.equal(hex.length, 64);
 
-      hex = Encoder.intToHex(-1000000);
-      assert.equal(hex, 'fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0bdc0');
+      hex = Encoder.intToHex(1);
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000001');
       assert.equal(hex.length, 64);
 
       hex = Encoder.intToHex('-10000000000000000');
       assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffdc790d903f0000');
       assert.equal(hex.length, 64);
 
-      hex = Encoder.intToHex(1);
-      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000001');
-      assert.equal(hex.length, 64);
-
-      hex = Encoder.intToHex(1000000);
-      assert.equal(hex, '00000000000000000000000000000000000000000000000000000000000f4240');
-      assert.equal(hex.length, 64);
-
       hex = Encoder.intToHex('10000000000000000');
       assert.equal(hex, '000000000000000000000000000000000000000000000000002386f26fc10000');
+      assert.equal(hex.length, 64);
+
+      hex = Encoder.intToHex(INT256_MAX);
+      assert.equal(hex, '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      assert.equal(hex.length, 64);
+
+      hex = Encoder.intToHex(INT256_MIN);
+      assert.equal(hex, '8000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, 64);
+
+      hex = Encoder.intToHex(new BN(INT256_MAX));
+      assert.equal(hex, '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      assert.equal(hex.length, 64);
+
+      hex = Encoder.intToHex(new BN(INT256_MIN));
+      assert.equal(hex, '8000000000000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, 64);
     });
 
@@ -165,7 +199,7 @@ describe('Encoder', function() {
     });
   });
 
-  describe.only('uintToHex()', function() {
+  describe('uintToHex()', function() {
     it('should convert uint to hex', function() {
       let hex = Encoder.uintToHex(0);
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
@@ -185,6 +219,10 @@ describe('Encoder', function() {
 
       hex = Encoder.uintToHex(new BN(UINT256_MAX));
       assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      assert.equal(hex.length, 64);
+
+      hex = Encoder.uintToHex(new BN(UINT256_MIN));
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, 64);
     });
 
