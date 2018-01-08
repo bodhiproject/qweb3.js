@@ -125,7 +125,8 @@ class Encoder {
   }
 
   /*
-   * Converts an int to hex padded-left to 32 bytes. Accepts it in either decimal or hex format.
+   * Converts an int to hex padded-left to 32 bytes. 
+   * @dev Accepts either decimal or string (as decimal, not hex) format, ie. 12345, '-12345'
    * @param num The number to convert.
    * @return The converted int to padded-left hex string.
    */
@@ -135,7 +136,7 @@ class Encoder {
     }
 
     const numTwosComp = new BN(num).toTwos(256).toJSON();
-    if (num > 0) {
+    if (_.indexOf(num.toString()) === -1) {
       // Positive ints are padded with 0
       return Web3Utils.padLeft(numTwosComp, PADDED_BYTES, '0');
     } else {
@@ -145,7 +146,8 @@ class Encoder {
   }
 
   /*
-   * Converts a uint to hex padded-left to 32 bytes. Accepts it in either decimal or hex format.
+   * Converts a uint to hex padded-left to 32 bytes. 
+   * @dev Accepts decimal, string, or hex format, ie. 12345678, '12345678', 'bd614e', 0xbc614e
    * @param num The number to convert.
    * @return The converted uint to padded-left hex string.
    */

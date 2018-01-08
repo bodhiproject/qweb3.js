@@ -185,6 +185,11 @@ describe('Encoder', function() {
       assert.equal(hex.toLowerCase(), '000000000000000000000000000000000000000000000000002386f26fc10000');
       assert.equal(hex.length, 64);
     });
+
+    it('throws if num is undefined', function() {
+      assert.throws(() => Encoder.uintToHex(undefined), Error);
+      assert.throws(() => Encoder.uintToHex(), Error);
+    });
   });
 
   describe('padHexString()', function() {
