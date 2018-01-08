@@ -2,6 +2,7 @@ import _ from 'lodash';
 import Web3Utils from 'web3-utils';
 import BN from 'bn.js';
 import bs58 from 'bs58';
+
 import Utils from './utils';
 
 const PADDED_BYTES = 64;
@@ -85,6 +86,7 @@ class Encoder {
       throw new Error(`num should not be undefined`);
     }
 
+    // Must be converted to Two's Complement representation to handle negative numbers
     const twosComp = new BN(num).toTwos(256).toJSON();
     if (_.indexOf(num.toString()) === -1) {
       // Positive ints are padded with 0
