@@ -17,46 +17,93 @@ import Qweb3 from 'qweb3';
 // Pass in the path of your local Qtum node rpc port with username/password
 // In our case, username=bodhi, password=bodhi, port=13889
 const qClient = new Qweb3('http://bodhi:bodhi@localhost:13889');
+```
 
-// Example Qweb3 call to get the current block count
-async function getBlockCount() {
-	return await qClient.getBlockCount();
+### isConnected()
+Checks if you are connected properly to the local qtum node.
+```
+async function isConnected() {
+  return await qClient.isConnected();
 }
 ```
 
-The following Qtum cli commands have been ported over:
+### getHexAddress(address)
+Converts a Qtum address to hex format.
+```
+async function getHexAddress() {
+  return await qClient.getHexAddress('qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy');
+}
+```
 
-* **isConnected()**
-	
-	Checks if you are connected properly to the local qtum node.
+### fromHexAddress(hexAddress)
+Converts a hex address to Qtum format.
+```
+async function fromHexAddress() {
+  return await qClient.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3');
+}
+```
 
-* **getHexAddress(address)**
-	
-	Converts a Qtum address to hex format.
+### getBlockCount()
+Gets the current block height of your local Qtum node.
+```
+async function getBlockCount() {
+  return await qClient.getBlockCount();
+}
+```
 
-* **fromHexAddress(hexAddress)**
+### getTransaction(txid)
+Gets the transaction details of the transaction id.
+```
+async function getTransaction(args) {
+  const {
+    transactionId, // string
+  } = args;
 
-	Converts a hex address to Qtum format.
+  return await qClient.getTransactionReceipt(transactionId);
+}
+```
 
-* **getBlockCount()**
-	
-	Gets the current block height of your local Qtum node.
+### getTransactionReceipt(txid)
+Gets the transaction receipt of the transaction id.
+```
+async function getTransactionReceipt(args) {
+  const {
+    transactionId, // string
+  } = args;
 
-* **getTransaction(txid)**
+  return await qClient.getTransactionReceipt(transactionId);
+}
+```
 
-	Gets the transaction details of the transaction id.
+### listUnspent()
+Gets the unspent outputs that can be used.
+```
+async function listUnspent() {
+  return await qClient.listUnspent();
+}
+```
 
-* **getTransactionReceipt(txid)**
+### searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, removeHexPrefix)
+Gets the logs given the params on the blockchain.
+```
+async function(args) {
+  let {
+    fromBlock, // number
+    toBlock, // number
+    addresses, // string array
+    topics // string array
+  } = args;
 
-	Gets the transaction receipt of the transaction id.
+  if (addresses === undefined) {
+    addresses = [];
+  }
+  if (topics === undefined) {
+    topics = [];
+  }
 
-* **listUnspent()**
-
-	Gets the unspent outputs that can be used.
-
-* **searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, removeHexPrefix)**
-	
-	Gets the logs given the params on the blockchain.
+  return await qClient.searchLogs(fromBlock, toBlock, addresses, topics, ContractMetadata, true);
+}
+```
 
 ## Contract.js
 Instantiate a new instance of `Contract`: 
@@ -75,40 +122,36 @@ const contractAbi = [{"constant":false,"inputs":[{"name":"_eventAddress","type":
 const contract = new Contract(rpcAddress, contractAddress, contractAbi);
 ```
 
-* **call(methodName, params)**
-	
-	Executes a `callcontract`.
-  
-  ```
-  // callcontract on a method named 'bettingEndBlock'
-  async function exampleCall(args) {
-    const {
-      senderAddress, // address
-    } = args;
+### call(methodName, params)
+Executes a `callcontract`
+```
+// callcontract on a method named 'bettingEndBlock'
+async function exampleCall(args) {
+  const {
+    senderAddress, // address
+  } = args;
 
-    return await contract.call('bettingEndBlock', {
-      methodArgs: [],
-      senderAddress: senderAddress,
-    });
-  }
-	```
+  return await contract.call('bettingEndBlock', {
+    methodArgs: [],
+    senderAddress: senderAddress,
+  });
+}
+```
 
-* **send(methodName, params)**
+### send(methodName, params)
+Executes a `sendtocontract`
+```
+// sendtocontract on a method named 'setResult'
+async function exampleSend(args) {
+  const {
+    resultIndex, // number
+    senderAddress, // address
+  } = args;
 
-	Executes a `sendtocontract`.
-	
-	```
-  // sendtocontract on a method named 'setResult'
-  async function exampleSend(args) {
-    const {
-      resultIndex, // number
-      senderAddress, // address
-    } = args;
-
-    return await contract.send('setResult', {
-      methodArgs: [resultIndex],
-      gasLimit: 1000000, // setting the gas limit to 1 million
-      senderAddress: senderAddress,
-    });
-  }
-	```
+  return await contract.send('setResult', {
+    methodArgs: [resultIndex],
+    gasLimit: 1000000, // setting the gas limit to 1 million
+    senderAddress: senderAddress,
+  });
+}
+```
