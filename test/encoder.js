@@ -54,6 +54,31 @@ describe('Encoder', function() {
     });
   });
 
+  describe('boolToHex()', function() {
+    it('should convert a bool to hex', async function() {
+      let hex = await Encoder.boolToHex(true);
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000001');
+      assert.equal(hex.length, 64);
+
+      hex = await Encoder.boolToHex(false);
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, 64);
+
+      hex = await Encoder.boolToHex(1);
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000001');
+      assert.equal(hex.length, 64);
+
+      hex = await Encoder.boolToHex(0);
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, 64);
+    });
+
+    it('throws if value is undefined', async function() {
+      assert.throws(() => Encoder.boolToHex(undefined), Error);
+      assert.throws(() => Encoder.boolToHex(), Error);
+    });
+  });
+
   describe('stringToHex()', function() {
     it('should convert a string to hex', async function() {
       const hex = await Encoder.stringToHex('Hello World', 640);

@@ -102,7 +102,7 @@ class Contract {
       } else if (type.startsWith('int')) {
         console.error('int conversion not implemented.');
       } else if (type.match(bytesRegex)) {
-        if (type.match(bytesArrRegex)) {
+        if (type.match(bytesArrRegex)) { // is fixed bytes array, ie. bytes32[10]
           const arrCapacity = _.toNumber(type.match(numberRegex)[1]);
 
           if (args[index] instanceof Array) {
@@ -112,7 +112,7 @@ class Contract {
             hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
             dataHex = dataHex.concat(hex);
           }
-        } else {
+        } else { // is fixed bytes, ie. bytes32
           hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
           dataHex = dataHex.concat(hex);
         } 
