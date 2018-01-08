@@ -86,6 +86,12 @@ describe('Encoder', function() {
       assert.equal(hex.length, 640);
     });
 
+    it('only parses up to the maxCharLen', async function() {
+      const hex = await Encoder.stringToHex('abc', 4); // 616263 in hex
+      assert.equal(hex, '6162');
+      assert.equal(hex.length, 4);
+    });
+
     it('throws if string is undefined or not a String', async function() {
       assert.throws(() => Encoder.stringToHex(undefined, 640), Error);
       assert.throws(() => Encoder.stringToHex(12345, 640), Error);
@@ -101,7 +107,13 @@ describe('Encoder', function() {
     it('should convert a string array to hex', async function() {
       const hex = await Encoder.stringArrayToHex(['a', 'b', 'c'], 10);
       assert.equal(hex, '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 640);
+      assert.equal(hex.length, 64 * 10);
+    });
+
+    it('only parses the numOfItems', async function() {
+      const hex = await Encoder.stringArrayToHex(['a', 'b', 'c', 'd'], 3);
+      assert.equal(hex, '610000000000000000000000000000000000000000000000000000000000000062000000000000000000000000000000000000000000000000000000000000006300000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, 64 * 3);
     });
 
     it('throws if strArray is undefined or not an Array', async function() {
