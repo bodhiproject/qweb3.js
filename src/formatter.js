@@ -5,8 +5,7 @@ import Utils from './utils';
 import Decoder from './decoder';
 
 class Formatter {
-
-	/**
+  /**
    * Formats the output of searchlog by decoding eventName, indexed and unindexed params
    * @param {object} rawOutput Raw seachlog output
    * @param {object} contractMetadata Metadata of all contracts and their events with topic hashes
@@ -15,7 +14,7 @@ class Formatter {
    */
   static searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
     return _.map(rawOutput, (resultEntry) => {
-      let formatted = _.assign({}, resultEntry);
+      const formatted = _.assign({}, resultEntry);
 
       if (!_.isEmpty(resultEntry.log)) {
         _.each(resultEntry.log, (item, index) => {
@@ -47,7 +46,7 @@ class Formatter {
             let decodedLog;
             try {
               decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
-            } catch(err) { // catch throws in decodeLogItem
+            } catch (err) { // catch throws in decodeLogItem
               console.warn(err.message);
               return;
             }
@@ -80,13 +79,13 @@ class Formatter {
    */
   static callOutput(rawOutput, contractABI, methodName, removeHexPrefix) {
     if (_.isUndefined(contractABI)) {
-      throw new Error(`contractABI is undefined.`);
+      throw new Error('contractABI is undefined.');
     }
     if (_.isUndefined(methodName)) {
-      throw new Error(`methodName is undefined.`);
+      throw new Error('methodName is undefined.');
     }
 
-    const methodABI = _.filter(contractABI, {'name': methodName});
+    const methodABI = _.filter(contractABI, { name: methodName });
     let result = null;
 
     _.each(rawOutput, (value, key) => {

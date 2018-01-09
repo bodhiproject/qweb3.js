@@ -45,7 +45,7 @@ class Contract {
     };
 
     return this.provider.request(options)
-      .then((result) => Formatter.callOutput(result, this.abi, methodName, true));
+      .then(result => Formatter.callOutput(result, this.abi, methodName, true));
   }
 
   /*
@@ -58,7 +58,9 @@ class Contract {
     // Throw if methodArgs or senderAddress is not defined in params
     Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
-    const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
+    const {
+      methodArgs, amount, gasLimit, gasPrice, senderAddress,
+    } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
     const options = {
       method: 'sendtocontract',
@@ -83,7 +85,7 @@ class Contract {
   */
   constructDataHex(methodObj, args) {
     if (!methodObj) {
-      throw new Error(`methodObj should not be undefined.`);
+      throw new Error('methodObj should not be undefined.');
     }
 
     let dataHex = '';
@@ -144,7 +146,7 @@ class Contract {
       throw new Error(`Method ${methodName} not defined in ABI.`);
     }
     if (methodObj.inputs.length != methodArgs.length) {
-      throw new Error(`Number of arguments supplied does not match ABI method args.`);
+      throw new Error('Number of arguments supplied does not match ABI method args.');
     }
 
     let args;

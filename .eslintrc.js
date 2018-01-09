@@ -1,9 +1,12 @@
 module.exports = {
   "extends": "airbnb-base",
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  },
   "rules": {
     "consistent-return": 0,
-    "max-len": [
-      2,
+    "max-len": [2,
       {
         "code": 400
       }
@@ -38,7 +41,11 @@ module.exports = {
       {
         "props": false
       }
+    ],
+    "object-property-newline": ["error",
+      {
+        "allowMultiplePropertiesPerLine": false
+      }
     ]
-
   }
 };
