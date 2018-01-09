@@ -32,8 +32,10 @@ var SEND_GASPRICE = 0.0000004;
 
 var MAX_BYTES_PER_ARRAY_SLOT = 64;
 
-var REGEX_BYTES = /bytes([0-9]+)/;
-var REGEX_BYTES_ARRAY = /bytes([0-9]+)(\[[0-9]+\])/;
+var REGEX_UINT = /^uint/;
+var REGEX_INT = /^int/;
+var REGEX_BYTES = /bytes([1-9]|[12]\d|3[0-2])$/;
+var REGEX_BYTES_ARRAY = /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/;
 var REGEX_NUMBER = /[0-9]+/g;
 var REGEX_DYNAMIC_ARRAY = /\[\]/;
 
@@ -134,35 +136,34 @@ var Contract = function () {
         } else if (type === 'bool') {
           hex = _encoder2.default.boolToHex(args[index]);
           dataHex = dataHex.concat(hex);
-        } else if (type.startsWith('uint')) {
+        } else if (type.match(REGEX_UINT)) {
           hex = _encoder2.default.uintToHex(args[index]);
           dataHex = dataHex.concat(hex);
-        } else if (type.startsWith('int')) {
+        } else if (type.match(REGEX_INT)) {
           hex = _encoder2.default.intToHex(args[index]);
           dataHex = dataHex.concat(hex);
-        } else if (type.match(REGEX_BYTES)) {
-          if (type.match(REGEX_BYTES_ARRAY)) {
-            // fixed bytes array, ie. bytes32[10]
-            var arrCapacity = _lodash2.default.toNumber(type.match(REGEX_NUMBER)[1]);
-
-            if (args[index] instanceof Array) {
-              hex = _encoder2.default.stringArrayToHex(args[index], arrCapacity);
-              dataHex = dataHex.concat(hex);
-            } else {
-              hex = _encoder2.default.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
-              dataHex = dataHex.concat(hex);
-            }
+        } else if (type.match(REGEX_BYTES_ARRAY)) {
+          // fixed bytes array, ie. bytes32[10]
+          var arrCapacity = _lodash2.default.toNumber(type.match(REGEX_NUMBER)[1]);
+          if (args[index] instanceof Array) {
+            hex = _encoder2.default.stringArrayToHex(args[index], arrCapacity);
+            dataHex = dataHex.concat(hex);
           } else {
-            // fixed bytes, ie. bytes32
-            hex = _encoder2.default.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
+            hex = _encoder2.default.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
             dataHex = dataHex.concat(hex);
           }
+        } else if (type.match(REGEX_BYTES)) {
+          // fixed bytes, ie. bytes32
+          hex = _encoder2.default.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
+          dataHex = dataHex.concat(hex);
         } else if (type === 'bytes') {
           console.error('dynamics bytes conversion not implemented.');
         } else if (type === 'string') {
           console.error('dynamic string conversion not implemented.');
         } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
           console.error('dynamic array conversion not implemented.');
+        } else {
+          console.error('found unknown type: ' + type);
         }
       });
 

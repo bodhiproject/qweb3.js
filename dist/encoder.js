@@ -125,7 +125,7 @@ var Encoder = function () {
 
       // Must be converted to Two's Complement representation to handle negative numbers
       var twosComp = new _bn2.default(num).toTwos(256).toJSON();
-      if (_lodash2.default.indexOf(num.toString()) === -1) {
+      if (_lodash2.default.indexOf(num.toString(), '-') === -1) {
         // Positive ints are padded with 0
         return _web3Utils2.default.padLeft(twosComp, PADDED_BYTES, '0');
       } else {
