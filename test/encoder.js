@@ -129,7 +129,7 @@ describe('Encoder', () => {
       assert.equal(hex.length, PADDED_BYTES * 10);
     });
 
-    it('only parses up to the maxCharLen', () => {
+    it('parses up to the maxCharLen', () => {
       const hex = Encoder.stringToHex('abc', 4); // 616263 in hex
       assert.equal(hex, '6162');
       assert.equal(hex.length, 4);
@@ -159,7 +159,7 @@ describe('Encoder', () => {
       assert.equal(hex.length, PADDED_BYTES * 10);
     });
 
-    it('only parses the numOfItems', () => {
+    it('parses the numOfItems defined', () => {
       const hex = Encoder.stringArrayToHex(['a', 'b', 'c', 'd'], 3);
       assert.equal(hex, '610000000000000000000000000000000000000000000000000000000000000062000000000000000000000000000000000000000000000000000000000000006300000000000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, PADDED_BYTES * 3);
