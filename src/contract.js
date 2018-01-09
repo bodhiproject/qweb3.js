@@ -11,6 +11,8 @@ const SEND_GASPRICE = 0.0000004;
 
 const MAX_BYTES_PER_ARRAY_SLOT = 64;
 
+const REGEX_UINT = /^uint/;
+const REGEX_INT = /^int/;
 const REGEX_BYTES = /bytes([1-9]|[12]\d|3[0-2])$/;
 const REGEX_BYTES_ARRAY = /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/;
 const REGEX_NUMBER = /[0-9]+/g;
@@ -97,10 +99,10 @@ class Contract {
       } else if (type === 'bool') {
         hex = Encoder.boolToHex(args[index]);
         dataHex = dataHex.concat(hex);
-      } else if (type.startsWith('uint')) {
+      } else if (type.match(REGEX_UINT)) {
         hex = Encoder.uintToHex(args[index]);
         dataHex = dataHex.concat(hex);
-      } else if (type.startsWith('int')) {
+      } else if (type.match(REGEX_INT)) {
         hex = Encoder.intToHex(args[index]);
         dataHex = dataHex.concat(hex);
       } else if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]

@@ -88,7 +88,7 @@ class Encoder {
 
     // Must be converted to Two's Complement representation to handle negative numbers
     const twosComp = new BN(num).toTwos(256).toJSON();
-    if (_.indexOf(num.toString()) === -1) {
+    if (_.indexOf(num.toString(), '-') === -1) {
       // Positive ints are padded with 0
       return Web3Utils.padLeft(twosComp, PADDED_BYTES, '0');
     } else {
