@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import HttpProvider from './httpprovider';
 import Formatter from './formatter';
 import Utils from './utils.js';
@@ -9,7 +10,13 @@ const SEND_GASLIMIT = 250000;
 const SEND_GASPRICE = 0.0000004;
 
 const MAX_BYTES_PER_ARRAY_SLOT = 64;
-const ARRAY_CAPACITY = 10;
+
+const REGEX_UINT = /^uint/;
+const REGEX_INT = /^int/;
+const REGEX_BYTES = /bytes([1-9]|[12]\d|3[0-2])$/;
+const REGEX_BYTES_ARRAY = /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/;
+const REGEX_NUMBER = /[0-9]+/g;
+const REGEX_DYNAMIC_ARRAY = /\[\]/;
 
 class Contract {
   constructor(url, address, abi) {
@@ -84,34 +91,40 @@ class Contract {
 
     let hex;
     _.each(methodObj.inputs, (item, index) => {
-      switch (item.type) {
-        case 'address': {
-          hex = Encoder.addressToHex(args[index]);
+      const type = item.type;
+
+      if (type === 'address') {
+        hex = Encoder.addressToHex(args[index]);
+        dataHex = dataHex.concat(hex);
+      } else if (type === 'bool') {
+        hex = Encoder.boolToHex(args[index]);
+        dataHex = dataHex.concat(hex);
+      } else if (type.match(REGEX_UINT)) {
+        hex = Encoder.uintToHex(args[index]);
+        dataHex = dataHex.concat(hex);
+      } else if (type.match(REGEX_INT)) {
+        hex = Encoder.intToHex(args[index]);
+        dataHex = dataHex.concat(hex);
+      } else if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
+        const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
+        if (args[index] instanceof Array) {
+          hex = Encoder.stringArrayToHex(args[index], arrCapacity);
           dataHex = dataHex.concat(hex);
-          break;
-        } 
-        case 'bytes32[10]': { // TODO: handle any length arrays
-          if (args[index] instanceof Array) {
-            hex = Encoder.stringArrayToHex(args[index], ARRAY_CAPACITY);
-            dataHex = dataHex.concat(hex);
-          } else {
-            hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * ARRAY_CAPACITY);
-            dataHex = dataHex.concat(hex);
-          }
-          break;
-        }
-        case 'uint8': {
-          hex = Encoder.uintToHex(args[index]);
+        } else {
+          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
           dataHex = dataHex.concat(hex);
-          break;
         }
-        case 'uint256': {
-          // uint256 args should be passed in as hex to prevent data loss due to max values.
-          // only padding occurs here instead of number to hex conversion.
-          hex = Encoder.padHexString(args[index]);
-          dataHex = dataHex.concat(hex);
-          break;
-        }
+      } else if (type.match(REGEX_BYTES)) { // fixed bytes, ie. bytes32
+        hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
+        dataHex = dataHex.concat(hex);
+      } else if (type === 'bytes') {
+        console.error('dynamics bytes conversion not implemented.');
+      } else if (type === 'string') {
+        console.error('dynamic string conversion not implemented.');
+      } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
+        console.error('dynamic array conversion not implemented.');
+      } else {
+        console.error(`found unknown type: ${type}`);
       }
     });
 

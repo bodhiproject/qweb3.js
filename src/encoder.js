@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import Web3Utils from 'web3-utils';
+import BN from 'bn.js';
 import bs58 from 'bs58';
+
 import Utils from './utils';
 
 const PADDED_BYTES = 64;
@@ -14,7 +16,7 @@ class Encoder {
    */
   static getFunctionHash(methodObj) {
     if (!methodObj) {
-      throw new Error(`methodObj should not be undefined.`);
+      throw new Error(`methodObj should not be undefined`);
     }
 
     let name = methodObj.name;
@@ -39,7 +41,7 @@ class Encoder {
    */
   static addressToHex(address) {
     if (!address) {
-      throw new Error(`address should not be undefined.`);
+      throw new Error(`address should not be undefined`);
     }
 
     // Remove '0x' from beginning of address
@@ -55,6 +57,64 @@ class Encoder {
     }
 
     return Web3Utils.padLeft(hexAddr, PADDED_BYTES);
+  }
+
+  /*
+   * Converts a boolean to hex padded-left to 32 bytes. Accepts it in true/false or 1/0 format.
+   * @param value The boolean to convert.
+   * @return The converted boolean to padded-left hex string.
+   */
+  static boolToHex(value) {
+    if (_.isUndefined(value)) {
+      throw new Error(`value should not be undefined`);
+    }
+
+    return this.uintToHex(value ? 1 : 0);
+  }
+
+  /*
+   * Converts an int to hex padded-left to 32 bytes. 
+   * Accepts the following formats:
+   *    decimal: 12345
+   *    string: '-12345'
+   *    BN.js: <BN: 3039>
+   * @param num The number to convert.
+   * @return The converted int to padded-left hex string.
+   */
+  static intToHex(num) {
+    if (_.isUndefined(num)) {
+      throw new Error(`num should not be undefined`);
+    }
+
+    // Must be converted to Two's Complement representation to handle negative numbers
+    const twosComp = new BN(num).toTwos(256).toJSON();
+    if (_.indexOf(num.toString(), '-') === -1) {
+      // Positive ints are padded with 0
+      return Web3Utils.padLeft(twosComp, PADDED_BYTES, '0');
+    } else {
+      // Negative ints are padded with f
+      return Web3Utils.padLeft(twosComp, PADDED_BYTES, 'f');
+    }
+  }
+
+  /*
+   * Converts a uint to hex padded-left to 32 bytes. 
+   * Accepts the following formats:
+   *    decimal: 12345
+   *    string: '-12345'
+   *    hex string (without 0x hex prefix): 'bd614e'
+   *    BN.js: <BN: 3039>
+   * @param num The number to convert.
+   * @return The converted uint to padded-left hex string.
+   */
+  static uintToHex(num) {
+    if (_.isUndefined(num)) {
+      throw new Error(`num should not be undefined`);
+    }
+
+    const bigNum = new BN(num, 16).toJSON();
+    const hexNum = Web3Utils.numberToHex(bigNum);
+    return Web3Utils.padLeft(hexNum, PADDED_BYTES).slice(2);
   }
 
   /*
@@ -111,26 +171,12 @@ class Encoder {
   }
 
   /*
-   * Converts a uint to hex padded-left to 32 bytes.
-   * @param num The number to convert.
-   * @return The converted uint to padded-left hex string.
-   */
-  static uintToHex(num) {
-    if (!_.isNumber(num)) {
-      throw new Error(`num is not a Number`);
-    }
-
-    let hexNumber = Web3Utils.toHex(num);
-    return Web3Utils.padLeft(hexNumber, PADDED_BYTES).slice(2);
-  }
-
-  /*
    * Pads a hex string padded-left to 32 bytes.
    * @param {String} hexStr The hex string to pad.
    * @return {String} The padded-left hex string.
    */
   static padHexString(hexStr) {
-    if (hexStr === undefined) {
+    if (_.isUndefined(hexStr)) {
       throw new Error(`hexStr should not be undefined`);
     }
     if (!Web3Utils.isHex(hexStr)) {

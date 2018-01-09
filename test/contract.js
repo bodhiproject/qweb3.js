@@ -5,6 +5,7 @@ import _ from 'lodash';
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
 import Contract from '../src/contract';
+import Encoder from '../src/encoder';
 
 describe('Contract', function() {
   let contract;
@@ -58,7 +59,7 @@ describe('Contract', function() {
         ContractMetadata.EventFactory.abi);
     });
 
-    it('constructs the datahex', async function() {
+    it('constructs the datahex', function() {
       const methodObj = _.find(contract.abi, { name: 'createTopic' });
       assert.isDefined(methodObj);
 
@@ -76,7 +77,205 @@ describe('Contract', function() {
         .concat(resultSettingEndBlock).toLowerCase());
     });
 
-    it('throws if methodObj is undefined', async function() {
+    it('converts address types', function() {
+      const methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "testMethod",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      const args = ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.getFunctionHash(methodObj);
+      const param = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('converts bool types', function() {
+      const methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      const args = [true];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.getFunctionHash(methodObj);
+      const param = '0000000000000000000000000000000000000000000000000000000000000001';
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('converts uint types', function() {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "uint32"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      let args = [2147483647]; // max uint32
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      let funcHash = Encoder.getFunctionHash(methodObj);
+      let param = '000000000000000000000000000000000000000000000000000000007FFFFFFF'.toLowerCase();
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('converts fixed bytes array types', function() {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32[10]"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      let args = [['a', 'b', 'c']];
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      let funcHash = Encoder.getFunctionHash(methodObj);
+      let param = '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+
+      methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes8[10]"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      args = [['a', 'b', 'c']];
+      dataHex = contract.constructDataHex(methodObj, args);
+
+      funcHash = Encoder.getFunctionHash(methodObj);
+      param = '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('converts fixed bytes types', function() {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes32"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      let args = ['hello'];
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      let funcHash = Encoder.getFunctionHash(methodObj);
+      let param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+
+      methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes8"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      args = ['hello'];
+      dataHex = contract.constructDataHex(methodObj, args);
+
+      funcHash = Encoder.getFunctionHash(methodObj);
+      param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
+    it('does not parse bytes if < 1 or > 32', function() {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes33"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      let args = ['hello'];
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      let funcHash = Encoder.getFunctionHash(methodObj);
+      assert.equal(dataHex, funcHash);
+
+      methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes0"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      dataHex = contract.constructDataHex(methodObj, args);
+
+      funcHash = Encoder.getFunctionHash(methodObj);
+      assert.equal(dataHex, funcHash);
+    });
+
+    it('throws if methodObj is undefined', function() {
       assert.throws(() => contract.constructDataHex(undefined, ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', 
         ['a', 'b', 'c'], 'c350', 'c738']), Error);
     });
@@ -90,18 +289,18 @@ describe('Contract', function() {
         ContractMetadata.EventFactory.abi);
     });
 
-    it('validates the methods and returns the methodObj and args', async function() {
+    it('validates the methods and returns the methodObj and args', function() {
       const methodAndArgs = contract.validateMethodAndArgs('createTopic', args);
       const methodObj = _.find(contract.abi, { name: 'createTopic' });
       assert.equal(methodAndArgs.method, methodObj);
       assert.equal(methodAndArgs.args, args);
     });
 
-    it('throws if methodName is not found in ABI', async function() {
+    it('throws if methodName is not found in ABI', function() {
       assert.throws(() => contract.validateMethodAndArgs('vote', args), Error);
     });
 
-    it('throws if methodArgs does not match args in ABI', async function() {
+    it('throws if methodArgs does not match args in ABI', function() {
       assert.throws(() => contract.validateMethodAndArgs('createTopic', ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', 
         ['a', 'b', 'c'], 'c350']), Error);
     });
