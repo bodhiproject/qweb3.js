@@ -9,7 +9,7 @@ class Qweb3 {
     this.provider = new HttpProvider(url);
   }
 
-  /********** MISC **********/
+  /** ******** MISC ********* */
   /**
    * Returns true if getinfo request returns result; otherwise false
    * @return {Boolean}
@@ -20,7 +20,7 @@ class Qweb3 {
     }).then(res => Promise.resolve(!!res), err => Promise.resolve(false));
   }
 
-  /********** BLOCKCHAIN **********/
+  /** ******** BLOCKCHAIN ********* */
   /*
   * @dev Returns the current block height that is synced with the client.
   * @return {Promise} Current block count or Error.
@@ -89,10 +89,10 @@ class Qweb3 {
     };
 
     return this.provider.request(options)
-      .then((results) => Formatter.searchLogOutput(results, contractMetadata, removeHexPrefix));
+      .then(results => Formatter.searchLogOutput(results, contractMetadata, removeHexPrefix));
   }
 
-  /********** RAW TRANSACTIONS **********/
+  /** ******** RAW TRANSACTIONS ********* */
   /**
    * Get the hex address of a Qtum address.
    * @param {address} Qtum address
@@ -117,7 +117,7 @@ class Qweb3 {
     });
   }
 
-  /********** UTIL **********/
+  /** ******** UTIL ********* */
   /**
    * Validates if a valid Qtum address.
    * @param {address} Qtum address to validate.
@@ -130,7 +130,7 @@ class Qweb3 {
     });
   }
 
-  /********** WALLET **********/
+  /** ******** WALLET ********* */
   /*
   * Gets the account name associated with the Qtum address.
   * @return {Promise} Account name or Error.
@@ -166,7 +166,7 @@ class Qweb3 {
 
   /**
    * Get transaction details by txid
-   * @param  {string} txid transaction Id (64 digits hexString); 
+   * @param  {string} txid transaction Id (64 digits hexString);
    *  e.g. dfafd59050fbe825d884b1e9279924f42bfa9506ca11e3d1910141054858f338
    * @return {Promise} Promise containing result object or Error
    */
@@ -209,9 +209,9 @@ class Qweb3 {
     return this.provider.request({
       method: 'walletpassphrase',
       params: [
-        passphrase, 
-        timeout, 
-        stakingOnly
+        passphrase,
+        timeout,
+        stakingOnly,
       ],
     });
   }
@@ -226,8 +226,8 @@ class Qweb3 {
     return this.provider.request({
       method: 'walletpassphrasechange',
       params: [
-        oldPassphrase, 
-        newPassphrase
+        oldPassphrase,
+        newPassphrase,
       ],
     });
   }

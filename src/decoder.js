@@ -8,13 +8,12 @@ const MainnetNetworkByte = '3A';
 const TestnetNetworkByte = '78';
 
 class Decoder {
-
-  static toQtumAddress(hexAddress, isMainnet=false) {
+  static toQtumAddress(hexAddress, isMainnet = false) {
     if (hexAddress === undefined || _.isEmpty(hexAddress)) {
-      throw new Error(`hexAddress should not be undefined or empty`);
+      throw new Error('hexAddress should not be undefined or empty');
     }
     if (!Web3Utils.isHex(hexAddress)) {
-      throw new Error(`Invalid hex address`);
+      throw new Error('Invalid hex address');
     }
     // reference: https://gobittest.appspot.com/Address
     let qAddress = hexAddress;
@@ -25,14 +24,14 @@ class Decoder {
       qAddress = TestnetNetworkByte + qAddress;
     }
 
-    let qAddressBuffer = Buffer.from(qAddress, 'hex');
+    const qAddressBuffer = Buffer.from(qAddress, 'hex');
     // Double SHA256 hash
-    let hash1 = crypto.createHash('sha256').update(qAddressBuffer).digest('Hex');
-    let hash1Buffer = Buffer.from(hash1, 'hex');
-    let hash2 = crypto.createHash('sha256').update(hash1Buffer).digest('Hex');
+    const hash1 = crypto.createHash('sha256').update(qAddressBuffer).digest('Hex');
+    const hash1Buffer = Buffer.from(hash1, 'hex');
+    const hash2 = crypto.createHash('sha256').update(hash1Buffer).digest('Hex');
 
     // get first 4 bytes
-    qAddress = qAddress + hash2.slice(0, 8);
+    qAddress += hash2.slice(0, 8);
 
     // base58 encode
     const address = bs58.encode(Buffer.from(qAddress, 'hex'));
@@ -50,10 +49,8 @@ class Decoder {
           value[index] = Utils.trimHexPrefix(arrayItem);
         }
       });
-    } else {
-      if (Web3Utils.isHex(value)) {
-        value = Utils.trimHexPrefix(value);
-      }
+    } else if (Web3Utils.isHex(value)) {
+      value = Utils.trimHexPrefix(value);
     }
 
     return value;

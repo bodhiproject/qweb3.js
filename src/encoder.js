@@ -8,7 +8,6 @@ import Utils from './utils';
 const PADDED_BYTES = 64;
 
 class Encoder {
-
   /*
    * Converts an object of a method from the ABI to a function hash.
    * @param methodObj The json object of the method taken from the ABI.
@@ -16,10 +15,10 @@ class Encoder {
    */
   static getFunctionHash(methodObj) {
     if (!methodObj) {
-      throw new Error(`methodObj should not be undefined`);
+      throw new Error('methodObj should not be undefined');
     }
 
-    let name = methodObj.name;
+    const name = methodObj.name;
     let params = '';
     for (let i = 0; i < methodObj.inputs.length; i++) {
       params = params.concat(methodObj.inputs[i].type);
@@ -27,8 +26,8 @@ class Encoder {
       if (i < methodObj.inputs.length - 1) {
         params = params.concat(',');
       }
-    };
-    let signature = name.concat('(').concat(params).concat(')');
+    }
+    const signature = name.concat('(').concat(params).concat(')');
 
     // Return only the first 4 bytes
     return Web3Utils.sha3(signature).slice(2, 10);
@@ -41,11 +40,11 @@ class Encoder {
    */
   static addressToHex(address) {
     if (!address) {
-      throw new Error(`address should not be undefined`);
+      throw new Error('address should not be undefined');
     }
 
     // Remove '0x' from beginning of address
-    let addr = Utils.trimHexPrefix(address);
+    const addr = Utils.trimHexPrefix(address);
 
     let hexAddr;
     if (Web3Utils.isHex(addr)) {
@@ -66,14 +65,14 @@ class Encoder {
    */
   static boolToHex(value) {
     if (_.isUndefined(value)) {
-      throw new Error(`value should not be undefined`);
+      throw new Error('value should not be undefined');
     }
 
     return this.uintToHex(value ? 1 : 0);
   }
 
   /*
-   * Converts an int to hex padded-left to 32 bytes. 
+   * Converts an int to hex padded-left to 32 bytes.
    * Accepts the following formats:
    *    decimal: 12345
    *    string: '-12345'
@@ -83,7 +82,7 @@ class Encoder {
    */
   static intToHex(num) {
     if (_.isUndefined(num)) {
-      throw new Error(`num should not be undefined`);
+      throw new Error('num should not be undefined');
     }
 
     // Must be converted to Two's Complement representation to handle negative numbers
@@ -91,14 +90,13 @@ class Encoder {
     if (_.indexOf(num.toString(), '-') === -1) {
       // Positive ints are padded with 0
       return Web3Utils.padLeft(twosComp, PADDED_BYTES, '0');
-    } else {
-      // Negative ints are padded with f
-      return Web3Utils.padLeft(twosComp, PADDED_BYTES, 'f');
     }
+    // Negative ints are padded with f
+    return Web3Utils.padLeft(twosComp, PADDED_BYTES, 'f');
   }
 
   /*
-   * Converts a uint to hex padded-left to 32 bytes. 
+   * Converts a uint to hex padded-left to 32 bytes.
    * Accepts the following formats:
    *    decimal: 12345
    *    string: '-12345'
@@ -109,7 +107,7 @@ class Encoder {
    */
   static uintToHex(num) {
     if (_.isUndefined(num)) {
-      throw new Error(`num should not be undefined`);
+      throw new Error('num should not be undefined');
     }
 
     const bigNum = new BN(num, 16).toJSON();
@@ -125,10 +123,10 @@ class Encoder {
    */
   static stringToHex(string, maxCharLen) {
     if (!_.isString(string)) {
-      throw new Error(`string should be a String`);
+      throw new Error('string should be a String');
     }
     if (!_.isNumber(maxCharLen)) {
-      throw new Error(`maxCharLen should be a Number`);
+      throw new Error('maxCharLen should be a Number');
     }
 
     let hexString = Web3Utils.toHex(string);
@@ -145,16 +143,16 @@ class Encoder {
    */
   static stringArrayToHex(strArray, numOfItems) {
     if (!Array.isArray(strArray)) {
-      throw new Error(`strArray is not an Array`);
+      throw new Error('strArray is not an Array');
     }
     if (!_.isNumber(numOfItems)) {
-      throw new Error(`numOfItems is not a Number`);
+      throw new Error('numOfItems is not a Number');
     }
     if (numOfItems <= 0) {
-      throw new Error(`numOfItems should be greater than 0`);
+      throw new Error('numOfItems should be greater than 0');
     }
 
-    let array = new Array(10);
+    const array = new Array(10);
     for (let i = 0; i < numOfItems; i++) {
       let hexString;
       if (strArray[i] != undefined) {
@@ -177,13 +175,13 @@ class Encoder {
    */
   static padHexString(hexStr) {
     if (_.isUndefined(hexStr)) {
-      throw new Error(`hexStr should not be undefined`);
+      throw new Error('hexStr should not be undefined');
     }
     if (!Web3Utils.isHex(hexStr)) {
-      throw new TypeError(`hexStr should be a hex string`);
+      throw new TypeError('hexStr should be a hex string');
     }
 
-    let trimmed = Utils.trimHexPrefix(hexStr);
+    const trimmed = Utils.trimHexPrefix(hexStr);
     return Web3Utils.padLeft(trimmed, PADDED_BYTES);
   }
 }

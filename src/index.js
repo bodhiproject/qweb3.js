@@ -12,5 +12,5 @@ export default Qweb3;
 export {
   Contract,
   Decoder,
-  Utils
+  Utils,
 };
