@@ -59,7 +59,7 @@ describe('Contract', function() {
         ContractMetadata.EventFactory.abi);
     });
 
-    it('constructs the datahex', async function() {
+    it('constructs the datahex', function() {
       const methodObj = _.find(contract.abi, { name: 'createTopic' });
       assert.isDefined(methodObj);
 
@@ -77,7 +77,7 @@ describe('Contract', function() {
         .concat(resultSettingEndBlock).toLowerCase());
     });
 
-    it('converts address types', async function() {
+    it('converts address types', function() {
       const methodObj = {
         "constant": true,
         "inputs": [
@@ -100,7 +100,7 @@ describe('Contract', function() {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
-    it('converts bool types', async function() {
+    it('converts bool types', function() {
       const methodObj = {
         "constant": true,
         "inputs": [
@@ -123,7 +123,7 @@ describe('Contract', function() {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
-    it('converts uint types', async function() {
+    it('converts uint types', function() {
       let methodObj = {
         "constant": true,
         "inputs": [
@@ -146,7 +146,7 @@ describe('Contract', function() {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
-    it('converts fixed bytes array types', async function() {
+    it('converts fixed bytes array types', function() {
       let methodObj = {
         "constant": true,
         "inputs": [
@@ -190,7 +190,7 @@ describe('Contract', function() {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
-    it('converts fixed bytes types', async function() {
+    it('converts fixed bytes types', function() {
       let methodObj = {
         "constant": true,
         "inputs": [
@@ -289,18 +289,18 @@ describe('Contract', function() {
         ContractMetadata.EventFactory.abi);
     });
 
-    it('validates the methods and returns the methodObj and args', async function() {
+    it('validates the methods and returns the methodObj and args', function() {
       const methodAndArgs = contract.validateMethodAndArgs('createTopic', args);
       const methodObj = _.find(contract.abi, { name: 'createTopic' });
       assert.equal(methodAndArgs.method, methodObj);
       assert.equal(methodAndArgs.args, args);
     });
 
-    it('throws if methodName is not found in ABI', async function() {
+    it('throws if methodName is not found in ABI', function() {
       assert.throws(() => contract.validateMethodAndArgs('vote', args), Error);
     });
 
-    it('throws if methodArgs does not match args in ABI', async function() {
+    it('throws if methodArgs does not match args in ABI', function() {
       assert.throws(() => contract.validateMethodAndArgs('createTopic', ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', 
         ['a', 'b', 'c'], 'c350']), Error);
     });
