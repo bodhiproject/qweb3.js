@@ -145,7 +145,7 @@ describe('Encoder', () => {
       assert.throws(() => Encoder.stringToHex('Hello world!', 'abc'), Error);
     });
 
-    it('converts pure numbers correctly', function() {
+    it('converts pure numbers correctly', () => {
       const hex = Encoder.stringToHex('2017', PADDED_BYTES); // 616263 in hex
       assert.equal(hex, '3230313700000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, PADDED_BYTES);
@@ -180,7 +180,7 @@ describe('Encoder', () => {
       assert.throws(() => Encoder.stringArrayToHex(['a', 'b', 'c'], -1), Error);
     });
 
-    it('converts pure numbers correctly', function() {
+    it('converts pure numbers correctly', () => {
       const hex = Encoder.stringArrayToHex(['2017', '2018', '2019'], 3);
       assert.equal(hex, '323031370000000000000000000000000000000000000000000000000000000032303138000000000000000000000000000000000000000000000000000000003230313900000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, PADDED_BYTES * 3);
