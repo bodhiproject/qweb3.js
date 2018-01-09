@@ -129,7 +129,7 @@ class Encoder {
       throw new Error('maxCharLen should be a Number');
     }
 
-    let hexString = Web3Utils.toHex(string);
+    let hexString = Web3Utils.utf8ToHex(string);
     hexString = Web3Utils.padRight(hexString, maxCharLen).slice(2, maxCharLen + 2);
 
     return hexString;
@@ -156,9 +156,9 @@ class Encoder {
     for (let i = 0; i < numOfItems; i++) {
       let hexString;
       if (strArray[i] != undefined) {
-        hexString = Web3Utils.toHex(strArray[i].toString());
+        hexString = Web3Utils.utf8ToHex(strArray[i].toString());
       } else {
-        hexString = Web3Utils.toHex('');
+        hexString = Web3Utils.utf8ToHex('');
       }
 
       // Remove the 0x hex prefix

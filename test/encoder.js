@@ -3,6 +3,8 @@ import BN from 'bn.js';
 
 import Encoder from '../src/encoder';
 
+const PADDED_BYTES = 64;
+
 describe('Encoder', () => {
   const UINT256_MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
   const UINT256_MIN = '0';
@@ -99,19 +101,19 @@ describe('Encoder', () => {
     it('should convert a bool to hex', () => {
       let hex = Encoder.boolToHex(true);
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000001');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.boolToHex(false);
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.boolToHex(1);
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000001');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.boolToHex(0);
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
     });
 
     it('throws if value is undefined', () => {
@@ -122,25 +124,31 @@ describe('Encoder', () => {
 
   describe('stringToHex()', () => {
     it('should convert a string to hex', () => {
-      const hex = Encoder.stringToHex('Hello World', 640);
+      const hex = Encoder.stringToHex('Hello World', PADDED_BYTES * 10);
       assert.equal(hex, '48656c6c6f20576f726c64000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 640);
+      assert.equal(hex.length, PADDED_BYTES * 10);
     });
 
-    it('only parses up to the maxCharLen', () => {
+    it('parses up to the maxCharLen', () => {
       const hex = Encoder.stringToHex('abc', 4); // 616263 in hex
       assert.equal(hex, '6162');
       assert.equal(hex.length, 4);
     });
 
     it('throws if string is undefined or not a String', () => {
-      assert.throws(() => Encoder.stringToHex(undefined, 640), Error);
-      assert.throws(() => Encoder.stringToHex(12345, 640), Error);
+      assert.throws(() => Encoder.stringToHex(undefined, PADDED_BYTES * 10), Error);
+      assert.throws(() => Encoder.stringToHex(12345, PADDED_BYTES * 10), Error);
     });
 
     it('throws if maxCharLen is undefined or not a Number', () => {
       assert.throws(() => Encoder.stringToHex('Hello world!'), Error);
       assert.throws(() => Encoder.stringToHex('Hello world!', 'abc'), Error);
+    });
+
+    it('converts pure numbers correctly', () => {
+      const hex = Encoder.stringToHex('2017', PADDED_BYTES); // 616263 in hex
+      assert.equal(hex, '3230313700000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, PADDED_BYTES);
     });
   });
 
@@ -148,13 +156,13 @@ describe('Encoder', () => {
     it('should convert a string array to hex', () => {
       const hex = Encoder.stringArrayToHex(['a', 'b', 'c'], 10);
       assert.equal(hex, '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 64 * 10);
+      assert.equal(hex.length, PADDED_BYTES * 10);
     });
 
-    it('only parses the numOfItems', () => {
+    it('parses the numOfItems defined', () => {
       const hex = Encoder.stringArrayToHex(['a', 'b', 'c', 'd'], 3);
       assert.equal(hex, '610000000000000000000000000000000000000000000000000000000000000062000000000000000000000000000000000000000000000000000000000000006300000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 64 * 3);
+      assert.equal(hex.length, PADDED_BYTES * 3);
     });
 
     it('throws if strArray is undefined or not an Array', () => {
@@ -171,41 +179,47 @@ describe('Encoder', () => {
       assert.throws(() => Encoder.stringArrayToHex(['a', 'b', 'c'], 0), Error);
       assert.throws(() => Encoder.stringArrayToHex(['a', 'b', 'c'], -1), Error);
     });
+
+    it('converts pure numbers correctly', () => {
+      const hex = Encoder.stringArrayToHex(['2017', '2018', '2019'], 3);
+      assert.equal(hex, '323031370000000000000000000000000000000000000000000000000000000032303138000000000000000000000000000000000000000000000000000000003230313900000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, PADDED_BYTES * 3);
+    });
   });
 
   describe('intToHex()', () => {
     it('should convert int to hex', () => {
       let hex = Encoder.intToHex(-1);
       assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.intToHex(1);
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000001');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.intToHex('-10000000000000000');
       assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffdc790d903f0000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.intToHex('10000000000000000');
       assert.equal(hex, '000000000000000000000000000000000000000000000000002386f26fc10000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.intToHex(INT256_MAX);
       assert.equal(hex, '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.intToHex(INT256_MIN);
       assert.equal(hex, '8000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.intToHex(new BN(INT256_MAX));
       assert.equal(hex, '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.intToHex(new BN(INT256_MIN));
       assert.equal(hex, '8000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
     });
 
     it('throws if num is undefined', () => {
@@ -218,27 +232,27 @@ describe('Encoder', () => {
     it('should convert uint to hex', () => {
       let hex = Encoder.uintToHex(0);
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.uintToHex('1000000');
       assert.equal(hex, '00000000000000000000000000000000000000000000000000000000000f4240');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.uintToHex('2386f26fc10000');
       assert.equal(hex, '000000000000000000000000000000000000000000000000002386f26fc10000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.uintToHex('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
       assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.uintToHex(new BN(UINT256_MAX));
       assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.uintToHex(new BN(UINT256_MIN));
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
-      assert.equal(hex.length, 64);
+      assert.equal(hex.length, PADDED_BYTES);
     });
 
     it('throws if num is undefined', () => {
@@ -251,11 +265,11 @@ describe('Encoder', () => {
     it('should pad an existing hex string', () => {
       let paddedStr = Encoder.padHexString('5f5e100');
       assert.equal(paddedStr, '0000000000000000000000000000000000000000000000000000000005f5e100');
-      assert.equal(paddedStr.length, 64);
+      assert.equal(paddedStr.length, PADDED_BYTES);
 
       paddedStr = Encoder.padHexString('0x5f5e100');
       assert.equal(paddedStr, '0000000000000000000000000000000000000000000000000000000005f5e100');
-      assert.equal(paddedStr.length, 64);
+      assert.equal(paddedStr.length, PADDED_BYTES);
     });
 
     it('throws if hexStr is undefined', () => {
