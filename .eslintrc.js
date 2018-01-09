@@ -6,8 +6,7 @@ module.exports = {
   },
   "rules": {
     "consistent-return": 0,
-    "max-len": [
-      2,
+    "max-len": [2,
       {
         "code": 400
       }
@@ -42,7 +41,11 @@ module.exports = {
       {
         "props": false
       }
+    ],
+    "object-property-newline": ["error",
+      {
+        "allowMultiplePropertiesPerLine": false
+      }
     ]
-
   }
 };
