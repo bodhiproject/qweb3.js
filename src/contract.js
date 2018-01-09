@@ -11,8 +11,8 @@ const SEND_GASPRICE = 0.0000004;
 
 const MAX_BYTES_PER_ARRAY_SLOT = 64;
 
-const REGEX_BYTES = /bytes([0-9]+)/;
-const REGEX_BYTES_ARRAY = /bytes([0-9]+)(\[[0-9]+\])/;
+const REGEX_BYTES = /bytes([1-9]|[12]\d|3[0-2])$/;
+const REGEX_BYTES_ARRAY = /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/;
 const REGEX_NUMBER = /[0-9]+/g;
 const REGEX_DYNAMIC_ARRAY = /\[\]/;
 
@@ -103,27 +103,26 @@ class Contract {
       } else if (type.startsWith('int')) {
         hex = Encoder.intToHex(args[index]);
         dataHex = dataHex.concat(hex);
-      } else if (type.match(REGEX_BYTES)) {
-        if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
-          const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
-
-          if (args[index] instanceof Array) {
-            hex = Encoder.stringArrayToHex(args[index], arrCapacity);
-            dataHex = dataHex.concat(hex);
-          } else {
-            hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
-            dataHex = dataHex.concat(hex);
-          }
-        } else { // fixed bytes, ie. bytes32
-          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
+      } else if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
+        const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
+        if (args[index] instanceof Array) {
+          hex = Encoder.stringArrayToHex(args[index], arrCapacity);
           dataHex = dataHex.concat(hex);
-        } 
+        } else {
+          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
+          dataHex = dataHex.concat(hex);
+        }
+      } else if (type.match(REGEX_BYTES)) { // fixed bytes, ie. bytes32
+        hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
+        dataHex = dataHex.concat(hex);
       } else if (type === 'bytes') {
         console.error('dynamics bytes conversion not implemented.');
       } else if (type === 'string') {
         console.error('dynamic string conversion not implemented.');
       } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
         console.error('dynamic array conversion not implemented.');
+      } else {
+        console.error(`found unknown type: ${type}`);
       }
     });
 

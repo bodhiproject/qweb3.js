@@ -234,7 +234,48 @@ describe('Contract', function() {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
-    it('throws if methodObj is undefined', async function() {
+    it('does not parse bytes if < 1 or > 32', function() {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes33"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      let args = ['hello'];
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      let funcHash = Encoder.getFunctionHash(methodObj);
+      assert.equal(dataHex, funcHash);
+
+      methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "bytes0"
+          }
+        ],
+        "name": "didWithdraw",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      };
+      dataHex = contract.constructDataHex(methodObj, args);
+
+      funcHash = Encoder.getFunctionHash(methodObj);
+      assert.equal(dataHex, funcHash);
+    });
+
+    it('throws if methodObj is undefined', function() {
       assert.throws(() => contract.constructDataHex(undefined, ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', 
         ['a', 'b', 'c'], 'c350', 'c738']), Error);
     });
