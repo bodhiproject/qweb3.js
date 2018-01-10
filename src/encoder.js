@@ -77,6 +77,7 @@ class Encoder {
    *    decimal: 12345
    *    string: '-12345'
    *    hex string (with 0x hex prefix): '0xbd614e' or 0xbd614e
+   *    bignumber.js: <BigNumber: 3039>
    *    BN.js: <BN: 3039>
    * @param num The number to convert.
    * @return The converted int to padded-left hex string.
@@ -95,6 +96,7 @@ class Encoder {
    *    decimal: 12345
    *    string: '12345'
    *    hex string (with 0x hex prefix): '0xbd614e' or 0xbd614e
+   *    bignumber.js: <BigNumber: 3039>
    *    BN.js: <BN: 3039>
    * @param num The number to convert.
    * @return The converted uint to padded-left hex string.

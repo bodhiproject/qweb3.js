@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import BN from 'bn.js';
+import BigNumber from 'bignumber.js';
 
 import Encoder from '../src/encoder';
 
@@ -228,6 +229,14 @@ describe('Encoder', () => {
       hex = Encoder.intToHex(new BN(INT256_MIN));
       assert.equal(hex, '8000000000000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, PADDED_BYTES);
+
+      hex = Encoder.intToHex(new BigNumber(INT256_MAX));
+      assert.equal(hex, '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      assert.equal(hex.length, PADDED_BYTES);
+
+      hex = Encoder.intToHex(new BigNumber(INT256_MIN));
+      assert.equal(hex, '8000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, PADDED_BYTES);
     });
 
     it('throws if num is undefined', () => {
@@ -271,6 +280,14 @@ describe('Encoder', () => {
       assert.equal(hex.length, PADDED_BYTES);
 
       hex = Encoder.uintToHex(new BN(UINT256_MIN));
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, PADDED_BYTES);
+
+      hex = Encoder.uintToHex(new BigNumber(UINT256_MAX));
+      assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      assert.equal(hex.length, PADDED_BYTES);
+
+      hex = Encoder.uintToHex(new BigNumber(UINT256_MIN));
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, PADDED_BYTES);
     });
