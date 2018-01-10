@@ -71,7 +71,7 @@ describe('Contract', () => {
       const methodObj = _.find(contract.abi, { name: 'createTopic' });
       assert.isDefined(methodObj);
 
-      const args = ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', ['a', 'b', 'c'], 'c350', 'c738'];
+      const args = ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'Hello World', ['a', 'b', 'c'], '0xc350', '0xc738'];
       const dataHex = contract.constructDataHex(methodObj, args);
 
       const funcHash = 'd0613dce';
@@ -82,8 +82,7 @@ describe('Contract', () => {
       const resultSettingEndBlock = '000000000000000000000000000000000000000000000000000000000000C738';
 
       assert.equal(dataHex, funcHash.concat(oracle).concat(name).concat(resultNames).concat(bettingEndBlock)
-        .concat(resultSettingEndBlock)
-        .toLowerCase());
+        .concat(resultSettingEndBlock).toLowerCase());
     });
 
     it('converts address types', () => {
