@@ -234,15 +234,27 @@ describe('Encoder', () => {
       assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000000000');
       assert.equal(hex.length, PADDED_BYTES);
 
-      hex = Encoder.uintToHex('1000000');
-      assert.equal(hex, '00000000000000000000000000000000000000000000000000000000000f4240');
+      hex = Encoder.uintToHex(66100);
+      assert.equal(hex, '0000000000000000000000000000000000000000000000000000000000010234');
       assert.equal(hex.length, PADDED_BYTES);
 
-      hex = Encoder.uintToHex('2386f26fc10000');
+      hex = Encoder.uintToHex(1234567890);
+      assert.equal(hex, '00000000000000000000000000000000000000000000000000000000499602d2');
+      assert.equal(hex.length, PADDED_BYTES);
+
+      hex = Encoder.uintToHex('12345678901234567890');
+      assert.equal(hex, '000000000000000000000000000000000000000000000000ab54a98ceb1f0ad2');
+      assert.equal(hex.length, PADDED_BYTES);
+
+      hex = Encoder.uintToHex(0x2386f26fc10000);
       assert.equal(hex, '000000000000000000000000000000000000000000000000002386f26fc10000');
       assert.equal(hex.length, PADDED_BYTES);
 
-      hex = Encoder.uintToHex('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      hex = Encoder.uintToHex('0x2386f26fc10000');
+      assert.equal(hex, '000000000000000000000000000000000000000000000000002386f26fc10000');
+      assert.equal(hex.length, PADDED_BYTES);
+
+      hex = Encoder.uintToHex('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
       assert.equal(hex, 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
       assert.equal(hex.length, PADDED_BYTES);
 
