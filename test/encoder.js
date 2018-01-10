@@ -205,6 +205,14 @@ describe('Encoder', () => {
       assert.equal(hex, '000000000000000000000000000000000000000000000000002386f26fc10000');
       assert.equal(hex.length, PADDED_BYTES);
 
+      hex = Encoder.intToHex('0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      assert.equal(hex, '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+      assert.equal(hex.length, PADDED_BYTES);
+
+      hex = Encoder.intToHex('0x8000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex, '8000000000000000000000000000000000000000000000000000000000000000');
+      assert.equal(hex.length, PADDED_BYTES);
+
       hex = Encoder.intToHex(INT256_MAX);
       assert.equal(hex, '7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
       assert.equal(hex.length, PADDED_BYTES);
