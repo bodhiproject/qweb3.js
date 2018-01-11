@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Web3Utils from 'web3-utils';
-import BN from 'bn.js';
+import BigNumber from 'bignumber.js';
 import bs58 from 'bs58';
 
 import Utils from './utils';
@@ -76,6 +76,8 @@ class Encoder {
    * Accepts the following formats:
    *    decimal: 12345
    *    string: '-12345'
+   *    hex string (with 0x hex prefix): '0xbd614e' or 0xbd614e
+   *    bignumber.js: <BigNumber: 3039>
    *    BN.js: <BN: 3039>
    * @param num The number to convert.
    * @return The converted int to padded-left hex string.
@@ -85,22 +87,16 @@ class Encoder {
       throw new Error('num should not be undefined');
     }
 
-    // Must be converted to Two's Complement representation to handle negative numbers
-    const twosComp = new BN(num).toTwos(256).toJSON();
-    if (_.indexOf(num.toString(), '-') === -1) {
-      // Positive ints are padded with 0
-      return Web3Utils.padLeft(twosComp, PADDED_BYTES, '0');
-    }
-    // Negative ints are padded with f
-    return Web3Utils.padLeft(twosComp, PADDED_BYTES, 'f');
+    return Web3Utils.toTwosComplement(num).slice(2);
   }
 
   /*
    * Converts a uint to hex padded-left to 32 bytes.
    * Accepts the following formats:
    *    decimal: 12345
-   *    string: '-12345'
-   *    hex string (without 0x hex prefix): 'bd614e'
+   *    string: '12345'
+   *    hex string (with 0x hex prefix): '0xbd614e' or 0xbd614e
+   *    bignumber.js: <BigNumber: 3039>
    *    BN.js: <BN: 3039>
    * @param num The number to convert.
    * @return The converted uint to padded-left hex string.
@@ -110,7 +106,13 @@ class Encoder {
       throw new Error('num should not be undefined');
     }
 
-    const bigNum = new BN(num, 16).toJSON();
+    let bigNum;
+    if (Web3Utils.isHexStrict(num)) {
+      bigNum = new BigNumber(num, 16);
+    } else {
+      bigNum = new BigNumber(num, 10);
+    }
+    
     const hexNum = Web3Utils.numberToHex(bigNum);
     return Web3Utils.padLeft(hexNum, PADDED_BYTES).slice(2);
   }
