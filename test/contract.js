@@ -1,6 +1,7 @@
 import 'babel-polyfill';
 import { assert } from 'chai';
 import _ from 'lodash';
+import Web3Utils from 'web3-utils';
 
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
@@ -57,9 +58,9 @@ describe('Contract', () => {
         'd78f96ea55ad0c8a283b6d759f39cda34a7c5b10', 
         ContractMetadata.CentralizedOracle.abi
       );
-      const formatted = Formatter.callOutput(result, ContractMetadata.CentralizedOracle.abi, 'bettingStartBlock', true)
-
-      console.log(formatted);
+      const formatted = Formatter.callOutput(result, ContractMetadata.CentralizedOracle.abi, 'bettingEndBlock', true);
+      assert.isTrue(Web3Utils.isBN(formatted['0']));
+      assert.equal(formatted['0'].toJSON(), '100e0');
     });
   });
 
