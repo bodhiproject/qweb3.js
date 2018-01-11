@@ -25,6 +25,5 @@ script:
   - cd qtum-0.14.13/bin
   - ./qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi & 
   - cd ../..
-  - sleep 60
   - npm test
   

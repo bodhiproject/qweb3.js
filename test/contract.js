@@ -6,6 +6,7 @@ import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
 import Contract from '../src/contract';
 import Encoder from '../src/encoder';
+import Formatter from '../src/formatter';
 
 describe('Contract', () => {
   let contract;
@@ -28,17 +29,37 @@ describe('Contract', () => {
   });
 
   describe('call()', () => {
-    it('returns the values', async () => {
-      contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        ContractMetadata.TopicEvent.abi,
-      );
+    it('returns the values', () => {
+      // Mock return from CentralizedOracle.bettingStartBlock()
+      const result = {
+        "address": "d78f96ea55ad0c8a283b6d759f39cda34a7c5b10",
+        "executionResult": {
+          "gasUsed": 22060,
+          "excepted": "None",
+          "newAddress": "d78f96ea55ad0c8a283b6d759f39cda34a7c5b10",
+          "output": "00000000000000000000000000000000000000000000000000000000000100e0",
+          "codeDeposit": 0,
+          "gasRefunded": 0,
+          "depositSize": 0,
+          "gasForDeposit": 0
+        },
+        "transactionReceipt": {
+          "stateRoot": "81972b5d65f1c12853c0324fbe5e9b2233843431f533a2b27351842e02247e1a",
+          "gasUsed": 22060,
+          "bloom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "log": [
+          ]
+        }
+      };
 
-      const res = await contract.call('getEventName', {
-        methodArgs: [],
-        senderAddress: Config.SENDER_ADDRESS,
-      });
-      assert.equal(res[0].replace(/\0/g, ''), 'Who will win the 2018 NBA Finals Championships?');
+      contract = new Contract(
+        Config.QTUM_RPC_ADDRESS, 
+        'd78f96ea55ad0c8a283b6d759f39cda34a7c5b10', 
+        ContractMetadata.CentralizedOracle.abi
+      );
+      const formatted = Formatter.callOutput(result, ContractMetadata.CentralizedOracle.abi, 'bettingStartBlock', true)
+
+      console.log(formatted);
     });
   });
 
