@@ -1,0 +1,29 @@
+language: node_js
+
+node_js:
+  - "9"
+
+env:
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
+
+before_install:
+  - wget https://github.com/qtumproject/qtum/releases/download/mainnet-ignition-v0.14.13/qtum-0.14.13-x86_64-linux-gnu.tar.gz
+
+install:
+  - tar -xvzf qtum-0.14.13-x86_64-linux-gnu.tar.gz
+  - npm install
+
+script:
+  - cd qtum-0.14.13/bin
+  - ./qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi & 
+  - cd ../..
+  - npm test
+  

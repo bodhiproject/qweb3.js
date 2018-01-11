@@ -40,13 +40,13 @@ describe('Qweb3', () => {
 
   describe('getTransaction()', () => {
     it('returns the transaction info', async () => {
-      assert.isDefined(await qweb3.getTransaction('4c24f818a41c5c4288f5ca288a21477063c67df055946bb54650efad288add56'));
+      assert.isDefined(await qweb3.getTransaction('578e4755614afa79fedf429646a2ff253af3340254d2824fc6db261c1fe3199d'));
     });
   });
 
   describe('getTransactionReceipt()', () => {
     it('returns the transaction receipt', async () => {
-      assert.isDefined(await qweb3.getTransaction('4c24f818a41c5c4288f5ca288a21477063c67df055946bb54650efad288add56'));
+      assert.isDefined(await qweb3.getTransaction('578e4755614afa79fedf429646a2ff253af3340254d2824fc6db261c1fe3199d'));
     });
   });
 

@@ -1,17 +1,19 @@
 import 'babel-polyfill';
 import { assert } from 'chai';
 import _ from 'lodash';
+import Web3Utils from 'web3-utils';
 
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
 import Contract from '../src/contract';
 import Encoder from '../src/encoder';
+import Formatter from '../src/formatter';
 
 describe('Contract', () => {
   let contract;
 
   describe('constructor', () => {
-    it('inits all the values', async () => {
+    it('inits all the values', () => {
       contract = new Contract(
         Config.QTUM_RPC_ADDRESS, ContractMetadata.EventFactory.address,
         ContractMetadata.EventFactory.abi,
@@ -21,38 +23,56 @@ describe('Contract', () => {
       assert.equal(contract.abi, ContractMetadata.EventFactory.abi);
     });
 
-    it('removes the hex prefix from the address', async () => {
+    it('removes the hex prefix from the address', () => {
       contract = new Contract(Config.QTUM_RPC_ADDRESS, '0x1234567890', ContractMetadata.EventFactory.abi);
       assert.equal(contract.address, '1234567890');
     });
   });
 
   describe('call()', () => {
-    it('returns the values', async () => {
-      contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        ContractMetadata.TopicEvent.abi,
-      );
+    it('returns the values', () => {
+      // Mock return from CentralizedOracle.bettingStartBlock()
+      const result = {
+        "address": "d78f96ea55ad0c8a283b6d759f39cda34a7c5b10",
+        "executionResult": {
+          "gasUsed": 22060,
+          "excepted": "None",
+          "newAddress": "d78f96ea55ad0c8a283b6d759f39cda34a7c5b10",
+          "output": "00000000000000000000000000000000000000000000000000000000000100e0",
+          "codeDeposit": 0,
+          "gasRefunded": 0,
+          "depositSize": 0,
+          "gasForDeposit": 0
+        },
+        "transactionReceipt": {
+          "stateRoot": "81972b5d65f1c12853c0324fbe5e9b2233843431f533a2b27351842e02247e1a",
+          "gasUsed": 22060,
+          "bloom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "log": [
+          ]
+        }
+      };
 
-      const res = await contract.call('getEventName', {
-        methodArgs: [],
-        senderAddress: Config.SENDER_ADDRESS,
-      });
-      assert.equal(res[0].replace(/\0/g, ''), 'Who will win the 2018 NBA Finals Championships?');
+      contract = new Contract(
+        Config.QTUM_RPC_ADDRESS, 
+        'd78f96ea55ad0c8a283b6d759f39cda34a7c5b10', 
+        ContractMetadata.CentralizedOracle.abi
+      );
+      const formatted = Formatter.callOutput(result, ContractMetadata.CentralizedOracle.abi, 'bettingEndBlock', true);
+      assert.isTrue(Web3Utils.isBN(formatted['0']));
+      assert.equal(formatted['0'].toJSON(), '100e0');
     });
   });
 
   describe('send()', () => {
-    it('sends a transaction', async () => {
-      contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        ContractMetadata.TopicEvent.abi,
-      );
-
-      const res = await contract.send('withdrawWinnings', {
-        methodArgs: [],
-        senderAddress: Config.SENDER_ADDRESS,
-      });
+    it('sends a transaction', () => {
+      // Mock return for CentralizedOracle.bet()
+      const res = {
+        "txid": "ce552c8bf6aa78946cba35aafe853c5e3fe491d5d5efb21dd79375fe739b6f31",
+        "sender": "qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy",
+        "hash160": "17e7888aa7412a735f336d2f6d784caefabb6fa3"
+      };
+      
       assert.isDefined(res.txid);
       assert.isDefined(res.sender);
       assert.isDefined(res.hash160);
