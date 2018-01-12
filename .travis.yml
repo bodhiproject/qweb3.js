@@ -14,8 +14,21 @@ addons:
     - gcc-4.8
     - g++-4.8
 
+cache:
+  directories:
+    - "node_modules"
+
+before_install:
+  - wget https://github.com/qtumproject/qtum/releases/download/mainnet-ignition-v0.14.13/qtum-0.14.13-x86_64-linux-gnu.tar.gz
+
 install:
+  - tar -xvzf qtum-0.14.13-x86_64-linux-gnu.tar.gz
   - npm install
 
 script:
+  - cd qtum-0.14.13/bin; ./qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=/home/travis/build/bodhiproject/qweb3.js/test/data/.qtum & 
+  - sleep 10
   - npm test
+
+after_failure:
+  - cat /home/travis/build/bodhiproject/qweb3.js/test/data/.qtum/testnet3/debug.log
