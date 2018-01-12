@@ -31,7 +31,7 @@ var Qweb3 = function () {
     this.provider = new _httpprovider2.default(url);
   }
 
-  /********** MISC **********/
+  /** ******** MISC ********* */
   /**
    * Returns true if getinfo request returns result; otherwise false
    * @return {Boolean}
@@ -50,7 +50,7 @@ var Qweb3 = function () {
       });
     }
 
-    /********** BLOCKCHAIN **********/
+    /** ******** BLOCKCHAIN ********* */
     /*
     * @dev Returns the current block height that is synced with the client.
     * @return {Promise} Current block count or Error.
@@ -127,7 +127,7 @@ var Qweb3 = function () {
       });
     }
 
-    /********** RAW TRANSACTIONS **********/
+    /** ******** RAW TRANSACTIONS ********* */
     /**
      * Get the hex address of a Qtum address.
      * @param {address} Qtum address
@@ -158,7 +158,7 @@ var Qweb3 = function () {
       });
     }
 
-    /********** UTIL **********/
+    /** ******** UTIL ********* */
     /**
      * Validates if a valid Qtum address.
      * @param {address} Qtum address to validate.
@@ -174,7 +174,7 @@ var Qweb3 = function () {
       });
     }
 
-    /********** WALLET **********/
+    /** ******** WALLET ********* */
     /*
     * Gets the account name associated with the Qtum address.
     * @return {Promise} Account name or Error.
@@ -219,7 +219,7 @@ var Qweb3 = function () {
 
     /**
      * Get transaction details by txid
-     * @param  {string} txid transaction Id (64 digits hexString); 
+     * @param  {string} txid transaction Id (64 digits hexString);
      *  e.g. dfafd59050fbe825d884b1e9279924f42bfa9506ca11e3d1910141054858f338
      * @return {Promise} Promise containing result object or Error
      */

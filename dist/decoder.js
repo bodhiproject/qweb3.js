@@ -61,7 +61,7 @@ var Decoder = function () {
       var hash2 = _crypto2.default.createHash('sha256').update(hash1Buffer).digest('Hex');
 
       // get first 4 bytes
-      qAddress = qAddress + hash2.slice(0, 8);
+      qAddress += hash2.slice(0, 8);
 
       // base58 encode
       var address = _bs2.default.encode(Buffer.from(qAddress, 'hex'));
@@ -80,10 +80,8 @@ var Decoder = function () {
             value[index] = _utils2.default.trimHexPrefix(arrayItem);
           }
         });
-      } else {
-        if (_web3Utils2.default.isHex(value)) {
-          value = _utils2.default.trimHexPrefix(value);
-        }
+      } else if (_web3Utils2.default.isHex(value)) {
+        value = _utils2.default.trimHexPrefix(value);
       }
 
       return value;
