@@ -10,9 +10,9 @@ var _web3Utils = require('web3-utils');
 
 var _web3Utils2 = _interopRequireDefault(_web3Utils);
 
-var _bn = require('bn.js');
+var _bignumber = require('bignumber.js');
 
-var _bn2 = _interopRequireDefault(_bn);
+var _bignumber2 = _interopRequireDefault(_bignumber);
 
 var _bs = require('bs58');
 
@@ -36,7 +36,6 @@ var Encoder = function () {
   _createClass(Encoder, null, [{
     key: 'getFunctionHash',
 
-
     /*
      * Converts an object of a method from the ABI to a function hash.
      * @param methodObj The json object of the method taken from the ABI.
@@ -55,7 +54,7 @@ var Encoder = function () {
         if (i < methodObj.inputs.length - 1) {
           params = params.concat(',');
         }
-      };
+      }
       var signature = name.concat('(').concat(params).concat(')');
 
       // Return only the first 4 bytes
@@ -107,10 +106,12 @@ var Encoder = function () {
     }
 
     /*
-     * Converts an int to hex padded-left to 32 bytes. 
+     * Converts an int to hex padded-left to 32 bytes.
      * Accepts the following formats:
      *    decimal: 12345
      *    string: '-12345'
+     *    hex string (with 0x hex prefix): '0xbd614e' or 0xbd614e
+     *    bignumber.js: <BigNumber: 3039>
      *    BN.js: <BN: 3039>
      * @param num The number to convert.
      * @return The converted int to padded-left hex string.
@@ -123,23 +124,16 @@ var Encoder = function () {
         throw new Error('num should not be undefined');
       }
 
-      // Must be converted to Two's Complement representation to handle negative numbers
-      var twosComp = new _bn2.default(num).toTwos(256).toJSON();
-      if (_lodash2.default.indexOf(num.toString(), '-') === -1) {
-        // Positive ints are padded with 0
-        return _web3Utils2.default.padLeft(twosComp, PADDED_BYTES, '0');
-      } else {
-        // Negative ints are padded with f
-        return _web3Utils2.default.padLeft(twosComp, PADDED_BYTES, 'f');
-      }
+      return _web3Utils2.default.toTwosComplement(num).slice(2);
     }
 
     /*
-     * Converts a uint to hex padded-left to 32 bytes. 
+     * Converts a uint to hex padded-left to 32 bytes.
      * Accepts the following formats:
      *    decimal: 12345
-     *    string: '-12345'
-     *    hex string (without 0x hex prefix): 'bd614e'
+     *    string: '12345'
+     *    hex string (with 0x hex prefix): '0xbd614e' or 0xbd614e
+     *    bignumber.js: <BigNumber: 3039>
      *    BN.js: <BN: 3039>
      * @param num The number to convert.
      * @return The converted uint to padded-left hex string.
@@ -152,7 +146,13 @@ var Encoder = function () {
         throw new Error('num should not be undefined');
       }
 
-      var bigNum = new _bn2.default(num, 16).toJSON();
+      var bigNum = void 0;
+      if (_web3Utils2.default.isHexStrict(num)) {
+        bigNum = new _bignumber2.default(num, 16);
+      } else {
+        bigNum = new _bignumber2.default(num, 10);
+      }
+
       var hexNum = _web3Utils2.default.numberToHex(bigNum);
       return _web3Utils2.default.padLeft(hexNum, PADDED_BYTES).slice(2);
     }
@@ -174,7 +174,7 @@ var Encoder = function () {
         throw new Error('maxCharLen should be a Number');
       }
 
-      var hexString = _web3Utils2.default.toHex(string);
+      var hexString = _web3Utils2.default.utf8ToHex(string);
       hexString = _web3Utils2.default.padRight(hexString, maxCharLen).slice(2, maxCharLen + 2);
 
       return hexString;
@@ -204,9 +204,9 @@ var Encoder = function () {
       for (var i = 0; i < numOfItems; i++) {
         var hexString = void 0;
         if (strArray[i] != undefined) {
-          hexString = _web3Utils2.default.toHex(strArray[i].toString());
+          hexString = _web3Utils2.default.utf8ToHex(strArray[i].toString());
         } else {
-          hexString = _web3Utils2.default.toHex('');
+          hexString = _web3Utils2.default.utf8ToHex('');
         }
 
         // Remove the 0x hex prefix

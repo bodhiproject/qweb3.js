@@ -81,9 +81,8 @@ var Utils = function () {
     value: function appendHexPrefix(value) {
       if (_lodash2.default.startsWith(value, '0x')) {
         return value;
-      } else {
-        return "0x" + value;
       }
+      return '0x' + value;
     }
 
     /*
@@ -97,9 +96,8 @@ var Utils = function () {
     value: function trimHexPrefix(str) {
       if (str && str.indexOf('0x') === 0) {
         return str.slice(2);
-      } else {
-        return str;
       }
+      return str;
     }
 
     /*
@@ -127,7 +125,7 @@ var Utils = function () {
     key: 'toUtf8',
     value: function toUtf8(hex) {
       // Find termination
-      var str = "";
+      var str = '';
       var i = 0,
           l = hex.length;
       if (hex.substring(0, 2) === '0x') {
@@ -135,7 +133,9 @@ var Utils = function () {
       }
       for (; i < l; i += 2) {
         var code = parseInt(hex.substr(i, 2), 16);
-        if (code === 0) break;
+        if (code === 0) {
+          break;
+        }
         str += String.fromCharCode(code);
       }
 
@@ -155,15 +155,17 @@ var Utils = function () {
     key: 'fromUtf8',
     value: function fromUtf8(str) {
       str = _utf2.default.encode(str);
-      var hex = "";
+      var hex = '';
       for (var i = 0; i < str.length; i++) {
         var code = str.charCodeAt(i);
-        if (code === 0) break;
+        if (code === 0) {
+          break;
+        }
         var n = code.toString(16);
         hex += n.length < 2 ? '0' + n : n;
       }
 
-      return "0x" + hex;
+      return '0x' + hex;
     }
 
     /**

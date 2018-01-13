@@ -34,14 +34,13 @@ var Formatter = function () {
   _createClass(Formatter, null, [{
     key: 'searchLogOutput',
 
-
     /**
-      * Formats the output of searchlog by decoding eventName, indexed and unindexed params
-      * @param {object} rawOutput Raw seachlog output
-      * @param {object} contractMetadata Metadata of all contracts and their events with topic hashes
-      * @param {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
-      * @return {object} Decoded searchlog output
-      */
+     * Formats the output of searchlog by decoding eventName, indexed and unindexed params
+     * @param {object} rawOutput Raw seachlog output
+     * @param {object} contractMetadata Metadata of all contracts and their events with topic hashes
+     * @param {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
+     * @return {object} Decoded searchlog output
+     */
     value: function searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
       return _lodash2.default.map(rawOutput, function (resultEntry) {
         var formatted = _lodash2.default.assign({}, resultEntry);
@@ -119,7 +118,7 @@ var Formatter = function () {
         throw new Error('methodName is undefined.');
       }
 
-      var methodABI = _lodash2.default.filter(contractABI, { 'name': methodName });
+      var methodABI = _lodash2.default.filter(contractABI, { name: methodName });
       var result = null;
 
       _lodash2.default.each(rawOutput, function (value, key) {
