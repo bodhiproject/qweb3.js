@@ -29,7 +29,6 @@ class Encoder {
     }
     const hash = name.concat(`(${params})`);
 
-    // Return only the first 4 bytes
     return Web3Utils.sha3(hash).slice(2);
   }
 
