@@ -14,33 +14,31 @@ class Formatter {
    * @return {object} Decoded searchlog output
    */
   static searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
+    // Create dict of all event hashes
     let eventHashes = {};
     _.each(contractMetadata, (contractItem, contractKey) => {
       const filteredEvents = _.filter(contractItem.abi, { type: 'event' });
+
       _.each(filteredEvents, (eventObj) => {
         const hash = Encoder.getEventHash(eventObj);
-        eventHashes[hash] = contractKey;
+        eventHashes[hash] = {
+          contract: contractKey,
+          event: eventObj.name,
+        };
       });
     });
-    console.log(eventHashes);
 
     return _.map(rawOutput, (resultEntry) => {
       const formatted = _.assign({}, resultEntry);
 
       if (!_.isEmpty(resultEntry.log)) {
         _.each(resultEntry.log, (item, index) => {
-          const eventHash = item.topics[0];
+          const eventHashObj = eventHashes[item.topics[0]];
 
-          let eventName;
           let metadataObj;
-          _.each(contractMetadata, (contractItem, index) => {
-            eventName = (_.invert(contractItem))[eventHash];
-
-            if (eventName) {
-              metadataObj = contractItem;
-              return false;
-            }
-          });
+          if (eventHashObj) {
+            metadataObj = contractMetadata[eventHashObj.contract];
+          }
 
           if (metadataObj) {
             // Each field of log needs to appended with '0x' to be parsed
@@ -48,9 +46,9 @@ class Formatter {
             item.data = Utils.appendHexPrefix(item.data);
             item.topics = _.map(item.topics, Utils.appendHexPrefix);
 
-            const methodAbi = _.find(metadataObj.abi, { name: eventName });
+            const methodAbi = _.find(metadataObj.abi, { name: eventHashObj.event });
             if (_.isUndefined(methodAbi)) {
-              console.warn(`Error: Could not find method in ABI for ${eventName}`);
+              console.warn(`Error: Could not find method in ABI for ${eventHashObj.event}`);
               return;
             }
 
