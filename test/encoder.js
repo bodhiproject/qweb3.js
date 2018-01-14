@@ -14,31 +14,31 @@ describe('Encoder', () => {
 
   describe('getEventHash()', () => {
     let eventObj = {
-      "anonymous": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "indexed": true,
-          "name": "_version",
-          "type": "uint16"
+          indexed: true,
+          name: '_version',
+          type: 'uint16',
         },
         {
-          "indexed": true,
-          "name": "_topicAddress",
-          "type": "address"
+          indexed: true,
+          name: '_topicAddress',
+          type: 'address',
         },
         {
-          "indexed": false,
-          "name": "_name",
-          "type": "bytes32[10]"
+          indexed: false,
+          name: '_name',
+          type: 'bytes32[10]',
         },
         {
-          "indexed": false,
-          "name": "_resultNames",
-          "type": "bytes32[10]"
-        }
+          indexed: false,
+          name: '_resultNames',
+          type: 'bytes32[10]',
+        },
       ],
-      "name": "TopicCreated",
-      "type": "event"
+      name: 'TopicCreated',
+      type: 'event',
     };
 
     it('should convert an event obj to hash string', () => {
@@ -47,61 +47,61 @@ describe('Encoder', () => {
       assert.equal(hash.length, PADDED_BYTES);
 
       eventObj = {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
           {
-            "indexed": true,
-            "name": "_version",
-            "type": "uint16"
+            indexed: true,
+            name: '_version',
+            type: 'uint16',
           },
           {
-            "indexed": true,
-            "name": "_contractAddress",
-            "type": "address"
+            indexed: true,
+            name: '_contractAddress',
+            type: 'address',
           },
           {
-            "indexed": true,
-            "name": "_eventAddress",
-            "type": "address"
+            indexed: true,
+            name: '_eventAddress',
+            type: 'address',
           },
           {
-            "indexed": false,
-            "name": "_numOfResults",
-            "type": "uint8"
+            indexed: false,
+            name: '_numOfResults',
+            type: 'uint8',
           },
           {
-            "indexed": false,
-            "name": "_oracle",
-            "type": "address"
+            indexed: false,
+            name: '_oracle',
+            type: 'address',
           },
           {
-            "indexed": false,
-            "name": "_bettingStartBlock",
-            "type": "uint256"
+            indexed: false,
+            name: '_bettingStartBlock',
+            type: 'uint256',
           },
           {
-            "indexed": false,
-            "name": "_bettingEndBlock",
-            "type": "uint256"
+            indexed: false,
+            name: '_bettingEndBlock',
+            type: 'uint256',
           },
           {
-            "indexed": false,
-            "name": "_resultSettingStartBlock",
-            "type": "uint256"
+            indexed: false,
+            name: '_resultSettingStartBlock',
+            type: 'uint256',
           },
           {
-            "indexed": false,
-            "name": "_resultSettingEndBlock",
-            "type": "uint256"
+            indexed: false,
+            name: '_resultSettingEndBlock',
+            type: 'uint256',
           },
           {
-            "indexed": false,
-            "name": "_consensusThreshold",
-            "type": "uint256"
-          }
+            indexed: false,
+            name: '_consensusThreshold',
+            type: 'uint256',
+          },
         ],
-        "name": "CentralizedOracleCreated",
-        "type": "event"
+        name: 'CentralizedOracleCreated',
+        type: 'event',
       };
       hash = Encoder.getEventHash(eventObj);
       assert.equal(hash, '1e482c6081e57445e988bc379f3066a27d0db9fb8d6c9fb9aeff950cec4c1897');
