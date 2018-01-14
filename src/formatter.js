@@ -35,18 +35,18 @@ class Formatter {
         _.each(resultEntry.log, (item, index) => {
           const eventHashObj = eventHashes[item.topics[0]];
 
-          let metadataObj;
+          let contractObj;
           if (eventHashObj) {
-            metadataObj = contractMetadata[eventHashObj.contract];
+            contractObj = contractMetadata[eventHashObj.contract];
           }
 
-          if (metadataObj) {
+          if (contractObj) {
             // Each field of log needs to appended with '0x' to be parsed
             item.address = Utils.appendHexPrefix(item.address);
             item.data = Utils.appendHexPrefix(item.data);
             item.topics = _.map(item.topics, Utils.appendHexPrefix);
 
-            const methodAbi = _.find(metadataObj.abi, { name: eventHashObj.event });
+            const methodAbi = _.find(contractObj.abi, { name: eventHashObj.event });
             if (_.isUndefined(methodAbi)) {
               console.warn(`Error: Could not find method in ABI for ${eventHashObj.event}`);
               return;
