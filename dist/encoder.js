@@ -34,13 +34,40 @@ var Encoder = function () {
   }
 
   _createClass(Encoder, null, [{
-    key: 'getFunctionHash',
+    key: 'getEventHash',
+
+    /*
+     * Converts an event object from the ABI to its hash format.
+     * @param eventObj The json object of the event taken from the ABI.
+     * @return The event hash.
+     */
+    value: function getEventHash(eventObj) {
+      if (!eventObj) {
+        throw new Error('eventObj should not be undefined');
+      }
+
+      var name = eventObj.name;
+      var params = '';
+      for (var i = 0; i < eventObj.inputs.length; i++) {
+        params = params.concat(eventObj.inputs[i].type);
+
+        if (i < eventObj.inputs.length - 1) {
+          params = params.concat(',');
+        }
+      }
+      var hash = name.concat('(' + params + ')');
+
+      return _web3Utils2.default.sha3(hash).slice(2);
+    }
 
     /*
      * Converts an object of a method from the ABI to a function hash.
      * @param methodObj The json object of the method taken from the ABI.
      * @return The function hash.
      */
+
+  }, {
+    key: 'getFunctionHash',
     value: function getFunctionHash(methodObj) {
       if (!methodObj) {
         throw new Error('methodObj should not be undefined');
