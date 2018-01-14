@@ -9,6 +9,32 @@ const PADDED_BYTES = 64;
 
 class Encoder {
   /*
+   * Converts an event object from the ABI to its hash format.
+   * @param eventObj The json object of the event taken from the ABI.
+   * @return The event hash.
+   */
+  static getEventHash(eventObj) {
+    if (!eventObj) {
+      throw new Error('eventObj should not be undefined');
+    }
+
+    const name = eventObj.name;
+    let params = '';
+    for (let i = 0; i < eventObj.inputs.length; i++) {
+      params = params.concat(eventObj.inputs[i].type);
+
+      if (i < eventObj.inputs.length - 1) {
+        params = params.concat(',');
+      }
+    }
+    const hash = name.concat(`(${params})`);
+    console.log(hash);
+
+    // Return only the first 4 bytes
+    return Web3Utils.sha3(hash).slice(2);
+  }
+
+  /*
    * Converts an object of a method from the ABI to a function hash.
    * @param methodObj The json object of the method taken from the ABI.
    * @return The function hash.
