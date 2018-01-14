@@ -136,7 +136,7 @@ class Encoder {
     } else {
       bigNum = new BigNumber(num, 10);
     }
-    
+
     const hexNum = Web3Utils.numberToHex(bigNum);
     return Web3Utils.padLeft(hexNum, PADDED_BYTES).slice(2);
   }

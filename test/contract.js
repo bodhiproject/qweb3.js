@@ -82,7 +82,8 @@ describe('Contract', () => {
       const resultSettingEndBlock = '000000000000000000000000000000000000000000000000000000000000C738';
 
       assert.equal(dataHex, funcHash.concat(oracle).concat(name).concat(resultNames).concat(bettingEndBlock)
-        .concat(resultSettingEndBlock).toLowerCase());
+        .concat(resultSettingEndBlock)
+        .toLowerCase());
     });
 
     it('converts address types', () => {

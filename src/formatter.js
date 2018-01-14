@@ -15,7 +15,7 @@ class Formatter {
    */
   static searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
     // Create dict of all event hashes
-    let eventHashes = {};
+    const eventHashes = {};
     _.each(contractMetadata, (contractItem, contractKey) => {
       const filteredEvents = _.filter(contractItem.abi, { type: 'event' });
 
