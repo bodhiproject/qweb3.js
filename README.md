@@ -104,7 +104,7 @@ module.exports = {
 
 Usage:
 ```
-const contractMetadata = require('./contract_metadata');
+import ContractMetadata from './data/contract_metadata';
 
 async function(args) {
   let {
