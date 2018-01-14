@@ -2,6 +2,7 @@ import _ from 'lodash';
 import EthjsAbi from 'ethjs-abi';
 import Web3Utils from 'web3-utils';
 import Utils from './utils';
+import Encoder from './encoder';
 import Decoder from './decoder';
 
 class Formatter {
@@ -13,6 +14,16 @@ class Formatter {
    * @return {object} Decoded searchlog output
    */
   static searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
+    let eventHashes = {};
+    _.each(contractMetadata, (contractItem, contractKey) => {
+      const filteredEvents = _.filter(contractItem.abi, { type: 'event' });
+      _.each(filteredEvents, (eventObj) => {
+        const hash = Encoder.getEventHash(eventObj);
+        eventHashes[hash] = contractKey;
+      });
+    });
+    console.log(eventHashes);
+
     return _.map(rawOutput, (resultEntry) => {
       const formatted = _.assign({}, resultEntry);
 
