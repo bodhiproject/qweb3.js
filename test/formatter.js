@@ -42,7 +42,7 @@ describe('Formatter', () => {
       },
     ];
 
-    it.only('returns the formatted searchlog output', () => {
+    it('returns the formatted searchlog output', () => {
       const formatted = Formatter.searchLogOutput(rawOutput, ContractMetadata, true);
 
       // CentralizedOracleCreated event
