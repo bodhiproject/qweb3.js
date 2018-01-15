@@ -63,15 +63,12 @@ describe('Contract', () => {
 
   describe('send()', () => {
     it('sends a transaction', async () => {
-      contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        ContractMetadata.TopicEvent.abi,
-      );
+      const res = {
+        "txid": "685f23b364242e4954a2a62a42c3632762d19f37e24c34edc495cc0e117a9112",
+        "sender": "qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy",
+        "hash160": "17e7888aa7412a735f336d2f6d784caefabb6fa3"
+      };
 
-      const res = await contract.send('withdrawWinnings', {
-        methodArgs: [],
-        senderAddress: Config.SENDER_ADDRESS,
-      });
       assert.isDefined(res.txid);
       assert.isDefined(res.sender);
       assert.isDefined(res.hash160);
