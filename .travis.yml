@@ -24,7 +24,6 @@ before_install:
 
 install:
   - tar -xvzf qtum-0.14.13-x86_64-linux-gnu.tar.gz
-  - tar -xvzf ./test/data/qtum_data.tar.gz -C ./test/data
   - npm install
 
 script:
