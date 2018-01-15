@@ -33,3 +33,4 @@ script:
 
 after_failure:
   - cat /home/travis/build/bodhiproject/qweb3.js/test/data/.qtum/testnet3/debug.log
+  
