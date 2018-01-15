@@ -17,15 +17,14 @@ addons:
 cache:
   directories:
     - "node_modules"
-    - 
 
 before_install:
   - wget https://github.com/qtumproject/qtum/releases/download/mainnet-ignition-v0.14.13/qtum-0.14.13-x86_64-linux-gnu.tar.gz
 
 install:
   - tar -xvzf qtum-0.14.13-x86_64-linux-gnu.tar.gz
-  - tar -xvzf ./test/data/qtum_data.tar.gz -C ./test/data
   - npm install
+  - mkdir test/data/.qtum
 
 script:
   - cd qtum-0.14.13/bin; ./qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=/home/travis/build/bodhiproject/qweb3.js/test/data/.qtum & 
