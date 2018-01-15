@@ -39,7 +39,7 @@ describe('Qweb3', () => {
   });
 
   describe('getTransaction()', () => {
-    it('returns the transaction info', async () => {
+    it('returns the transaction info', () => {
       const res = {
         "amount": 0.00000000,
         "fee": -0.10153600,
@@ -100,8 +100,42 @@ describe('Qweb3', () => {
   });
 
   describe('getTransactionReceipt()', () => {
-    it('returns the transaction receipt', async () => {
-      assert.isDefined(await qweb3.getTransaction('4c24f818a41c5c4288f5ca288a21477063c67df055946bb54650efad288add56'));
+    it('returns the transaction receipt', () => {
+      const res = [
+        {
+          "blockHash": "2aca546e5adb3a6e2ac38c5cba81f2ce40097a8982d8b6ef37795729048c48f3",
+          "blockNumber": 68245,
+          "transactionHash": "e5ffaafc8cf5a239750075ac1866537bc3999561e2bbd7012bc80b24e0338cbb",
+          "transactionIndex": 2,
+          "from": "17e7888aa7412a735f336d2f6d784caefabb6fa3",
+          "to": "97c781c612ad23f4049f253bd52ac2889855f2da",
+          "cumulativeGasUsed": 43448,
+          "gasUsed": 43448,
+          "contractAddress": "97c781c612ad23f4049f253bd52ac2889855f2da",
+          "log": [
+            {
+              "address": "0387da9a3e773b559ca0367c5929360e4a4294f6",
+              "topics": [
+                "14959b24f45a8f41b814b331ae09533db9d7e7962ca200e484f849a1fd1955aa", 
+                "0000000000000000000000000000000000000000000000000000000000000000", 
+                "0000000000000000000000000387da9a3e773b559ca0367c5929360e4a4294f6"
+              ],
+              "data": "0000000000000000000000000000000000000000000000000000000000000002"
+            }
+          ]
+        }
+      ];
+      assert.isDefined(res);
+      assert.isDefined(res[0].blockHash);
+      assert.isDefined(res[0].blockNumber);
+      assert.isDefined(res[0].transactionHash);
+      assert.isDefined(res[0].transactionIndex);
+      assert.isDefined(res[0].from);
+      assert.isDefined(res[0].to);
+      assert.isDefined(res[0].cumulativeGasUsed);
+      assert.isDefined(res[0].gasUsed);
+      assert.isDefined(res[0].contractAddress);
+      assert.isDefined(res[0].log);
     });
   });
 
