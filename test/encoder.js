@@ -12,6 +12,108 @@ describe('Encoder', () => {
   const INT256_MAX = '57896044618658097711785492504343953926634992332820282019728792003956564819967';
   const INT256_MIN = '-57896044618658097711785492504343953926634992332820282019728792003956564819968';
 
+  describe('getEventHash()', () => {
+    let eventObj = {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          name: '_version',
+          type: 'uint16',
+        },
+        {
+          indexed: true,
+          name: '_topicAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: '_name',
+          type: 'bytes32[10]',
+        },
+        {
+          indexed: false,
+          name: '_resultNames',
+          type: 'bytes32[10]',
+        },
+      ],
+      name: 'TopicCreated',
+      type: 'event',
+    };
+
+    it('should convert an event obj to hash string', () => {
+      let hash = Encoder.getEventHash(eventObj);
+      assert.equal(hash, '83b9cf916e58a51bacb9cfa2e56de173d9757e8ef33a56b89cf1a7e52fff4338');
+      assert.equal(hash.length, PADDED_BYTES);
+
+      eventObj = {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: true,
+            name: '_version',
+            type: 'uint16',
+          },
+          {
+            indexed: true,
+            name: '_contractAddress',
+            type: 'address',
+          },
+          {
+            indexed: true,
+            name: '_eventAddress',
+            type: 'address',
+          },
+          {
+            indexed: false,
+            name: '_numOfResults',
+            type: 'uint8',
+          },
+          {
+            indexed: false,
+            name: '_oracle',
+            type: 'address',
+          },
+          {
+            indexed: false,
+            name: '_bettingStartBlock',
+            type: 'uint256',
+          },
+          {
+            indexed: false,
+            name: '_bettingEndBlock',
+            type: 'uint256',
+          },
+          {
+            indexed: false,
+            name: '_resultSettingStartBlock',
+            type: 'uint256',
+          },
+          {
+            indexed: false,
+            name: '_resultSettingEndBlock',
+            type: 'uint256',
+          },
+          {
+            indexed: false,
+            name: '_consensusThreshold',
+            type: 'uint256',
+          },
+        ],
+        name: 'CentralizedOracleCreated',
+        type: 'event',
+      };
+      hash = Encoder.getEventHash(eventObj);
+      assert.equal(hash, '1e482c6081e57445e988bc379f3066a27d0db9fb8d6c9fb9aeff950cec4c1897');
+      assert.equal(hash.length, PADDED_BYTES);
+    });
+
+    it('throws if eventObj is undefined', () => {
+      assert.throws(() => Encoder.getEventHash(), Error);
+      assert.throws(() => Encoder.getEventHash(undefined), Error);
+    });
+  });
+
   describe('getFunctionHash()', () => {
     const funcObj = {
       constant: false,
