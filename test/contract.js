@@ -120,7 +120,7 @@ describe('Contract', () => {
       const args = ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'];
       const dataHex = contract.constructDataHex(methodObj, args);
 
-      const funcHash = Encoder.getFunctionHash(methodObj);
+      const funcHash = Encoder.objToHash(methodObj, true);
       const param = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -143,7 +143,7 @@ describe('Contract', () => {
       const args = [true];
       const dataHex = contract.constructDataHex(methodObj, args);
 
-      const funcHash = Encoder.getFunctionHash(methodObj);
+      const funcHash = Encoder.objToHash(methodObj, true);
       const param = '0000000000000000000000000000000000000000000000000000000000000001';
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -166,7 +166,7 @@ describe('Contract', () => {
       const args = [2147483647]; // max uint32
       const dataHex = contract.constructDataHex(methodObj, args);
 
-      const funcHash = Encoder.getFunctionHash(methodObj);
+      const funcHash = Encoder.objToHash(methodObj, true);
       const param = '000000000000000000000000000000000000000000000000000000007FFFFFFF'.toLowerCase();
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -189,7 +189,7 @@ describe('Contract', () => {
       let args = [['a', 'b', 'c']];
       let dataHex = contract.constructDataHex(methodObj, args);
 
-      let funcHash = Encoder.getFunctionHash(methodObj);
+      let funcHash = Encoder.objToHash(methodObj, true);
       let param = '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
 
@@ -210,7 +210,7 @@ describe('Contract', () => {
       args = [['a', 'b', 'c']];
       dataHex = contract.constructDataHex(methodObj, args);
 
-      funcHash = Encoder.getFunctionHash(methodObj);
+      funcHash = Encoder.objToHash(methodObj, true);
       param = '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -233,7 +233,7 @@ describe('Contract', () => {
       let args = ['hello'];
       let dataHex = contract.constructDataHex(methodObj, args);
 
-      let funcHash = Encoder.getFunctionHash(methodObj);
+      let funcHash = Encoder.objToHash(methodObj, true);
       let param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
 
@@ -254,7 +254,7 @@ describe('Contract', () => {
       args = ['hello'];
       dataHex = contract.constructDataHex(methodObj, args);
 
-      funcHash = Encoder.getFunctionHash(methodObj);
+      funcHash = Encoder.objToHash(methodObj, true);
       param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -277,7 +277,7 @@ describe('Contract', () => {
       const args = ['hello'];
       let dataHex = contract.constructDataHex(methodObj, args);
 
-      let funcHash = Encoder.getFunctionHash(methodObj);
+      let funcHash = Encoder.objToHash(methodObj, true);
       assert.equal(dataHex, funcHash);
 
       methodObj = {
@@ -296,7 +296,7 @@ describe('Contract', () => {
       };
       dataHex = contract.constructDataHex(methodObj, args);
 
-      funcHash = Encoder.getFunctionHash(methodObj);
+      funcHash = Encoder.objToHash(methodObj, true);
       assert.equal(dataHex, funcHash);
     });
 

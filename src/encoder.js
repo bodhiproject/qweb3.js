@@ -9,52 +9,36 @@ const PADDED_BYTES = 64;
 
 class Encoder {
   /*
-   * Converts an event object from the ABI to its hash format.
-   * @param eventObj The json object of the event taken from the ABI.
-   * @return The event hash.
+   * Converts an ABI object signature to its hash format.
+   * @param obj The object of the ABI object.
+   * @param isFunction Is converting a function object.
+   * @return The object hash.
    */
-  static getEventHash(eventObj) {
-    if (!eventObj) {
-      throw new Error('eventObj should not be undefined');
+  static objToHash(obj, isFunction) {
+    if (_.isUndefined(obj)) {
+      throw new Error('obj should not be undefined');
+    }
+    if (_.isUndefined(isFunction)) {
+      throw new Error('isFunction should not be undefined');
     }
 
-    const name = eventObj.name;
+    const name = obj.name;
     let params = '';
-    for (let i = 0; i < eventObj.inputs.length; i++) {
-      params = params.concat(eventObj.inputs[i].type);
+    for (let i = 0; i < obj.inputs.length; i++) {
+      params = params.concat(obj.inputs[i].type);
 
-      if (i < eventObj.inputs.length - 1) {
+      if (i < obj.inputs.length - 1) {
         params = params.concat(',');
       }
     }
     const hash = name.concat(`(${params})`);
 
-    return Web3Utils.sha3(hash).slice(2);
-  }
-
-  /*
-   * Converts an object of a method from the ABI to a function hash.
-   * @param methodObj The json object of the method taken from the ABI.
-   * @return The function hash.
-   */
-  static getFunctionHash(methodObj) {
-    if (!methodObj) {
-      throw new Error('methodObj should not be undefined');
+    if (isFunction) {
+      // Return only the first 4 bytes
+      return Web3Utils.sha3(hash).slice(2, 10);
+    } else {
+      return Web3Utils.sha3(hash).slice(2);
     }
-
-    const name = methodObj.name;
-    let params = '';
-    for (let i = 0; i < methodObj.inputs.length; i++) {
-      params = params.concat(methodObj.inputs[i].type);
-
-      if (i < methodObj.inputs.length - 1) {
-        params = params.concat(',');
-      }
-    }
-    const signature = name.concat('(').concat(params).concat(')');
-
-    // Return only the first 4 bytes
-    return Web3Utils.sha3(signature).slice(2, 10);
   }
 
   /*

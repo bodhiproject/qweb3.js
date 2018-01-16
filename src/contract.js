@@ -89,7 +89,7 @@ class Contract {
     }
 
     let dataHex = '';
-    dataHex = dataHex.concat(Encoder.getFunctionHash(methodObj));
+    dataHex = dataHex.concat(Encoder.objToHash(methodObj, true));
 
     let hex;
     _.each(methodObj.inputs, (item, index) => {

@@ -20,7 +20,7 @@ class Formatter {
       const filteredEvents = _.filter(contractItem.abi, { type: 'event' });
 
       _.each(filteredEvents, (eventObj) => {
-        const hash = Encoder.getEventHash(eventObj);
+        const hash = Encoder.objToHash(eventObj, false);
         eventHashes[hash] = {
           contract: contractKey,
           event: eventObj.name,
