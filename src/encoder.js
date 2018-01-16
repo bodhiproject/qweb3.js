@@ -36,9 +36,8 @@ class Encoder {
     if (isFunction) {
       // Return only the first 4 bytes
       return Web3Utils.sha3(hash).slice(2, 10);
-    } else {
-      return Web3Utils.sha3(hash).slice(2);
     }
+    return Web3Utils.sha3(hash).slice(2);
   }
 
   /*

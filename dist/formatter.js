@@ -52,7 +52,7 @@ var Formatter = function () {
         var filteredEvents = _lodash2.default.filter(contractItem.abi, { type: 'event' });
 
         _lodash2.default.each(filteredEvents, function (eventObj) {
-          var hash = _encoder2.default.getEventHash(eventObj);
+          var hash = _encoder2.default.objToHash(eventObj, false);
           eventHashes[hash] = {
             contract: contractKey,
             event: eventObj.name

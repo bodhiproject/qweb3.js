@@ -124,7 +124,7 @@ var Contract = function () {
       }
 
       var dataHex = '';
-      dataHex = dataHex.concat(_encoder2.default.getFunctionHash(methodObj));
+      dataHex = dataHex.concat(_encoder2.default.objToHash(methodObj, true));
 
       var hex = void 0;
       _lodash2.default.each(methodObj.inputs, function (item, index) {
