@@ -1,11 +1,14 @@
 import 'babel-polyfill';
 import { assert } from 'chai';
 import _ from 'lodash';
+import Web3Utils from 'web3-utils';
+import BN from 'bn.js';
 
 import Config from './config/config';
 import ContractMetadata from './data/contract_metadata';
 import Contract from '../src/contract';
 import Encoder from '../src/encoder';
+import Formatter from '../src/formatter';
 
 describe('Contract', () => {
   let contract;
@@ -29,30 +32,43 @@ describe('Contract', () => {
 
   describe('call()', () => {
     it('returns the values', async () => {
-      contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        ContractMetadata.TopicEvent.abi,
-      );
+      // getVoteBalances() result
+      const result = {
+        address: '09223575cc86e0c7d42f3b16f20fceb2caef828b',
+        executionResult: {
+          gasUsed: 26859,
+          excepted: 'None',
+          newAddress: '09223575cc86e0c7d42f3b16f20fceb2caef828b',
+          output: '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002540be40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+          codeDeposit: 0,
+          gasRefunded: 0,
+          depositSize: 0,
+          gasForDeposit: 0,
+        },
+        transactionReceipt: {
+          stateRoot: 'b1121cfe67b3c73e95e9aa8d8e7a95ecff7395f225016b07a862d8fdc6938aef',
+          gasUsed: 26859,
+          bloom: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+          log: [
+          ],
+        },
+      };
 
-      const res = await contract.call('getEventName', {
-        methodArgs: [],
-        senderAddress: Config.SENDER_ADDRESS,
-      });
-      assert.equal(res[0].replace(/\0/g, ''), 'Who will win the 2018 NBA Finals Championships?');
+      const formatted = Formatter.callOutput(result, ContractMetadata.DecentralizedOracle.abi, 'getVoteBalances', true);
+      assert.isDefined(formatted[0]);
+      assert.isTrue(_.every(formatted[0], item => Web3Utils.isBN(item)));
+      assert.equal(formatted[0][2].toString(16), new BN('10000000000').toString(16));
     });
   });
 
   describe('send()', () => {
     it('sends a transaction', async () => {
-      contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        ContractMetadata.TopicEvent.abi,
-      );
+      const res = {
+        txid: '685f23b364242e4954a2a62a42c3632762d19f37e24c34edc495cc0e117a9112',
+        sender: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+        hash160: '17e7888aa7412a735f336d2f6d784caefabb6fa3',
+      };
 
-      const res = await contract.send('withdrawWinnings', {
-        methodArgs: [],
-        senderAddress: Config.SENDER_ADDRESS,
-      });
       assert.isDefined(res.txid);
       assert.isDefined(res.sender);
       assert.isDefined(res.hash160);
@@ -82,7 +98,8 @@ describe('Contract', () => {
       const resultSettingEndBlock = '000000000000000000000000000000000000000000000000000000000000C738';
 
       assert.equal(dataHex, funcHash.concat(oracle).concat(name).concat(resultNames).concat(bettingEndBlock)
-        .concat(resultSettingEndBlock).toLowerCase());
+        .concat(resultSettingEndBlock)
+        .toLowerCase());
     });
 
     it('converts address types', () => {
@@ -103,7 +120,7 @@ describe('Contract', () => {
       const args = ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy'];
       const dataHex = contract.constructDataHex(methodObj, args);
 
-      const funcHash = Encoder.getFunctionHash(methodObj);
+      const funcHash = Encoder.objToHash(methodObj, true);
       const param = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -126,7 +143,7 @@ describe('Contract', () => {
       const args = [true];
       const dataHex = contract.constructDataHex(methodObj, args);
 
-      const funcHash = Encoder.getFunctionHash(methodObj);
+      const funcHash = Encoder.objToHash(methodObj, true);
       const param = '0000000000000000000000000000000000000000000000000000000000000001';
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -149,7 +166,7 @@ describe('Contract', () => {
       const args = [2147483647]; // max uint32
       const dataHex = contract.constructDataHex(methodObj, args);
 
-      const funcHash = Encoder.getFunctionHash(methodObj);
+      const funcHash = Encoder.objToHash(methodObj, true);
       const param = '000000000000000000000000000000000000000000000000000000007FFFFFFF'.toLowerCase();
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -172,7 +189,7 @@ describe('Contract', () => {
       let args = [['a', 'b', 'c']];
       let dataHex = contract.constructDataHex(methodObj, args);
 
-      let funcHash = Encoder.getFunctionHash(methodObj);
+      let funcHash = Encoder.objToHash(methodObj, true);
       let param = '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
 
@@ -193,7 +210,7 @@ describe('Contract', () => {
       args = [['a', 'b', 'c']];
       dataHex = contract.constructDataHex(methodObj, args);
 
-      funcHash = Encoder.getFunctionHash(methodObj);
+      funcHash = Encoder.objToHash(methodObj, true);
       param = '6100000000000000000000000000000000000000000000000000000000000000620000000000000000000000000000000000000000000000000000000000000063000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -216,7 +233,7 @@ describe('Contract', () => {
       let args = ['hello'];
       let dataHex = contract.constructDataHex(methodObj, args);
 
-      let funcHash = Encoder.getFunctionHash(methodObj);
+      let funcHash = Encoder.objToHash(methodObj, true);
       let param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
 
@@ -237,7 +254,7 @@ describe('Contract', () => {
       args = ['hello'];
       dataHex = contract.constructDataHex(methodObj, args);
 
-      funcHash = Encoder.getFunctionHash(methodObj);
+      funcHash = Encoder.objToHash(methodObj, true);
       param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
     });
@@ -260,7 +277,7 @@ describe('Contract', () => {
       const args = ['hello'];
       let dataHex = contract.constructDataHex(methodObj, args);
 
-      let funcHash = Encoder.getFunctionHash(methodObj);
+      let funcHash = Encoder.objToHash(methodObj, true);
       assert.equal(dataHex, funcHash);
 
       methodObj = {
@@ -279,7 +296,7 @@ describe('Contract', () => {
       };
       dataHex = contract.constructDataHex(methodObj, args);
 
-      funcHash = Encoder.getFunctionHash(methodObj);
+      funcHash = Encoder.objToHash(methodObj, true);
       assert.equal(dataHex, funcHash);
     });
 

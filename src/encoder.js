@@ -9,28 +9,35 @@ const PADDED_BYTES = 64;
 
 class Encoder {
   /*
-   * Converts an object of a method from the ABI to a function hash.
-   * @param methodObj The json object of the method taken from the ABI.
-   * @return The function hash.
+   * Converts an ABI object signature to its hash format.
+   * @param obj The object of the ABI object.
+   * @param isFunction Is converting a function object.
+   * @return The object hash.
    */
-  static getFunctionHash(methodObj) {
-    if (!methodObj) {
-      throw new Error('methodObj should not be undefined');
+  static objToHash(obj, isFunction) {
+    if (_.isUndefined(obj)) {
+      throw new Error('obj should not be undefined');
+    }
+    if (_.isUndefined(isFunction)) {
+      throw new Error('isFunction should not be undefined');
     }
 
-    const name = methodObj.name;
+    const name = obj.name;
     let params = '';
-    for (let i = 0; i < methodObj.inputs.length; i++) {
-      params = params.concat(methodObj.inputs[i].type);
+    for (let i = 0; i < obj.inputs.length; i++) {
+      params = params.concat(obj.inputs[i].type);
 
-      if (i < methodObj.inputs.length - 1) {
+      if (i < obj.inputs.length - 1) {
         params = params.concat(',');
       }
     }
-    const signature = name.concat('(').concat(params).concat(')');
+    const hash = name.concat(`(${params})`);
 
-    // Return only the first 4 bytes
-    return Web3Utils.sha3(signature).slice(2, 10);
+    if (isFunction) {
+      // Return only the first 4 bytes
+      return Web3Utils.sha3(hash).slice(2, 10);
+    }
+    return Web3Utils.sha3(hash).slice(2);
   }
 
   /*
@@ -112,7 +119,7 @@ class Encoder {
     } else {
       bigNum = new BigNumber(num, 10);
     }
-    
+
     const hexNum = Web3Utils.numberToHex(bigNum);
     return Web3Utils.padLeft(hexNum, PADDED_BYTES).slice(2);
   }

@@ -18,6 +18,10 @@ var _utils = require('./utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
+var _encoder = require('./encoder');
+
+var _encoder2 = _interopRequireDefault(_encoder);
+
 var _decoder = require('./decoder');
 
 var _decoder2 = _interopRequireDefault(_decoder);
@@ -42,33 +46,41 @@ var Formatter = function () {
      * @return {object} Decoded searchlog output
      */
     value: function searchLogOutput(rawOutput, contractMetadata, removeHexPrefix) {
+      // Create dict of all event hashes
+      var eventHashes = {};
+      _lodash2.default.each(contractMetadata, function (contractItem, contractKey) {
+        var filteredEvents = _lodash2.default.filter(contractItem.abi, { type: 'event' });
+
+        _lodash2.default.each(filteredEvents, function (eventObj) {
+          var hash = _encoder2.default.objToHash(eventObj, false);
+          eventHashes[hash] = {
+            contract: contractKey,
+            event: eventObj.name
+          };
+        });
+      });
+
       return _lodash2.default.map(rawOutput, function (resultEntry) {
         var formatted = _lodash2.default.assign({}, resultEntry);
 
         if (!_lodash2.default.isEmpty(resultEntry.log)) {
           _lodash2.default.each(resultEntry.log, function (item, index) {
-            var eventHash = item.topics[0];
+            var eventHashObj = eventHashes[item.topics[0]];
 
-            var eventName = void 0;
-            var metadataObj = void 0;
-            _lodash2.default.each(contractMetadata, function (contractItem, index) {
-              eventName = _lodash2.default.invert(contractItem)[eventHash];
+            var contractObj = void 0;
+            if (eventHashObj) {
+              contractObj = contractMetadata[eventHashObj.contract];
+            }
 
-              if (eventName) {
-                metadataObj = contractItem;
-                return false;
-              }
-            });
-
-            if (metadataObj) {
+            if (contractObj) {
               // Each field of log needs to appended with '0x' to be parsed
               item.address = _utils2.default.appendHexPrefix(item.address);
               item.data = _utils2.default.appendHexPrefix(item.data);
               item.topics = _lodash2.default.map(item.topics, _utils2.default.appendHexPrefix);
 
-              var methodAbi = _lodash2.default.find(metadataObj.abi, { name: eventName });
+              var methodAbi = _lodash2.default.find(contractObj.abi, { name: eventHashObj.event });
               if (_lodash2.default.isUndefined(methodAbi)) {
-                console.warn('Error: Could not find method in ABI for ' + eventName);
+                console.warn('Error: Could not find method in ABI for ' + eventHashObj.event);
                 return;
               }
 

@@ -34,31 +34,38 @@ var Encoder = function () {
   }
 
   _createClass(Encoder, null, [{
-    key: 'getFunctionHash',
+    key: 'objToHash',
 
     /*
-     * Converts an object of a method from the ABI to a function hash.
-     * @param methodObj The json object of the method taken from the ABI.
-     * @return The function hash.
+     * Converts an ABI object signature to its hash format.
+     * @param obj The object of the ABI object.
+     * @param isFunction Is converting a function object.
+     * @return The object hash.
      */
-    value: function getFunctionHash(methodObj) {
-      if (!methodObj) {
-        throw new Error('methodObj should not be undefined');
+    value: function objToHash(obj, isFunction) {
+      if (_lodash2.default.isUndefined(obj)) {
+        throw new Error('obj should not be undefined');
+      }
+      if (_lodash2.default.isUndefined(isFunction)) {
+        throw new Error('isFunction should not be undefined');
       }
 
-      var name = methodObj.name;
+      var name = obj.name;
       var params = '';
-      for (var i = 0; i < methodObj.inputs.length; i++) {
-        params = params.concat(methodObj.inputs[i].type);
+      for (var i = 0; i < obj.inputs.length; i++) {
+        params = params.concat(obj.inputs[i].type);
 
-        if (i < methodObj.inputs.length - 1) {
+        if (i < obj.inputs.length - 1) {
           params = params.concat(',');
         }
       }
-      var signature = name.concat('(').concat(params).concat(')');
+      var hash = name.concat('(' + params + ')');
 
-      // Return only the first 4 bytes
-      return _web3Utils2.default.sha3(signature).slice(2, 10);
+      if (isFunction) {
+        // Return only the first 4 bytes
+        return _web3Utils2.default.sha3(hash).slice(2, 10);
+      }
+      return _web3Utils2.default.sha3(hash).slice(2);
     }
 
     /*
