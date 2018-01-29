@@ -326,6 +326,22 @@ class Qweb3 {
     });
   }
 
+  /*
+  * Lists unspent transaction outputs.
+  * @param address {String} Address to send QTUM to.
+  * @param amount {Number} Amount of QTUM to send.
+  * @param comment {String} Comment used to store what the transaction is for.
+  * @param commentTo {String} Comment to store name/organization to which you're sending the transaction.
+  * @param subtractFeeFromAmount {Boolean} The fee will be deducted from the amount being sent.
+  * @return {Promise} Transaction ID or Error
+  */
+  sendToAddress(address, amount, comment = '', commentTo = '', subtractFeeFromAmount = false) {
+    return this.provider.request({
+      method: 'sendtoaddress',
+      params: [address, amount, comment, commentTo, subtractFeeFromAmount],
+    });
+  }
+
   /**
    * Locks the encrypted wallet.
    * @return {Promise} Success or Error.
