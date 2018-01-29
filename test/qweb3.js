@@ -103,6 +103,14 @@ describe('Qweb3', () => {
     });
   });
 
+  describe('getBlockHash()', () => {
+    it('returns the block hash', async () => {
+      const res = await qweb3.getBlockHash(0);
+      assert.isDefined(res);
+      assert.isString(res);
+    });
+  });
+
   describe('getTransactionReceipt()', () => {
     it('returns the transaction receipt', () => {
       const res = [

@@ -53,6 +53,17 @@ class Qweb3 {
   }
 
   /*
+  * @dev Returns the block hash of the block height number specified.
+  * @return {Promise} Block hash or Error.
+  */
+  getBlockHash(blockNum) {
+    return this.provider.request({
+      method: 'getblockhash',
+      params: [blockNum],
+    });
+  }
+
+  /*
   * @dev Returns the transaction receipt given the txid.
   * @return {Promise} Transaction receipt or Error.
   */
