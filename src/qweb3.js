@@ -25,6 +25,17 @@ class Qweb3 {
   * @dev Returns the latest block info that is synced with the client.
   * @return {Promise} Latest block info or Error.
   */
+  getBlock(blockHash, verbose = true) {
+    return this.provider.request({
+      method: 'getblock',
+      params: [blockHash, verbose],
+    });
+  }
+
+  /*
+  * @dev Returns the latest block info that is synced with the client.
+  * @return {Promise} Latest block info or Error.
+  */
   getBlockchainInfo() {
     return this.provider.request({
       method: 'getblockchaininfo',
