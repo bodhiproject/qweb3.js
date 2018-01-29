@@ -416,6 +416,14 @@ describe('Qweb3', () => {
     });
   });
 
+  describe('listLockUnspent()', () => {
+    it('returns an array of unspendable outputs', async () => {
+      const res = await qweb3.listLockUnspent();
+      assert.isDefined(res);
+      assert.isArray(res);
+    });
+  });
+
   describe('listUnspent()', () => {
     it('returns an unspent output array', async () => {
       const res = await qweb3.listUnspent();

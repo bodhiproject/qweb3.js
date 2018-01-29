@@ -274,6 +274,49 @@ class Qweb3 {
   }
 
   /*
+  * Adds an address that is watch-only. Cannot be used to spend.
+  * @return {Promise} Success or Error.
+  */
+  importAddress(address, label = '', rescan = true) {
+    return this.provider.request({
+      method: 'importaddress',
+      params: [address, label, rescan],
+    });
+  }
+
+  /*
+  * Adds an address by private key.
+  * @return {Promise} Success or Error.
+  */
+  importPrivateKey(privateKey, label = '', rescan = true) {
+    return this.provider.request({
+      method: 'importprivkey',
+      params: [privateKey, label, rescan],
+    });
+  }
+
+  /*
+  * Adds an watch-only address by public key. Cannot be used to spend.
+  * @return {Promise} Success or Error.
+  */
+  importPublicKey(publicKey, label = '', rescan = true) {
+    return this.provider.request({
+      method: 'importpubkey',
+      params: [publicKey, label, rescan],
+    });
+  }
+
+  /*
+  * Lists temporary unspendable outputs.
+  * @return {Promise} Array of unspendable outputs or Error
+  */
+  listLockUnspent() {
+    return this.provider.request({
+      method: 'listlockunspent',
+    });
+  }
+
+  /*
   * Lists unspent transaction outputs.
   * @return {Promise} Array of unspent transaction outputs or Error
   */
