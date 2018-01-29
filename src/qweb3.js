@@ -342,6 +342,18 @@ class Qweb3 {
     });
   }
 
+  /*
+  * Set the transaction fee per kB. Overwrites the paytxfee parameter.
+  * @param amount {Number} The transaction fee in QTUM/kB
+  * @return {Promise} True/false for success or Error
+  */
+  setTxFee(amount) {
+    return this.provider.request({
+      method: 'settxfee',
+      params: [amount],
+    });
+  }
+
   /**
    * Locks the encrypted wallet.
    * @return {Promise} Success or Error.
