@@ -22,6 +22,16 @@ class Qweb3 {
 
   /** ******** BLOCKCHAIN ********* */
   /*
+  * @dev Returns the latest block info that is synced with the client.
+  * @return {Promise} Latest block info or Error.
+  */
+  getBlockchainInfo() {
+    return this.provider.request({
+      method: 'getblockchaininfo',
+    });
+  }
+
+  /*
   * @dev Returns the current block height that is synced with the client.
   * @return {Promise} Current block count or Error.
   */
