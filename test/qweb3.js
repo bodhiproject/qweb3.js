@@ -356,19 +356,19 @@ describe('Qweb3', () => {
     });
   });
 
-  // Uncomment when you are testing on an encrypted wallet
-  // describe('walletLock()', () => {
-  //   it('locks the encrypted wallet', async () => {
-  //     const res = await qweb3.walletLock();
-  //     assert.isDefined(res);
-  //   });
-  // });
+  !Config.RUN_ENCRYPTED_WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
+    describe('walletLock()', () => {
+      it('locks the encrypted wallet', async () => {
+        const res = await qweb3.walletLock();
+        assert.isDefined(res);
+      });
+    });
 
-  // Uncomment when you are testing on an encrypted wallet
-  // describe('walletPassphrase()', () => {
-  //   it('unlocks the encrypted wallet', async () => {
-  //     const res = await qweb3.walletPassphrase('mypassphrase', 60, true);
-  //     assert.isDefined(res);
-  //   });
-  // });
+    describe('walletPassphrase()', () => {
+      it('unlocks the encrypted wallet', async () => {
+        const res = await qweb3.walletPassphrase('mypassphrase', 60, true);
+        assert.isDefined(res);
+      });
+    });
+  });
 });
