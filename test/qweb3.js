@@ -25,7 +25,7 @@ describe('Qweb3', () => {
   /** ******** BLOCKCHAIN ********* */
   describe('getBlock()', () => {
     it('returns the block info', () => {
-      const res = { 
+      const res = {
         hash: '1bfc4aca524f50fedf45c9a0a88b54233269b12a7c1dc72beabbb0ccfda81fa7',
         confirmations: 17,
         strippedsize: 1215,
@@ -37,10 +37,10 @@ describe('Qweb3', () => {
         merkleroot: 'c3b8465d875ac8e71a0a43e1954b5531ca3576d5559e47ecd1a38b73ebaccafe',
         hashStateRoot: '688ecfc501c65bfd3f440b3dd9a7d68a510b3bedc356be5d28be80c795020168',
         hashUTXORoot: 'c0f1e696a0341796eeb7229927ceebab2c2aae074892d17680283073811023e5',
-        tx: 
-         [ '3720fd812dde6a25c7d25fe587c975a59dba8250cf8f1d98d194a5f7c133f7ae',
+        tx:
+         ['3720fd812dde6a25c7d25fe587c975a59dba8250cf8f1d98d194a5f7c133f7ae',
            'f41ce7da75ee19d9b85604d4bdeaa6519a65e628991c34e7fc459a0f888785c6',
-           '47e194c0ffa516971a9c1ad78b3584cc1f38f86cec7e7568f0660413a9bc2985' ],
+           '47e194c0ffa516971a9c1ad78b3584cc1f38f86cec7e7568f0660413a9bc2985'],
         time: 1517200944,
         mediantime: 1517200064,
         nonce: 0,
@@ -52,8 +52,8 @@ describe('Qweb3', () => {
         flags: 'proof-of-stake',
         proofhash: '00000684b650e192628204edf8608c2673062b347ebf34ff5fe18f5e3dce1203',
         modifier: '97767d8c89724d7c71c049b7600d4865f27fa0f294c5c70fc24af355f8eb136d',
-        signature: '30450221008a6b2567b2d36efa71def0d9820a6d71c563b5550647cb574defda2918434f7b02204bbf76767c737c8c62f7493838d8b7e9e3379938f83311f412e0916c0ab2f954' 
-      }
+        signature: '30450221008a6b2567b2d36efa71def0d9820a6d71c563b5550647cb574defda2918434f7b02204bbf76767c737c8c62f7493838d8b7e9e3379938f83311f412e0916c0ab2f954',
+      };
       assert.isDefined(res);
       assert.isObject(res);
       assert.isDefined(res.confirmations);

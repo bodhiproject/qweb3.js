@@ -12,7 +12,7 @@ class Qweb3 {
   /** ******** MISC ********* */
   /*
    * Returns true if getinfo request returns result.
-   * @return {Promise} True/false for connected or Error. 
+   * @return {Promise} True/false for connected or Error.
    */
   isConnected() {
     return this.provider.request({
