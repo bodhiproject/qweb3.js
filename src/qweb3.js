@@ -167,7 +167,7 @@ class Qweb3 {
   * Gets the Qtum address based on the account name.
   * @return {Promise} Qtum address or Error.
   */
-  getAccountAddress(acctName) {
+  getAccountAddress(acctName = '') {
     return this.provider.request({
       method: 'getaccountaddress',
       params: [acctName],

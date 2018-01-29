@@ -256,7 +256,7 @@ describe('Qweb3', () => {
 
   /** ******** UTIL ********* */
   describe('validateAddress()', () => {
-    it('returns a object validating the address', async () => {
+    it('returns an object validating the address', async () => {
       let res = await qweb3.validateAddress(QTUM_ADDRESS);
       assert.isDefined(res);
       assert.isDefined(res.isvalid);
@@ -268,6 +268,15 @@ describe('Qweb3', () => {
   });
 
   /** ******** WALLET ********* */
+  describe('getAccountAddress()', () => {
+    it('returns the account address', async () => {
+      const res = await qweb3.getAccountAddress('');
+      assert.isDefined(res);
+      assert.isString(res);
+      assert.isTrue(res.startsWith('q') || res.startsWith('Q'));
+    });
+  });
+
   describe('getTransaction()', () => {
     it('returns the transaction info', () => {
       const res = {
