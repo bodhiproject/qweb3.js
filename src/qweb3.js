@@ -226,7 +226,7 @@ class Qweb3 {
    * @param {Boolean} stakingOnly Unlock wallet for staking only.
    * @return {Promise} Success or Error.
    */
-  walletPassphrase(passphrase, timeout, stakingOnly) {
+  walletPassphrase(passphrase, timeout, stakingOnly = false) {
     return this.provider.request({
       method: 'walletpassphrase',
       params: [
