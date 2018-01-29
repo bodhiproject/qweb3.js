@@ -151,6 +151,14 @@ describe('Qweb3', () => {
     });
   });
 
+  describe('listContracts()', () => {
+    it('returns the array of deployed contracts', async () => {
+      const res = await qweb3.listContracts();
+      assert.isDefined(res);
+      assert.isObject(res);
+    });
+  });
+
   describe('searchLogs()', () => {
     it('returns an array of logs', async () => {
       const rawOutput = [

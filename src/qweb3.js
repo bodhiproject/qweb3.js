@@ -74,6 +74,16 @@ class Qweb3 {
     });
   }
 
+  /*
+  * @dev Returns an array of deployed contract addresses.
+  * @return {Promise} Array of contract addresses or Error.
+  */
+  listContracts(startingAcctIndex = 1, maxDisplay = 20) {
+    return this.provider.request({
+      method: 'listcontracts',
+    });
+  }
+
   /**
    * Search logs with given filters
    * @param  {number} fromBlock Starting block to search.
