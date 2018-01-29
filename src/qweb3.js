@@ -196,6 +196,17 @@ class Qweb3 {
   }
 
   /*
+  * Encrypts the wallet for the first time. This will shut down the qtum server.
+  * @return {Promise} Success or Error.
+  */
+  encryptWallet(passphrase) {
+    return this.provider.request({
+      method: 'encryptwallet',
+      params: [passphrase],
+    });
+  }
+
+  /*
   * Gets the account name associated with the Qtum address.
   * @return {Promise} Account name or Error.
   */
