@@ -311,6 +311,15 @@ describe('Qweb3', () => {
   });
 
   /** ******** WALLET ********* */
+  describe('dumpPrivateKey()', () => {
+    it('returns the private key', async () => {
+      const address = await qweb3.getAccountAddress('');
+      const res = await qweb3.dumpPrivateKey(address);
+      assert.isDefined(res);
+      assert.isString(res);
+    });
+  });
+
   describe('getAccountAddress()', () => {
     it('returns the account address', async () => {
       const res = await qweb3.getAccountAddress('');

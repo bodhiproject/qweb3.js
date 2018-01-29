@@ -185,6 +185,17 @@ class Qweb3 {
 
   /** ******** WALLET ********* */
   /*
+  * Reveals the private key corresponding to the address.
+  * @return {Promise} Private key or Error.
+  */
+  dumpPrivateKey(address) {
+    return this.provider.request({
+      method: 'dumpprivkey',
+      params: [address],
+    });
+  }
+
+  /*
   * Gets the account name associated with the Qtum address.
   * @return {Promise} Account name or Error.
   */
