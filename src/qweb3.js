@@ -264,6 +264,16 @@ class Qweb3 {
   }
 
   /*
+  * Gets the total unconfirmed balance.
+  * @return {Promise} Unconfirmed balance or Error.
+  */
+  getUnconfirmedBalance() {
+    return this.provider.request({
+      method: 'getunconfirmedbalance',
+    });
+  }
+
+  /*
   * Lists unspent transaction outputs.
   * @return {Promise} Array of unspent transaction outputs or Error
   */

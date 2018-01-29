@@ -408,6 +408,14 @@ describe('Qweb3', () => {
     });
   });
 
+  describe('getUnconfirmedBalance()', () => {
+    it('returns the unconfirmed balance', async () => {
+      const res = await qweb3.getUnconfirmedBalance();
+      assert.isDefined(res);
+      assert.isNumber(res);
+    });
+  });
+
   describe('listUnspent()', () => {
     it('returns an unspent output array', async () => {
       const res = await qweb3.listUnspent();
