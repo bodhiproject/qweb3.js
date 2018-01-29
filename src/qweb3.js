@@ -134,6 +134,17 @@ class Qweb3 {
       .then(results => Formatter.searchLogOutput(results, contractMetadata, removeHexPrefix));
   }
 
+  /** ******** CONTROL ********* */
+  /**
+   * Get the blockchain info.
+   * @return {Promise} Blockchain info object or Error
+   */
+  getInfo() {
+    return this.provider.request({
+      method: 'getinfo',
+    });
+  }
+
   /** ******** RAW TRANSACTIONS ********* */
   /**
    * Get the hex address of a Qtum address.
