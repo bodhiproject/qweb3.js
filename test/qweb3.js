@@ -254,6 +254,19 @@ describe('Qweb3', () => {
     });
   });
 
+  /** ******** UTIL ********* */
+  describe('validateAddress()', () => {
+    it('returns a object validating the address', async () => {
+      let res = await qweb3.validateAddress(QTUM_ADDRESS);
+      assert.isDefined(res);
+      assert.isDefined(res.isvalid);
+
+      res = await qweb3.validateAddress('helloworld');
+      assert.isDefined(res);
+      assert.isDefined(res.isvalid);
+    });
+  });
+
   /** ******** WALLET ********* */
   describe('getTransaction()', () => {
     it('returns the transaction info', () => {
