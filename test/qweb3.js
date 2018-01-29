@@ -1,4 +1,5 @@
 import 'babel-polyfill';
+import _ from 'lodash';
 import { assert, expect } from 'chai';
 
 import Qweb3 from '../src/qweb3';
@@ -274,6 +275,15 @@ describe('Qweb3', () => {
       assert.isDefined(res);
       assert.isString(res);
       assert.isTrue(res.startsWith('q') || res.startsWith('Q'));
+    });
+  });
+
+  describe('getAddressesByAccount()', () => {
+    it('returns the account address array', async () => {
+      const res = await qweb3.getAddressesByAccount('');
+      assert.isDefined(res);
+      assert.isArray(res);
+      assert.isTrue(_.every(res, item => item.startsWith('q') || item.startsWith('Q')));
     });
   });
 
