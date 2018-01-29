@@ -239,6 +239,17 @@ class Qweb3 {
     });
   }
 
+  /*
+  * Gets a new Qtum address for receiving payments.
+  * @return {Promise} Qtum address or Error.
+  */
+  getNewAddress(acctName = '') {
+    return this.provider.request({
+      method: 'getnewaddress',
+      params: [acctName],
+    });
+  }
+
   /**
    * Get transaction details by txid
    * @param  {string} txid transaction Id (64 digits hexString);

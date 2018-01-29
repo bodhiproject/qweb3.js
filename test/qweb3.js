@@ -338,6 +338,15 @@ describe('Qweb3', () => {
     });
   });
 
+  !Config.NEW_ADDRESS_TESTS ? describe.skip : describe('getNewAddress()', () => {
+    it('returns a new qtum address', async () => {
+      const res = await qweb3.getNewAddress('');
+      assert.isDefined(res);
+      assert.isString(res);
+      assert.isTrue(res.startsWith('q') || res.startsWith('Q'));
+    });
+  });
+
   describe('getTransaction()', () => {
     it('returns the transaction info', () => {
       const res = {
@@ -407,7 +416,7 @@ describe('Qweb3', () => {
     });
   });
 
-  !Config.RUN_ENCRYPTED_WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
+  !Config.ENCRYPTED_WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
     describe('walletLock()', () => {
       it('locks the encrypted wallet', async () => {
         const res = await qweb3.walletLock();
