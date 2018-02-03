@@ -5,4 +5,4 @@ const Config = {
   ENCRYPTED_WALLET_TESTS: false,
 };
 
-export default Config;
+module.exports = Config;

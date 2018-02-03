@@ -1,14 +1,14 @@
-import 'babel-polyfill';
-import { assert } from 'chai';
-import _ from 'lodash';
-import Web3Utils from 'web3-utils';
-import BN from 'bn.js';
+const _ = require('lodash');
+const Web3Utils = require('web3-utils');
+const BN = require('bn.js');
+const chai = require('chai');
+const assert = chai.assert;
 
-import Config from './config/config';
-import ContractMetadata from './data/contract_metadata';
-import Contract from '../src/contract';
-import Encoder from '../src/encoder';
-import Formatter from '../src/formatter';
+const Config = require('./config/config');
+const ContractMetadata = require('./data/contract_metadata');
+const Contract = require('../src/contract');
+const Encoder = require('../src/encoder');
+const Formatter = require('../src/formatter');
 
 describe('Contract', () => {
   let contract;

@@ -1,8 +1,9 @@
-import { assert } from 'chai';
-import BN from 'bn.js';
-import BigNumber from 'bignumber.js';
+const chai = require('chai');
+const assert = chai.assert;
+const BN = require('bn.js');
+const BigNumber = require('bignumber.js');
 
-import Encoder from '../src/encoder';
+const Encoder = require('../src/encoder');
 
 const PADDED_BYTES = 64;
 
