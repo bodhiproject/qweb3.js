@@ -1,9 +1,10 @@
-import _ from 'lodash';
-import EthjsAbi from 'ethjs-abi';
-import Web3Utils from 'web3-utils';
-import Utils from './utils';
-import Encoder from './encoder';
-import Decoder from './decoder';
+const _ = require('lodash');
+const Web3Utils = require('web3-utils');
+const EthjsAbi = require('ethjs-abi');
+
+const Utils = require('./utils');
+const Encoder = require('./encoder');
+const Decoder = require('./decoder');
 
 class Formatter {
   /**

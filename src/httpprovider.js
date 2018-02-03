@@ -1,7 +1,8 @@
-import url from 'url';
-import fetch from 'node-fetch';
-import _ from 'lodash';
-import Utils from './utils.js';
+const _ = require('lodash');
+const url = require('url');
+const fetch = require('node-fetch');
+
+const Utils = require('./utils');
 
 class HttpProvider {
   constructor(urlString) {

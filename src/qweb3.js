@@ -1,6 +1,7 @@
-import _ from 'lodash';
-import HttpProvider from './httpprovider';
-import Formatter from './formatter';
+const _ = require('lodash');
+
+const HttpProvider = require('./httpprovider');
+const Formatter = require('./formatter');
 
 class Qweb3 {
   constructor(url) {

@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import utf8 from 'utf8';
+const _ = require('lodash');
+const utf8 = require('utf8');
 
 class Utils {
   /**
