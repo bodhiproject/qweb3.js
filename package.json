@@ -40,7 +40,7 @@
     "build": "",
     "watch": "",
     "lint:fix": "eslint --fix -- src/. test/.",
-    "test": "mocha --compilers js:babel-register ./test/"
+    "test": "mocha ./test/"
   },
   "homepage": "http://www.bodhi.network/",
   "bugs": {
