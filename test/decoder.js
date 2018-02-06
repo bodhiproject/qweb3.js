@@ -1,5 +1,8 @@
-import { assert, expect } from 'chai';
-import Decoder from '../src/decoder';
+const chai = require('chai');
+const assert = chai.assert;
+const expect = chai.expect;
+
+const Decoder = require('../src/decoder');
 
 describe('Decoder', () => {
   describe('toQtumAddress()', () => {

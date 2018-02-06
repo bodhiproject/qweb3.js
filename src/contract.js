@@ -1,9 +1,9 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
-import HttpProvider from './httpprovider';
-import Formatter from './formatter';
-import Utils from './utils.js';
-import Encoder from './encoder';
+const HttpProvider = require('./httpprovider');
+const Formatter = require('./formatter');
+const Utils = require('./utils');
+const Encoder = require('./encoder');
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;

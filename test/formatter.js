@@ -1,8 +1,9 @@
-import { assert } from 'chai';
-import _ from 'lodash';
+const _ = require('lodash');
+const chai = require('chai');
+const assert = chai.assert;
 
-import Formatter from '../src/formatter';
-import ContractMetadata from './data/contract_metadata';
+const Formatter = require('../src/formatter');
+const ContractMetadata = require('./data/contract_metadata');
 
 describe('Formatter', () => {
   describe('searchLogOutput()', () => {

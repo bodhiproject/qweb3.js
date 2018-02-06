@@ -1,11 +1,12 @@
-import 'babel-polyfill';
-import _ from 'lodash';
-import { assert, expect } from 'chai';
+const _ = require('lodash');
+const chai = require('chai');
+const assert = chai.assert;
+const expect = chai.expect;
 
-import Qweb3 from '../src/qweb3';
-import Formatter from '../src/formatter';
-import Config from './config/config';
-import ContractMetadata from './data/contract_metadata';
+const Qweb3 = require('../src/qweb3');
+const Formatter = require('../src/formatter');
+const Config = require('./config/config');
+const ContractMetadata = require('./data/contract_metadata');
 
 describe('Qweb3', () => {
   const QTUM_ADDRESS = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';

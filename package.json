@@ -1,9 +1,9 @@
 {
   "name": "qweb3",
   "namespace": "bodhi",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Qtum JavaScript API comunicating to qtum node over RPC",
-  "main": "./dist/index.js",
+  "main": "./src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/bodhiproject/qweb3.js.git"
@@ -27,8 +27,6 @@
     "web3-utils": "^1.0.0-beta.26"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
     "chai": "^3.0.0",
     "eslint": "^4.11.0",
     "eslint-config-airbnb-base": "^12.1.0",
@@ -39,10 +37,10 @@
   },
   "scripts": {
     "start": "",
-    "build": "babel src -d dist --presents env",
+    "build": "",
     "watch": "",
     "lint:fix": "eslint --fix -- src/. test/.",
-    "test": "mocha --compilers js:babel-register ./test/"
+    "test": "mocha ./test/"
   },
   "homepage": "http://www.bodhi.network/",
   "bugs": {

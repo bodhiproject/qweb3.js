@@ -1,8 +1,9 @@
-import _ from 'lodash';
-import Web3Utils from 'web3-utils';
-import crypto from 'crypto';
-import bs58 from 'bs58';
-import Utils from './utils';
+const _ = require('lodash');
+const Web3Utils = require('web3-utils');
+const crypto = require('crypto');
+const bs58 = require('bs58');
+
+const Utils = require('./utils');
 
 const MainnetNetworkByte = '3A';
 const TestnetNetworkByte = '78';

@@ -1,9 +1,9 @@
-import _ from 'lodash';
-import Web3Utils from 'web3-utils';
-import BigNumber from 'bignumber.js';
-import bs58 from 'bs58';
+const _ = require('lodash');
+const Web3Utils = require('web3-utils');
+const BigNumber = require('bignumber.js');
+const bs58 = require('bs58');
 
-import Utils from './utils';
+const Utils = require('./utils');
 
 const PADDED_BYTES = 64;
 
