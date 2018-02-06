@@ -12,7 +12,7 @@ Run the following in your project folder:
 ## Qweb3.js
 Instantiate a new instance of `Qweb3`: 
 ```
-import Qweb3 from 'qweb3';
+const { Qweb3 } = require('qweb3');
 
 // Pass in the path of your local Qtum node rpc port with username/password
 // In our case, username=bodhi, password=bodhi, port=13889
@@ -104,7 +104,7 @@ module.exports = {
 
 Usage:
 ```
-import ContractMetadata from './data/contract_metadata';
+const ContractMetadata = require('./contract_metadata');
 
 async function(args) {
   let {
@@ -129,7 +129,7 @@ async function(args) {
 ## Contract.js
 Instantiate a new instance of `Contract`: 
 ```
-import { Contract } from 'qweb3';
+const { Contract } = require('qweb3');
 
 // The path to your local Qtum node via RPC
 const rpcAddress = 'http://bodhi:bodhi@localhost:13889';
