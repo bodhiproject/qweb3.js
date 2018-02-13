@@ -11,6 +11,10 @@ const SEND_GASPRICE = 0.0000004;
 
 const MAX_BYTES_PER_ARRAY_SLOT = 64;
 
+const TYPE_ADDRESS = 'address';
+const TYPE_BOOL = 'bool';
+const TYPE_BYTES = 'bytes';
+const TYPE_STRING = 'string';
 const REGEX_UINT = /^uint/;
 const REGEX_INT = /^int/;
 const REGEX_BYTES = /bytes([1-9]|[12]\d|3[0-2])$/;
@@ -92,58 +96,52 @@ class Contract {
     dataHex = dataHex.concat(Encoder.objToHash(methodObj, true));
 
     let dataHexArr = _.times(methodObj.inputs.length, _.constant(null));
+    let dataLoc = 0; // offset for location of dynamic data
 
-    let hex;
     _.each(methodObj.inputs, (item, index) => {
       const type = item.type;
+      let hex;
 
-      if (type === 'address' 
-        || type === 'bool' 
+      if (type === TYPE_ADDRESS 
+        || type === TYPE_BOOL
         || type.match(REGEX_UINT) 
         || type.match(REGEX_INT) 
         || type.match(REGEX_BYTES_ARRAY)
         || type.match(REGEX_BYTES)) { // static types
 
-      } else if (type === 'bytes'
-        || type === 'string'
+        if (type === TYPE_ADDRESS) {
+          hex = Encoder.addressToHex(args[index]);
+        } else if (type === TYPE_BOOL) {
+          hex = Encoder.boolToHex(args[index]);
+        } else if (type.match(REGEX_UINT)) {
+          hex = Encoder.uintToHex(args[index]);
+        } else if (type.match(REGEX_INT)) {
+          hex = Encoder.intToHex(args[index]);
+        } else if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
+          const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
+          if (args[index] instanceof Array) {
+            hex = Encoder.stringArrayToHex(args[index], arrCapacity);
+          } else {
+            hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
+          }
+        } else if (type.match(REGEX_BYTES)) { // fixed bytes, ie. bytes32
+          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
+        } 
+        dataHexArr[index] = hex;
+
+      } else if (type === TYPE_BYTES
+        || type === TYPE_STRING
         || type.match(REGEX_DYNAMIC_ARRAY)) { // dynamic types
 
-      } else {
-        console.error(`found unknown type: ${type}`);
-      }
-
-
-
-      if (type === 'address') {
-        hex = Encoder.addressToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (type === 'bool') {
-        hex = Encoder.boolToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (type.match(REGEX_UINT)) {
-        hex = Encoder.uintToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (type.match(REGEX_INT)) {
-        hex = Encoder.intToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
-        const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
-        if (args[index] instanceof Array) {
-          hex = Encoder.stringArrayToHex(args[index], arrCapacity);
-          dataHex = dataHex.concat(hex);
-        } else {
-          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
-          dataHex = dataHex.concat(hex);
+        let data;
+        if (type === TYPE_BYTES) {
+          console.error('dynamics bytes conversion not implemented.');
+        } else if (type === TYPE_STRING) {
+          console.error('dynamic string conversion not implemented.');
+        } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
+          console.error('dynamic array conversion not implemented.');
         }
-      } else if (type.match(REGEX_BYTES)) { // fixed bytes, ie. bytes32
-        hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
-        dataHex = dataHex.concat(hex);
-      } else if (type === 'bytes') {
-        console.error('dynamics bytes conversion not implemented.');
-      } else if (type === 'string') {
-        console.error('dynamic string conversion not implemented.');
-      } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
-        console.error('dynamic array conversion not implemented.');
+
       } else {
         console.error(`found unknown type: ${type}`);
       }
