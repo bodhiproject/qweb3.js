@@ -259,6 +259,33 @@ describe('Contract', () => {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
+    it.only('converts dynamic array address types', () => {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_addresses",
+            "type": "address[]"
+          }
+        ],
+        "name": "test",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+      };
+
+      const args = [['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8']];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.objToHash(methodObj, true);
+      const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
+      const dataLen = '0000000000000000000000000000000000000000000000000000000000000002';
+      const addr1 = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
+      const addr2 = '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868';
+      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(addr1).concat(addr2));
+    });
+
     it('does not parse bytes if < 1 or > 32', () => {
       let methodObj = {
         constant: true,

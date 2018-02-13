@@ -98,7 +98,7 @@ class Contract {
         || type === Constants.STRING
         || type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
 
-        let data;
+        let data = '';
         if (type === Constants.BYTES) {
           console.error('dynamics bytes conversion not implemented.');
         } else if (type === Constants.STRING) {
@@ -116,7 +116,7 @@ class Contract {
 
           // add each hex converted item
           _.each(args[index], (dynItem) => {
-            data += encodeParam(type, dynItem);
+            data += Encoder.encodeParam(type, dynItem);
           });
 
           // add the dynamic data to the end
