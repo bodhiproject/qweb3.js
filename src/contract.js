@@ -122,10 +122,29 @@ class Contract {
           hex = Encoder.uintToHex(startBytesLoc);
           dataHexArr[index] = hex;
 
-          // set data in proper location
+          // construct data
+          // add length of dynamic data set
+          data += Encoder.uintToHex(args[index].length);
+
+          // add each hex converted item
           _.each(args[index], (dynItem) => {
-            
+            if (type.match(TYPE_ADDRESS)) {
+              data += Encoder.addressToHex(dynItem);
+            } else if (type.match(TYPE_BOOL)) {
+              data += Encoder.boolToHex(dynItem);
+            } else if (type.match(REGEX_UINT)) {
+              data += Encoder.uintToHex(dynItem);
+            } else if (type.match(REGEX_INT)) {
+              data += Encoder.intToHex(dynItem);
+            } else if (type.match(REGEX_BYTES)) {
+              data += Encoder.stringToHex(dynItem, MAX_BYTES_PER_ARRAY_SLOT);
+            } else {
+              console.error(`unimplemented dynamic type: ${type}`);
+            }
           });
+
+          // add the dynamic data to the end
+          dataHexArr.push(data);
         }
 
       } else if (type === TYPE_ADDRESS 
