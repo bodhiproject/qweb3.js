@@ -14,9 +14,16 @@ class Encoder {
    * @return The value converted to hex string.
    */
   static encodeParam(type, value) {
-    let hex;
+    let hex = '';
     if (type.match(Constants.ADDRESS)) {
-      hex = this.addressToHex(value);
+      if (value instanceof Array) {
+        _.each(value, (addr) => {
+          hex += this.addressToHex(addr);
+        });
+      } else {
+        hex = this.addressToHex(value);
+      }
+
     } else if (type.match(Constants.BOOL)) {
       hex = this.boolToHex(value);
     } else if (type.match(Constants.REGEX_UINT)) {

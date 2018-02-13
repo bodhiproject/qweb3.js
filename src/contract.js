@@ -130,8 +130,8 @@ class Contract {
         || type === Constants.BOOL
         || type.match(Constants.REGEX_UINT) 
         || type.match(Constants.REGEX_INT) 
-        || type.match(Constants.REGEX_BYTES_ARRAY)
-        || type.match(Constants.REGEX_BYTES)) { // static types
+        || type.match(Constants.REGEX_BYTES)
+        || type.match(Constants.REGEX_STATIC_ARRAY)) { // static types
 
         dataHexArr[index] = Encoder.encodeParam(type, args[index]);
       } else {

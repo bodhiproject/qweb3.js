@@ -125,6 +125,57 @@ describe('Contract', () => {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
+    it('converts fixed array address types', () => {
+      let methodObj = {
+        constant: true,
+        inputs: [
+          {
+            name: '',
+            type: 'address[2]',
+          },
+        ],
+        name: 'testMethod',
+        outputs: [],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      };
+      let args = [['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8']];
+      let dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.objToHash(methodObj, true);
+      const param1 = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
+      const param2 = '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868';
+      assert.equal(dataHex, funcHash.concat(param1).concat(param2));
+    });
+
+    it('converts dynamic array address types', () => {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_addresses",
+            "type": "address[]"
+          }
+        ],
+        "name": "test",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+      };
+
+      const args = [['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8']];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.objToHash(methodObj, true);
+      const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
+      const dataLen = '0000000000000000000000000000000000000000000000000000000000000002';
+      const param1 = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
+      const param2 = '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868';
+      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(param1).concat(param2));
+    });
+
     it('converts bool types', () => {
       const methodObj = {
         constant: true,
@@ -257,33 +308,6 @@ describe('Contract', () => {
       funcHash = Encoder.objToHash(methodObj, true);
       param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
-    });
-
-    it('converts dynamic array address types', () => {
-      let methodObj = {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "_addresses",
-            "type": "address[]"
-          }
-        ],
-        "name": "test",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "pure",
-        "type": "function"
-      };
-
-      const args = [['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8']];
-      const dataHex = contract.constructDataHex(methodObj, args);
-
-      const funcHash = Encoder.objToHash(methodObj, true);
-      const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
-      const dataLen = '0000000000000000000000000000000000000000000000000000000000000002';
-      const param1 = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
-      const param2 = '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868';
-      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(param).concat(param2));
     });
 
     it('converts dynamic array bool types', () => {
