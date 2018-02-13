@@ -4,10 +4,41 @@ const BigNumber = require('bignumber.js');
 const bs58 = require('bs58');
 
 const Utils = require('./utils');
-
-const PADDED_BYTES = 64;
+const Constants = require('./constants');
 
 class Encoder {
+  /*
+   * Encodes a parameter to hex based on its type.
+   * @param type {String} The type of the value.
+   * @param value {String|Bool|Number|HexNumber|BigNumber|BN} Is converting a function object.
+   * @return The object hash.
+   */
+  static encodeParam(type, value) {
+    let hex;
+    if (type.match(Constants.ADDRESS)) {
+      hex = this.addressToHex(value);
+    } else if (type.match(Constants.BOOL)) {
+      hex = this.boolToHex(value);
+    } else if (type.match(Constants.REGEX_UINT)) {
+      hex = this.uintToHex(value);
+    } else if (type.match(Constants.REGEX_INT)) {
+      hex = this.intToHex(value);
+    } else if (type.match(Constants.REGEX_BYTES)) { // fixed bytes, ie. bytes32
+      hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE);
+    } else if (type.match(Constants.REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
+      const arrCapacity = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
+      if (value instanceof Array) {
+        hex = this.stringArrayToHex(value, arrCapacity);
+      } else {
+        hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE * arrCapacity);
+      }
+    } else {
+      console.error(`Unimplemented type: ${type}`);
+    }
+
+    return hex;
+  }
+
   /*
    * Converts an ABI object signature to its hash format.
    * @param obj The object of the ABI object.
@@ -62,7 +93,7 @@ class Encoder {
       hexAddr = hexAddr.slice(2, 42); // Removes first byte (version) & last 4 bytes (checksum)
     }
 
-    return Web3Utils.padLeft(hexAddr, PADDED_BYTES);
+    return Web3Utils.padLeft(hexAddr, Constants.MAX_HEX_CHARS_PER_BYTE);
   }
 
   /*
@@ -121,7 +152,7 @@ class Encoder {
     }
 
     const hexNum = Web3Utils.numberToHex(bigNum);
-    return Web3Utils.padLeft(hexNum, PADDED_BYTES).slice(2);
+    return Web3Utils.padLeft(hexNum, Constants.MAX_HEX_CHARS_PER_BYTE).slice(2);
   }
 
   /*
@@ -171,7 +202,9 @@ class Encoder {
       }
 
       // Remove the 0x hex prefix
-      array[i] = Web3Utils.padRight(hexString, PADDED_BYTES).slice(2, PADDED_BYTES + 2);
+      array[i] = Web3Utils
+        .padRight(hexString, Constants.MAX_HEX_CHARS_PER_BYTE)
+        .slice(2, Constants.MAX_HEX_CHARS_PER_BYTE + 2);
     }
 
     return array.join('');
@@ -191,7 +224,7 @@ class Encoder {
     }
 
     const trimmed = Utils.trimHexPrefix(hexStr);
-    return Web3Utils.padLeft(trimmed, PADDED_BYTES);
+    return Web3Utils.padLeft(trimmed, Constants.MAX_HEX_CHARS_PER_BYTE);
   }
 }
 

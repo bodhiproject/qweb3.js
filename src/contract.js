@@ -4,23 +4,11 @@ const HttpProvider = require('./httpprovider');
 const Formatter = require('./formatter');
 const Utils = require('./utils');
 const Encoder = require('./encoder');
+const Constants = require('./constants');
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
 const SEND_GASPRICE = 0.0000004;
-
-const MAX_BYTES_PER_ARRAY_SLOT = 64;
-
-const TYPE_ADDRESS = 'address';
-const TYPE_BOOL = 'bool';
-const TYPE_BYTES = 'bytes';
-const TYPE_STRING = 'string';
-const REGEX_UINT = /^uint\d+/;
-const REGEX_INT = /^int\d+/;
-const REGEX_BYTES = /bytes([1-9]|[12]\d|3[0-2])$/;
-const REGEX_BYTES_ARRAY = /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/;
-const REGEX_NUMBER = /[0-9]+/g;
-const REGEX_DYNAMIC_ARRAY = /\[\]/;
 
 class Contract {
   constructor(url, address, abi) {
@@ -106,16 +94,16 @@ class Contract {
       const type = item.type;
       let hex;
 
-      if (type === TYPE_BYTES
-        || type === TYPE_STRING
-        || type.match(REGEX_DYNAMIC_ARRAY)) { // dynamic types
+      if (type === Constants.BYTES
+        || type === Constants.STRING
+        || type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
 
         let data;
-        if (type === TYPE_BYTES) {
+        if (type === Constants.BYTES) {
           console.error('dynamics bytes conversion not implemented.');
-        } else if (type === TYPE_STRING) {
+        } else if (type === Constants.STRING) {
           console.error('dynamic string conversion not implemented.');
-        } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
+        } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) {
           // set location of dynamic data
           const startBytesLoc = dataLoc * 32;
           hex = Encoder.uintToHex(startBytesLoc);
@@ -128,19 +116,7 @@ class Contract {
 
           // add each hex converted item
           _.each(args[index], (dynItem) => {
-            if (type.match(TYPE_ADDRESS)) {
-              data += Encoder.addressToHex(dynItem);
-            } else if (type.match(TYPE_BOOL)) {
-              data += Encoder.boolToHex(dynItem);
-            } else if (type.match(REGEX_UINT)) {
-              data += Encoder.uintToHex(dynItem);
-            } else if (type.match(REGEX_INT)) {
-              data += Encoder.intToHex(dynItem);
-            } else if (type.match(REGEX_BYTES)) {
-              data += Encoder.stringToHex(dynItem, MAX_BYTES_PER_ARRAY_SLOT);
-            } else {
-              console.error(`unimplemented dynamic type: ${type}`);
-            }
+            data += encodeParam(type, dynItem);
           });
 
           // add the dynamic data to the end
@@ -150,34 +126,14 @@ class Contract {
           // +1 for the length of data set
           dataLoc += numOfDynItems + 1;
         }
+      } else if (type === Constants.ADDRESS 
+        || type === Constants.BOOL
+        || type.match(Constants.REGEX_UINT) 
+        || type.match(Constants.REGEX_INT) 
+        || type.match(Constants.REGEX_BYTES_ARRAY)
+        || type.match(Constants.REGEX_BYTES)) { // static types
 
-      } else if (type === TYPE_ADDRESS 
-        || type === TYPE_BOOL
-        || type.match(REGEX_UINT) 
-        || type.match(REGEX_INT) 
-        || type.match(REGEX_BYTES_ARRAY)
-        || type.match(REGEX_BYTES)) { // static types
-
-        if (type === TYPE_ADDRESS) {
-          hex = Encoder.addressToHex(args[index]);
-        } else if (type === TYPE_BOOL) {
-          hex = Encoder.boolToHex(args[index]);
-        } else if (type.match(REGEX_UINT)) {
-          hex = Encoder.uintToHex(args[index]);
-        } else if (type.match(REGEX_INT)) {
-          hex = Encoder.intToHex(args[index]);
-        } else if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
-          const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
-          if (args[index] instanceof Array) {
-            hex = Encoder.stringArrayToHex(args[index], arrCapacity);
-          } else {
-            hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
-          }
-        } else if (type.match(REGEX_BYTES)) { // fixed bytes, ie. bytes32
-          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
-        } 
-        dataHexArr[index] = hex;
-
+        dataHexArr[index] = Encoder.encodeParam(type, args[index]);
       } else {
         console.error(`found unknown type: ${type}`);
       }
