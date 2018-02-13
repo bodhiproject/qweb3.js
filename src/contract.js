@@ -86,7 +86,7 @@ class Contract {
     const numOfParams = methodObj.inputs.length;
 
     // create an array of data hex strings which will be combined at the end
-    let dataHexArr = _.times(numOfParams, _.constant(null));
+    const dataHexArr = _.times(numOfParams, _.constant(null));
 
     // calculate start byte for dynamic data
     let dataLoc = 0;
@@ -108,7 +108,6 @@ class Contract {
       if (type === Constants.BYTES
         || type === Constants.STRING
         || type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
-
         let data = '';
         if (type === Constants.BYTES) {
           console.error('dynamics bytes conversion not implemented.');
@@ -137,13 +136,12 @@ class Contract {
           // +1 for the length of data set
           dataLoc += numOfDynItems + 1;
         }
-      } else if (type === Constants.ADDRESS 
+      } else if (type === Constants.ADDRESS
         || type === Constants.BOOL
-        || type.match(Constants.REGEX_UINT) 
-        || type.match(Constants.REGEX_INT) 
+        || type.match(Constants.REGEX_UINT)
+        || type.match(Constants.REGEX_INT)
         || type.match(Constants.REGEX_BYTES)
         || type.match(Constants.REGEX_STATIC_ARRAY)) { // static types
-
         dataHexArr[index] = Encoder.encodeParam(type, args[index]);
       } else {
         console.error(`found unknown type: ${type}`);
