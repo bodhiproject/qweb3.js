@@ -102,6 +102,62 @@ describe('Contract', () => {
         .toLowerCase());
     });
 
+    // it('constructs the datahex for many different types', () => {
+    //   const methodObj = {
+    //     "constant": true,
+    //     "inputs": [
+    //       {
+    //         "name": "_first",
+    //         "type": "uint256"
+    //       },
+    //       {
+    //         "name": "_second",
+    //         "type": "uint256[]"
+    //       },
+    //       {
+    //         "name": "_third",
+    //         "type": "bool"
+    //       },
+    //       {
+    //         "name": "_fourth",
+    //         "type": "uint256[3]"
+    //       },
+    //       {
+    //         "name": "_fifth",
+    //         "type": "address[]"
+    //       }
+    //     ],
+    //     "name": "test",
+    //     "outputs": [
+          
+    //     ],
+    //     "payable": false,
+    //     "stateMutability": "pure",
+    //     "type": "function"
+    //   };
+
+    //   const args = [
+    //     1234567890,
+    //     ['49837717385', 1234567890, '0x87A23'],
+    //     true,
+    //     ['49837717385', 1234567890, '0x87A23'],
+    //     ['qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy', 'qKoxAUEQ1Nj6anwes6ZjRGQ7aqdiyUeat8'],
+    //   ];
+    //   const dataHex = contract.constructDataHex(methodObj, args);
+
+    //   const funcHash = Encoder.objToHash(methodObj, true);
+
+    //   const first = '00000000000000000000000000000000000000000000000000000000499602D2';
+    //   const second = '00000000000000000000000000000000000000000000000000000000000000A0';
+    //   const third = '0000000000000000000000000000000000000000000000000000000000000001';
+    //   const fourth = '0000000000000000000000000000000000000000000000000000000B9A8F378900000000000000000000000000000000000000000000000000000000499602D20000000000000000000000000000000000000000000000000000000000087A23';
+    //   const fifth = ''
+
+    //   assert.equal(dataHex, funcHash.concat(oracle).concat(name).concat(resultNames).concat(bettingEndBlock)
+    //     .concat(resultSettingEndBlock)
+    //     .toLowerCase());
+    // });
+
     it('converts address types', () => {
       const methodObj = {
         constant: true,

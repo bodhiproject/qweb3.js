@@ -87,8 +87,19 @@ class Contract {
 
     // create an array of data hex strings which will be combined at the end
     let dataHexArr = _.times(numOfParams, _.constant(null));
+
     // starting location for dynamic data
-    let dataLoc = numOfParams;
+    let dataLoc = 0;
+    _.each(methodObj.inputs, (item) => {
+      const type = item.type;
+      if (type.match(Constants.REGEX_STATIC_ARRAY)) {
+        // treat each static array as an individual slot for dynamic data location purposes
+        const arrCap = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
+        dataLoc += arrCap;
+      } else {
+        dataLoc += 1;
+      }
+    });
 
     _.each(methodObj.inputs, (item, index) => {
       const type = item.type;
