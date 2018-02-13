@@ -25,7 +25,14 @@ class Encoder {
       }
 
     } else if (type.match(Constants.BOOL)) {
-      hex = this.boolToHex(value);
+      if (value instanceof Array) {
+        _.each(value, (bool) => {
+          hex += this.boolToHex(bool);
+        });
+      } else {
+        hex = this.boolToHex(value);
+      }
+
     } else if (type.match(Constants.REGEX_UINT)) {
       hex = this.uintToHex(value);
     } else if (type.match(Constants.REGEX_INT)) {

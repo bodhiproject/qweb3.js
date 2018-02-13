@@ -199,6 +199,59 @@ describe('Contract', () => {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
+    it('converts fixed array bool types', () => {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_booleans",
+            "type": "bool[2]"
+          }
+        ],
+        "name": "test",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+      };
+
+      const args = [[true, false]];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.objToHash(methodObj, true);
+      const param1 = '0000000000000000000000000000000000000000000000000000000000000001';
+      const param2 = '0000000000000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param1).concat(param2));
+    });
+
+    it('converts dynamic array bool types', () => {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_booleans",
+            "type": "bool[]"
+          }
+        ],
+        "name": "test",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+      };
+
+      const args = [[true, false, true]];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.objToHash(methodObj, true);
+      const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
+      const dataLen = '0000000000000000000000000000000000000000000000000000000000000003';
+      const param1 = '0000000000000000000000000000000000000000000000000000000000000001';
+      const param2 = '0000000000000000000000000000000000000000000000000000000000000000';
+      const param3 = '0000000000000000000000000000000000000000000000000000000000000001';
+      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(param1).concat(param2).concat(param3));
+    });
+
     it('converts uint types', () => {
       const methodObj = {
         constant: true,
@@ -308,34 +361,6 @@ describe('Contract', () => {
       funcHash = Encoder.objToHash(methodObj, true);
       param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
       assert.equal(dataHex, funcHash.concat(param));
-    });
-
-    it('converts dynamic array bool types', () => {
-      let methodObj = {
-        "constant": true,
-        "inputs": [
-          {
-            "name": "_booleans",
-            "type": "bool[]"
-          }
-        ],
-        "name": "test",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "pure",
-        "type": "function"
-      };
-
-      const args = [[true, false, true]];
-      const dataHex = contract.constructDataHex(methodObj, args);
-
-      const funcHash = Encoder.objToHash(methodObj, true);
-      const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
-      const dataLen = '0000000000000000000000000000000000000000000000000000000000000003';
-      const param1 = '0000000000000000000000000000000000000000000000000000000000000001';
-      const param2 = '0000000000000000000000000000000000000000000000000000000000000000';
-      const param3 = '0000000000000000000000000000000000000000000000000000000000000001';
-      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(param1).concat(param2).concat(param3));
     });
 
     it('converts dynamic array uint types', () => {
