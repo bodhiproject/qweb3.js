@@ -259,7 +259,7 @@ describe('Contract', () => {
       assert.equal(dataHex, funcHash.concat(param));
     });
 
-    it.only('converts dynamic array address types', () => {
+    it('converts dynamic array address types', () => {
       let methodObj = {
         "constant": true,
         "inputs": [
@@ -281,9 +281,93 @@ describe('Contract', () => {
       const funcHash = Encoder.objToHash(methodObj, true);
       const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
       const dataLen = '0000000000000000000000000000000000000000000000000000000000000002';
-      const addr1 = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
-      const addr2 = '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868';
-      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(addr1).concat(addr2));
+      const param1 = '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3';
+      const param2 = '00000000000000000000000018b1a0dc71e4de23c20dc4163f9696d2d9d63868';
+      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(param).concat(param2));
+    });
+
+    it('converts dynamic array bool types', () => {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_booleans",
+            "type": "bool[]"
+          }
+        ],
+        "name": "test",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+      };
+
+      const args = [[true, false, true]];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.objToHash(methodObj, true);
+      const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
+      const dataLen = '0000000000000000000000000000000000000000000000000000000000000003';
+      const param1 = '0000000000000000000000000000000000000000000000000000000000000001';
+      const param2 = '0000000000000000000000000000000000000000000000000000000000000000';
+      const param3 = '0000000000000000000000000000000000000000000000000000000000000001';
+      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(param1).concat(param2).concat(param3));
+    });
+
+    it('converts dynamic array uint types', () => {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_uints",
+            "type": "uint256[]"
+          }
+        ],
+        "name": "test",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+      };
+
+      const args = [['49837717385', 1234567890, '0x87A23']];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.objToHash(methodObj, true);
+      const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
+      const dataLen = '0000000000000000000000000000000000000000000000000000000000000003';
+      const param1 = '0000000000000000000000000000000000000000000000000000000B9A8F3789';
+      const param2 = '00000000000000000000000000000000000000000000000000000000499602D2';
+      const param3 = '0000000000000000000000000000000000000000000000000000000000087A23';
+      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(param1).concat(param2).concat(param3)
+        .toLowerCase());
+    });
+
+    it('converts dynamic array int types', () => {
+      let methodObj = {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "_ints",
+            "type": "int256[]"
+          }
+        ],
+        "name": "test",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "pure",
+        "type": "function"
+      };
+
+      const args = [[12345, -12345]];
+      const dataHex = contract.constructDataHex(methodObj, args);
+
+      const funcHash = Encoder.objToHash(methodObj, true);
+      const dataLoc = '0000000000000000000000000000000000000000000000000000000000000020';
+      const dataLen = '0000000000000000000000000000000000000000000000000000000000000002';
+      const param1 = '0000000000000000000000000000000000000000000000000000000000003039';
+      const param2 = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfc7';
+      assert.equal(dataHex, funcHash.concat(dataLoc).concat(dataLen).concat(param1).concat(param2).toLowerCase());
     });
 
     it('does not parse bytes if < 1 or > 32', () => {
