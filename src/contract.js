@@ -125,7 +125,7 @@ class Contract {
           // set data in proper location
           _.each(args[index], (dynItem) => {
             
-          }
+          });
         }
 
       } else if (type === TYPE_ADDRESS 
@@ -160,7 +160,7 @@ class Contract {
       }
     });
 
-    return dataHex;
+    return funcHash + dataHexArr.join('');
   }
 
   /**
