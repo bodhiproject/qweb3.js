@@ -33,6 +33,15 @@ class Encoder {
         hex = this.boolToHex(value);
       }
 
+    } else if (type.match(Constants.REGEX_INT)) { // match order matters here, match int before uint
+      if (value instanceof Array) {
+        _.each(value, (int) => {
+          hex += this.intToHex(int);
+        });
+      } else {
+        hex = this.intToHex(value);
+      }
+
     } else if (type.match(Constants.REGEX_UINT)) {
       if (value instanceof Array) {
         _.each(value, (uint) => {
@@ -42,17 +51,17 @@ class Encoder {
         hex = this.uintToHex(value);
       }
 
-    } else if (type.match(Constants.REGEX_INT)) {
-      hex = this.intToHex(value);
     } else if (type.match(Constants.REGEX_BYTES)) { // fixed bytes, ie. bytes32
       hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE);
-    } else if (type.match(Constants.REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
+
+    } else if (type.match(Constants.REGEX_STATIC_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
       const arrCapacity = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
       if (value instanceof Array) {
         hex = this.stringArrayToHex(value, arrCapacity);
       } else {
         hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE * arrCapacity);
       }
+
     } else {
       console.error(`Unimplemented type: ${type}`);
     }

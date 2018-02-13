@@ -12,7 +12,7 @@ module.exports = {
   REGEX_UINT: /^uint\d+/,
   REGEX_INT: /^int\d+/,
   REGEX_BYTES: /bytes([1-9]|[12]\d|3[0-2])$/,
-  REGEX_BYTES_ARRAY: /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/,
+  REGEX_STATIC_BYTES_ARRAY: /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/,
   REGEX_NUMBER: /[0-9]+/g,
   REGEX_DYNAMIC_ARRAY: /\w+\[\]/,
 
