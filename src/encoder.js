@@ -34,7 +34,14 @@ class Encoder {
       }
 
     } else if (type.match(Constants.REGEX_UINT)) {
-      hex = this.uintToHex(value);
+      if (value instanceof Array) {
+        _.each(value, (uint) => {
+          hex += this.uintToHex(uint);
+        });
+      } else {
+        hex = this.uintToHex(value);
+      }
+
     } else if (type.match(Constants.REGEX_INT)) {
       hex = this.intToHex(value);
     } else if (type.match(Constants.REGEX_BYTES)) { // fixed bytes, ie. bytes32
