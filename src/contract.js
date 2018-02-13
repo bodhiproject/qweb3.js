@@ -15,8 +15,8 @@ const TYPE_ADDRESS = 'address';
 const TYPE_BOOL = 'bool';
 const TYPE_BYTES = 'bytes';
 const TYPE_STRING = 'string';
-const REGEX_UINT = /^uint/;
-const REGEX_INT = /^int/;
+const REGEX_UINT = /^uint\d+/;
+const REGEX_INT = /^int\d+/;
 const REGEX_BYTES = /bytes([1-9]|[12]\d|3[0-2])$/;
 const REGEX_BYTES_ARRAY = /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/;
 const REGEX_NUMBER = /[0-9]+/g;
@@ -107,7 +107,28 @@ class Contract {
       const type = item.type;
       let hex;
 
-      if (type === TYPE_ADDRESS 
+      if (type === TYPE_BYTES
+        || type === TYPE_STRING
+        || type.match(REGEX_DYNAMIC_ARRAY)) { // dynamic types
+
+        let data;
+        if (type === TYPE_BYTES) {
+          console.error('dynamics bytes conversion not implemented.');
+        } else if (type === TYPE_STRING) {
+          console.error('dynamic string conversion not implemented.');
+        } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
+          // set location of dynamic data
+          const startBytesLoc = dataLoc * 32;
+          hex = Encoder.uintToHex(startBytesLoc);
+          dataHexArr[index] = hex;
+
+          // set data in proper location
+          _.each(args[index], (dynItem) => {
+            
+          }
+        }
+
+      } else if (type === TYPE_ADDRESS 
         || type === TYPE_BOOL
         || type.match(REGEX_UINT) 
         || type.match(REGEX_INT) 
@@ -133,25 +154,6 @@ class Contract {
           hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
         } 
         dataHexArr[index] = hex;
-
-      } else if (type === TYPE_BYTES
-        || type === TYPE_STRING
-        || type.match(REGEX_DYNAMIC_ARRAY)) { // dynamic types
-
-        let data;
-        if (type === TYPE_BYTES) {
-          console.error('dynamics bytes conversion not implemented.');
-        } else if (type === TYPE_STRING) {
-          console.error('dynamic string conversion not implemented.');
-        } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
-          // set location of dynamic data
-          const startBytesLoc = dataLoc * 32;
-          hex = Encoder.uintToHex(startBytesLoc);
-          dataHexArr[index] = hex;
-
-          // set data in proper location
-
-        }
 
       } else {
         console.error(`found unknown type: ${type}`);
