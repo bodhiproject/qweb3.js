@@ -92,14 +92,13 @@ class Contract {
       throw new Error('methodObj should not be undefined.');
     }
 
-    const numOfParams = methodObj.inputs.length;
-
     // function hash
     const funcHash = Encoder.objToHash(methodObj, true);
 
-    // create an array of hex strings which will be combined at the end
-    let dataHexArr = _.times(numOfParams, _.constant(null));
+    const numOfParams = methodObj.inputs.length;
 
+    // create an array of data hex strings which will be combined at the end
+    let dataHexArr = _.times(numOfParams, _.constant(null));
     // starting location for dynamic data
     let dataLoc = numOfParams;
 
@@ -124,7 +123,8 @@ class Contract {
 
           // construct data
           // add length of dynamic data set
-          data += Encoder.uintToHex(args[index].length);
+          const numOfDynItems = args[index].length;
+          data += Encoder.uintToHex(numOfDynItems);
 
           // add each hex converted item
           _.each(args[index], (dynItem) => {
@@ -145,6 +145,10 @@ class Contract {
 
           // add the dynamic data to the end
           dataHexArr.push(data);
+
+          // increment starting data location
+          // +1 for the length of data set
+          dataLoc += numOfDynItems + 1;
         }
 
       } else if (type === TYPE_ADDRESS 
