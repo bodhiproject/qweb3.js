@@ -88,7 +88,7 @@ class Contract {
     // create an array of data hex strings which will be combined at the end
     let dataHexArr = _.times(numOfParams, _.constant(null));
 
-    // starting location for dynamic data
+    // calculate start byte for dynamic data
     let dataLoc = 0;
     _.each(methodObj.inputs, (item) => {
       const type = item.type;
