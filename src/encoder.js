@@ -10,8 +10,8 @@ class Encoder {
   /*
    * Encodes a parameter to hex based on its type.
    * @param type {String} The type of the value.
-   * @param value {String|Bool|Number|HexNumber|BigNumber|BN} Is converting a function object.
-   * @return The object hash.
+   * @param value {String|Bool|Number|HexNumber|BigNumber|BN} Value to convert to hex.
+   * @return The value converted to hex string.
    */
   static encodeParam(type, value) {
     let hex;
