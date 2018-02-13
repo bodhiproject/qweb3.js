@@ -92,11 +92,16 @@ class Contract {
       throw new Error('methodObj should not be undefined.');
     }
 
-    let dataHex = '';
-    dataHex = dataHex.concat(Encoder.objToHash(methodObj, true));
+    const numOfParams = methodObj.inputs.length;
 
-    let dataHexArr = _.times(methodObj.inputs.length, _.constant(null));
-    let dataLoc = 0; // offset for location of dynamic data
+    // function hash
+    const funcHash = Encoder.objToHash(methodObj, true);
+
+    // create an array of hex strings which will be combined at the end
+    let dataHexArr = _.times(numOfParams, _.constant(null));
+
+    // starting location for dynamic data
+    let dataLoc = numOfParams;
 
     _.each(methodObj.inputs, (item, index) => {
       const type = item.type;
@@ -139,7 +144,13 @@ class Contract {
         } else if (type === TYPE_STRING) {
           console.error('dynamic string conversion not implemented.');
         } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
-          console.error('dynamic array conversion not implemented.');
+          // set location of dynamic data
+          const startBytesLoc = dataLoc * 32;
+          hex = Encoder.uintToHex(startBytesLoc);
+          dataHexArr[index] = hex;
+
+          // set data in proper location
+
         }
 
       } else {
