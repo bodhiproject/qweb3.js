@@ -91,9 +91,28 @@ class Contract {
     let dataHex = '';
     dataHex = dataHex.concat(Encoder.objToHash(methodObj, true));
 
+    let dataHexArr = _.times(methodObj.inputs.length, _.constant(null));
+
     let hex;
     _.each(methodObj.inputs, (item, index) => {
       const type = item.type;
+
+      if (type === 'address' 
+        || type === 'bool' 
+        || type.match(REGEX_UINT) 
+        || type.match(REGEX_INT) 
+        || type.match(REGEX_BYTES_ARRAY)
+        || type.match(REGEX_BYTES)) { // static types
+
+      } else if (type === 'bytes'
+        || type === 'string'
+        || type.match(REGEX_DYNAMIC_ARRAY)) { // dynamic types
+
+      } else {
+        console.error(`found unknown type: ${type}`);
+      }
+
+
 
       if (type === 'address') {
         hex = Encoder.addressToHex(args[index]);
