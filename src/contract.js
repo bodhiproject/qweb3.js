@@ -110,9 +110,9 @@ class Contract {
         || type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
         let data = '';
         if (type === Constants.BYTES) {
-          console.error('dynamics bytes conversion not implemented.');
+          throw new Error('dynamics bytes conversion not implemented.');
         } else if (type === Constants.STRING) {
-          console.error('dynamic string conversion not implemented.');
+          throw new Error('dynamic string conversion not implemented.');
         } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) {
           // set location of dynamic data
           const startBytesLoc = dataLoc * 32;
