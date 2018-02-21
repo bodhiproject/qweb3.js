@@ -4,19 +4,11 @@ const HttpProvider = require('./httpprovider');
 const Formatter = require('./formatter');
 const Utils = require('./utils');
 const Encoder = require('./encoder');
+const Constants = require('./constants');
 
 const SEND_AMOUNT = 0;
 const SEND_GASLIMIT = 250000;
 const SEND_GASPRICE = 0.0000004;
-
-const MAX_BYTES_PER_ARRAY_SLOT = 64;
-
-const REGEX_UINT = /^uint/;
-const REGEX_INT = /^int/;
-const REGEX_BYTES = /bytes([1-9]|[12]\d|3[0-2])$/;
-const REGEX_BYTES_ARRAY = /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/;
-const REGEX_NUMBER = /[0-9]+/g;
-const REGEX_DYNAMIC_ARRAY = /\[\]/;
 
 class Contract {
   constructor(url, address, abi) {
@@ -88,49 +80,72 @@ class Contract {
       throw new Error('methodObj should not be undefined.');
     }
 
-    let dataHex = '';
-    dataHex = dataHex.concat(Encoder.objToHash(methodObj, true));
+    // function hash
+    const funcHash = Encoder.objToHash(methodObj, true);
 
-    let hex;
+    const numOfParams = methodObj.inputs.length;
+
+    // create an array of data hex strings which will be combined at the end
+    const dataHexArr = _.times(numOfParams, _.constant(null));
+
+    // calculate start byte for dynamic data
+    let dataLoc = 0;
+    _.each(methodObj.inputs, (item) => {
+      const type = item.type;
+      if (type.match(Constants.REGEX_STATIC_ARRAY)) {
+        // treat each static array as an individual slot for dynamic data location purposes
+        const arrCap = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
+        dataLoc += arrCap;
+      } else {
+        dataLoc += 1;
+      }
+    });
+
     _.each(methodObj.inputs, (item, index) => {
       const type = item.type;
+      let hex;
 
-      if (type === 'address') {
-        hex = Encoder.addressToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (type === 'bool') {
-        hex = Encoder.boolToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (type.match(REGEX_UINT)) {
-        hex = Encoder.uintToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (type.match(REGEX_INT)) {
-        hex = Encoder.intToHex(args[index]);
-        dataHex = dataHex.concat(hex);
-      } else if (type.match(REGEX_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
-        const arrCapacity = _.toNumber(type.match(REGEX_NUMBER)[1]);
-        if (args[index] instanceof Array) {
-          hex = Encoder.stringArrayToHex(args[index], arrCapacity);
-          dataHex = dataHex.concat(hex);
-        } else {
-          hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT * arrCapacity);
-          dataHex = dataHex.concat(hex);
-        }
-      } else if (type.match(REGEX_BYTES)) { // fixed bytes, ie. bytes32
-        hex = Encoder.stringToHex(args[index], MAX_BYTES_PER_ARRAY_SLOT);
-        dataHex = dataHex.concat(hex);
-      } else if (type === 'bytes') {
-        console.error('dynamics bytes conversion not implemented.');
-      } else if (type === 'string') {
-        console.error('dynamic string conversion not implemented.');
-      } else if (type.match(REGEX_DYNAMIC_ARRAY)) {
-        console.error('dynamic array conversion not implemented.');
+      if (type === Constants.BYTES) {
+        throw new Error('dynamics bytes conversion not implemented.');
+      } else if (type === Constants.STRING) {
+        throw new Error('dynamic string conversion not implemented.');
+      } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
+        let data = '';
+
+        // set location of dynamic data
+        const startBytesLoc = dataLoc * 32;
+        hex = Encoder.uintToHex(startBytesLoc);
+        dataHexArr[index] = hex;
+
+        // construct data
+        // add length of dynamic data set
+        const numOfDynItems = args[index].length;
+        data += Encoder.uintToHex(numOfDynItems);
+
+        // add each hex converted item
+        _.each(args[index], (dynItem) => {
+          data += Encoder.encodeParam(type, dynItem);
+        });
+
+        // add the dynamic data to the end
+        dataHexArr.push(data);
+
+        // increment starting data location
+        // +1 for the length of data set
+        dataLoc += numOfDynItems + 1;
+      } else if (type === Constants.ADDRESS
+        || type === Constants.BOOL
+        || type.match(Constants.REGEX_UINT)
+        || type.match(Constants.REGEX_INT)
+        || type.match(Constants.REGEX_BYTES)
+        || type.match(Constants.REGEX_STATIC_ARRAY)) { // static types
+        dataHexArr[index] = Encoder.encodeParam(type, args[index]);
       } else {
         console.error(`found unknown type: ${type}`);
       }
     });
 
-    return dataHex;
+    return funcHash + dataHexArr.join('');
   }
 
   /**

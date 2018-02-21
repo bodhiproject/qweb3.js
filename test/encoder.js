@@ -1,4 +1,5 @@
 const chai = require('chai');
+
 const assert = chai.assert;
 const BN = require('bn.js');
 const BigNumber = require('bignumber.js');

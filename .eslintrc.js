@@ -1,8 +1,15 @@
 module.exports = {
   "extends": "airbnb-base",
+  "env": {
+    "node": true,
+    "mocha": true
+  },
   "parserOptions": {
     "ecmaVersion": 8,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "rules": {
     "consistent-return": 0,
