@@ -105,37 +105,34 @@ class Contract {
       const type = item.type;
       let hex;
 
-      if (type === Constants.BYTES
-        || type === Constants.STRING
-        || type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
+      if (type === Constants.BYTES) {
+        throw new Error('dynamics bytes conversion not implemented.');
+      } else if (type === Constants.STRING) {
+        throw new Error('dynamic string conversion not implemented.');
+      } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
         let data = '';
-        if (type === Constants.BYTES) {
-          throw new Error('dynamics bytes conversion not implemented.');
-        } else if (type === Constants.STRING) {
-          throw new Error('dynamic string conversion not implemented.');
-        } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) {
-          // set location of dynamic data
-          const startBytesLoc = dataLoc * 32;
-          hex = Encoder.uintToHex(startBytesLoc);
-          dataHexArr[index] = hex;
 
-          // construct data
-          // add length of dynamic data set
-          const numOfDynItems = args[index].length;
-          data += Encoder.uintToHex(numOfDynItems);
+        // set location of dynamic data
+        const startBytesLoc = dataLoc * 32;
+        hex = Encoder.uintToHex(startBytesLoc);
+        dataHexArr[index] = hex;
 
-          // add each hex converted item
-          _.each(args[index], (dynItem) => {
-            data += Encoder.encodeParam(type, dynItem);
-          });
+        // construct data
+        // add length of dynamic data set
+        const numOfDynItems = args[index].length;
+        data += Encoder.uintToHex(numOfDynItems);
 
-          // add the dynamic data to the end
-          dataHexArr.push(data);
+        // add each hex converted item
+        _.each(args[index], (dynItem) => {
+          data += Encoder.encodeParam(type, dynItem);
+        });
 
-          // increment starting data location
-          // +1 for the length of data set
-          dataLoc += numOfDynItems + 1;
-        }
+        // add the dynamic data to the end
+        dataHexArr.push(data);
+
+        // increment starting data location
+        // +1 for the length of data set
+        dataLoc += numOfDynItems + 1;
       } else if (type === Constants.ADDRESS
         || type === Constants.BOOL
         || type.match(Constants.REGEX_UINT)
