@@ -410,6 +410,23 @@ describe('Qweb3', () => {
     });
   });
 
+  describe('getWalletInfo()', () => {
+    it('returns the wallet info', async () => {
+      const res = await qweb3.getWalletInfo();
+      assert.isDefined(res);
+      assert.isDefined(res.walletversion);
+      assert.isDefined(res.balance);
+      assert.isDefined(res.stake);
+      assert.isDefined(res.unconfirmed_balance);
+      assert.isDefined(res.immature_balance);
+      assert.isDefined(res.txcount);
+      assert.isDefined(res.keypoololdest);
+      assert.isDefined(res.keypoolsize);
+      assert.isDefined(res.paytxfee);
+      assert.isDefined(res.hdmasterkeyid);
+    });
+  });
+
   describe('getUnconfirmedBalance()', () => {
     it('returns the unconfirmed balance', async () => {
       const res = await qweb3.getUnconfirmedBalance();
