@@ -275,6 +275,16 @@ class Qweb3 {
     });
   }
 
+  /**
+   * Gets the wallet info
+   * @return {Promise} Promise containing result object or Error
+   */
+  getWalletInfo() {
+    return this.provider.request({
+      method: 'getwalletinfo',
+    });
+  }
+
   /*
   * Gets the total unconfirmed balance.
   * @return {Promise} Unconfirmed balance or Error.
