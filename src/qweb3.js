@@ -338,6 +338,16 @@ class Qweb3 {
   }
 
   /*
+  * Lists accounts.
+  * @return {Promise} Array of accounts or Error
+  */
+  listAccounts() {
+    return this.provider.request({
+      method: 'listaccounts',
+    });
+  }
+
+  /*
   * Lists temporary unspendable outputs.
   * @return {Promise} Array of unspendable outputs or Error
   */
