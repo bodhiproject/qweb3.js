@@ -12,8 +12,6 @@ const ContractMetadata = require('./data/contract_metadata');
 // Load some environment variables as global vars
 require('dotenv').config();
 var qtumRPCAddress = "QTUM_TESTNET_RPC_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_RPC_ADDRESS"])) : console.debug('QTUM_TESTNET_RPC_ADDRESS environment variable not found')
-var qtumUsername = "QTUM_TESTNET_USERNAME" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_USERNAME"])) : console.debug('QTUM_TESTNET_USERNAME environment variable not found')
-var qtumPassword = "QTUM_TESTNET_PASSWORD" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_PASSWORD"])) : console.debug('QTUM_TESTNET_PASSWORD environment variable not found')
 var qtumAddress = "QTUM_TESTNET_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_ADDRESS"])) : console.debug('QTUM_TESTNET_ADDRESS environment variable not found')
 
 describe('Qweb3', () => {
