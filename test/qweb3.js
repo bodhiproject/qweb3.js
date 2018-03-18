@@ -9,12 +9,19 @@ const Formatter = require('../src/formatter');
 const Config = require('./config/config');
 const ContractMetadata = require('./data/contract_metadata');
 
+// Load some environment variables as global vars
+require('dotenv').config();
+var qtumRPCAddress = "QTUM_TESTNET_RPC_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_RPC_ADDRESS"])) : console.debug('QTUM_TESTNET_RPC_ADDRESS environment variable not found')
+var qtumUsername = "QTUM_TESTNET_USERNAME" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_USERNAME"])) : console.debug('QTUM_TESTNET_USERNAME environment variable not found')
+var qtumPassword = "QTUM_TESTNET_PASSWORD" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_PASSWORD"])) : console.debug('QTUM_TESTNET_PASSWORD environment variable not found')
+var qtumAddress = "QTUM_TESTNET_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_ADDRESS"])) : console.debug('QTUM_TESTNET_ADDRESS environment variable not found')
+
 describe('Qweb3', () => {
-  const QTUM_ADDRESS = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+  const QTUM_ADDRESS = qtumAddress ? qtumAddress : 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
   let qweb3;
 
   beforeEach(() => {
-    qweb3 = new Qweb3(Config.QTUM_RPC_ADDRESS);
+    qweb3 = new Qweb3( qtumRPCAddress ? qtumRPCAddress : Config.QTUM_RPC_ADDRESS);
   });
 
   /** ******** MISC ********* */
