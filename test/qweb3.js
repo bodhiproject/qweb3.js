@@ -4,6 +4,8 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 
+const bs58 = require('bs58')
+
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
 const Config = require('./config/config');
@@ -294,9 +296,11 @@ describe('Qweb3', () => {
   /** ******** RAW TRANSACTIONS ********* */
   describe('getHexAddress()', () => {
     it('returns the hex address', async () => {
-      var ha = web3Utils.toHex(QTUM_ADDRESS)
-      var har = await qweb3.getHexAddress(QTUM_ADDRESS)
-      assert.equal(await qweb3.getHexAddress(QTUM_ADDRESS), '17e7888aa7412a735f336d2f6d784caefabb6fa3');
+      const hexDecodedaAddress = bs58.decode(QTUM_ADDRESS).toString('hex')
+      var hexadecimalAddress = await qweb3.getHexAddress(QTUM_ADDRESS)
+      assert.isString(hexadecimalAddress);
+      assert.lengthOf(hexadecimalAddress, 40, `${hexadecimalAddress} has length of 40`);
+      assert.include(hexDecodedaAddress, hexadecimalAddress, `${hexDecodedaAddress} contains ${hexadecimalAddress}`);
     });
   });
 
