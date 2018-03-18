@@ -294,6 +294,8 @@ describe('Qweb3', () => {
   /** ******** RAW TRANSACTIONS ********* */
   describe('getHexAddress()', () => {
     it('returns the hex address', async () => {
+      var ha = web3Utils.toHex(QTUM_ADDRESS)
+      var har = await qweb3.getHexAddress(QTUM_ADDRESS)
       assert.equal(await qweb3.getHexAddress(QTUM_ADDRESS), '17e7888aa7412a735f336d2f6d784caefabb6fa3');
     });
   });
@@ -437,6 +439,14 @@ describe('Qweb3', () => {
       const res = await qweb3.getUnconfirmedBalance();
       assert.isDefined(res);
       assert.isNumber(res);
+    });
+  });
+
+  describe('listAccounts()', () => {
+    it('returns an array of accounts', async () => {
+      const res = await qweb3.listAccounts();
+      assert.isDefined(res);
+      assert.isObject(res);
     });
   });
 
