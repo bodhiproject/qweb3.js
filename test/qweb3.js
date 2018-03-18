@@ -4,17 +4,24 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 
+const bs58 = require('bs58')
+
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
 const Config = require('./config/config');
 const ContractMetadata = require('./data/contract_metadata');
 
+// Load some environment variables as global vars
+require('dotenv').config();
+var qtumRPCAddress = "QTUM_TESTNET_RPC_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_RPC_ADDRESS"])) : console.debug('QTUM_TESTNET_RPC_ADDRESS environment variable not found')
+var qtumAddress = "QTUM_TESTNET_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_TESTNET_ADDRESS"])) : console.debug('QTUM_TESTNET_ADDRESS environment variable not found')
+
 describe('Qweb3', () => {
-  const QTUM_ADDRESS = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+  const QTUM_ADDRESS = qtumAddress ? qtumAddress : 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
   let qweb3;
 
   beforeEach(() => {
-    qweb3 = new Qweb3(Config.QTUM_RPC_ADDRESS);
+    qweb3 = new Qweb3( qtumRPCAddress ? qtumRPCAddress : Config.QTUM_RPC_ADDRESS);
   });
 
   /** ******** MISC ********* */
@@ -289,13 +296,19 @@ describe('Qweb3', () => {
   /** ******** RAW TRANSACTIONS ********* */
   describe('getHexAddress()', () => {
     it('returns the hex address', async () => {
-      assert.equal(await qweb3.getHexAddress(QTUM_ADDRESS), '17e7888aa7412a735f336d2f6d784caefabb6fa3');
+      const hexDecodedaAddress = bs58.decode(QTUM_ADDRESS).toString('hex')
+      var hexadecimalAddress = await qweb3.getHexAddress(QTUM_ADDRESS)
+      assert.isString(hexadecimalAddress);
+      assert.lengthOf(hexadecimalAddress, 40, `${hexadecimalAddress} has length of 40`);
+      assert.include(hexDecodedaAddress, hexadecimalAddress, `${hexDecodedaAddress} contains ${hexadecimalAddress}`);
     });
   });
 
   describe('fromHexAddress()', () => {
     it('returns the qtum address', async () => {
-      assert.equal(await qweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3'), QTUM_ADDRESS);
+      var qtumAddress = await qweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3')
+      assert.isString(qtumAddress);
+      assert.lengthOf(qtumAddress, 34, `${qtumAddress} has length of 34`);
     });
   });
 
@@ -432,6 +445,14 @@ describe('Qweb3', () => {
       const res = await qweb3.getUnconfirmedBalance();
       assert.isDefined(res);
       assert.isNumber(res);
+    });
+  });
+
+  describe('listAccounts()', () => {
+    it('returns an array of accounts', async () => {
+      const res = await qweb3.listAccounts();
+      assert.isDefined(res);
+      assert.isObject(res);
     });
   });
 
