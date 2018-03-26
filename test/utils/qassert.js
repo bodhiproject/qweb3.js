@@ -4,7 +4,6 @@ const chai = require('chai');
 const assert = chai.assert;
 
 module.exports = class QAssert {
-
   static isQtumAddress(address) {
     assert.isDefined(address);
     assert.equal(_.size(address), 34);
