@@ -2,6 +2,7 @@ const Qweb3 = require('./qweb3');
 const Contract = require('./contract');
 const Decoder = require('./decoder');
 const Utils = require('./utils');
+const QAssert = require('../test/utils/qassert');
 
 // dont override global variable
 if (typeof window !== 'undefined' && typeof window.Qweb3 === 'undefined') {
@@ -13,4 +14,5 @@ module.exports = {
   Contract,
   Decoder,
   Utils,
+  QAssert,
 };

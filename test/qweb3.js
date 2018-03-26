@@ -8,6 +8,7 @@ const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
 const Config = require('./config/config');
 const ContractMetadata = require('./data/contract_metadata');
+const qAssert = require('./utils/qassert');
 
 describe('Qweb3', () => {
   const QTUM_ADDRESS = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
@@ -432,6 +433,25 @@ describe('Qweb3', () => {
       const res = await qweb3.getUnconfirmedBalance();
       assert.isDefined(res);
       assert.isNumber(res);
+    });
+  });
+
+  describe('listAddressGroupings()', () => {
+    it('returns an array of address groupings', async () => {
+      const res = await qweb3.listAddressGroupings();
+      assert.isDefined(res);
+      assert.isArray(res);
+
+      if (!_.isEmpty(res)) {
+        const innerArr = res[0];
+        assert.isArray(innerArr);
+
+        if (!_.isEmpty(innerArr)) {
+          const item = innerArr[0];
+          qAssert.isQtumAddress(item[0]);
+          assert.isTrue(_.isNumber(item[1]));
+        }
+      }
     });
   });
 
