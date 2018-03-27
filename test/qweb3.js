@@ -296,11 +296,11 @@ describe('Qweb3', () => {
   /** ******** RAW TRANSACTIONS ********* */
   describe('getHexAddress()', () => {
     it('returns the hex address', async () => {
-      const hexDecodedaAddress = bs58.decode(QTUM_ADDRESS).toString('hex')
+      const hexDecodedAddress = bs58.decode(QTUM_ADDRESS).toString('hex')
       var hexadecimalAddress = await qweb3.getHexAddress(QTUM_ADDRESS)
       assert.isString(hexadecimalAddress);
       assert.lengthOf(hexadecimalAddress, 40);
-      assert.include(hexDecodedaAddress, hexadecimalAddress);
+      assert.include(hexDecodedAddress, hexadecimalAddress);
     });
   });
 
