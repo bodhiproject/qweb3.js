@@ -309,7 +309,7 @@ describe('Qweb3', () => {
     it('returns the qtum address', async () => {
       var qtumAddress = await qweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3')
       assert.isString(qtumAddress);
-      assert.lengthOf(qtumAddress, 34, `${qtumAddress} has length of 34`);
+      assert.lengthOf(qtumAddress, 34);
     });
   });
 
