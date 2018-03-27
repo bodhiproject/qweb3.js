@@ -7,8 +7,8 @@ const Config = {
 
 // Load environment variables
 require('dotenv').config();
-var qtumRPCAddress = "QTUM_RPC_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_RPC_ADDRESS"])) : undefined;
-var qtumAddress = "SENDER_ADDRESS" in process.env ? String(new Buffer(process.env["SENDER_ADDRESS"])) : undefined;
+const qtumRPCAddress = "QTUM_RPC_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_RPC_ADDRESS"])) : undefined;
+const qtumAddress = "SENDER_ADDRESS" in process.env ? String(new Buffer(process.env["SENDER_ADDRESS"])) : undefined;
 
 /* Returns the default Qtum address 
  * @return {String} default Qtum address.
