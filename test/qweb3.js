@@ -449,14 +449,6 @@ describe('Qweb3', () => {
     });
   });
 
-  describe('listAccounts()', () => {
-    it('returns an array of accounts', async () => {
-      const res = await qweb3.listAccounts();
-      assert.isDefined(res);
-      assert.isObject(res);
-    });
-  });
-
   describe('listLockUnspent()', () => {
     it('returns an array of unspendable outputs', async () => {
       const res = await qweb3.listLockUnspent();
