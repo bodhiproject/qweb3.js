@@ -9,20 +9,19 @@ const bs58 = require('bs58')
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
 
-const config = require('./config/config');
-const Config = config.Config;
+const { Config, getQtumRPCAddress, getDefaultQtumAddress } = require('./config/config');
 
-console.log(`Your Qtum RPC address is ${config.getQtumRPCAddress()}`);
-console.log(`Your Default Qtum address is ${config.getDefaultQtumAddress()}`);
+console.log(`Your Qtum RPC address is ${getQtumRPCAddress()}`);
+console.log(`Your Default Qtum address is ${getDefaultQtumAddress()}`);
 
 const ContractMetadata = require('./data/contract_metadata');
 
 describe('Qweb3', () => {
-  const QTUM_ADDRESS = config.getDefaultQtumAddress();
+  const QTUM_ADDRESS = getDefaultQtumAddress();
   let qweb3;
 
   beforeEach(() => {
-    qweb3 = new Qweb3(config.getQtumRPCAddress());
+    qweb3 = new Qweb3(getQtumRPCAddress());
   });
 
   /** ******** MISC ********* */
