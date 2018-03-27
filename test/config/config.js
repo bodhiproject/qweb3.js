@@ -34,7 +34,7 @@ function getQtumRPCAddress() {
 };
 
 module.exports = {  
-  Config: Config,
-  getQtumRPCAddress: getQtumRPCAddress,
-  getDefaultQtumAddress: getDefaultQtumAddress  
+  Config,
+  getQtumRPCAddress,
+  getDefaultQtumAddress,
 }
