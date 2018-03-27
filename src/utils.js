@@ -144,6 +144,29 @@ class Utils {
       return false;
     }
   }
+
+  /**
+   * Returns true if given string is valid qtum address
+   *
+   * @method isQtumAddress
+   * @param {String}
+   * @return {Boolean}
+   */
+  static isQtumAddress(address) {
+    if (_.isUndefined(address)){
+      return false;
+    }
+
+    if (_.size(address) !== 34) {
+      return false;
+    };
+
+    if (!address.startsWith('q') && !address.startsWith('Q')) {
+      return false;
+    }
+
+    return true;
+  }
 }
 
 module.exports = Utils;
