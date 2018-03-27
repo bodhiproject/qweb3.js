@@ -1,3 +1,6 @@
+// Load environment variables
+require('dotenv').config();
+
 const Config = {
   QTUM_RPC_ADDRESS: 'http://bodhi:bodhi@localhost:13889',
   SENDER_ADDRESS: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
@@ -5,8 +8,6 @@ const Config = {
   ENCRYPTED_WALLET_TESTS: false,
 };
 
-// Load environment variables
-require('dotenv').config();
 const qtumRPCAddress = "QTUM_RPC_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_RPC_ADDRESS"])) : undefined;
 const qtumAddress = "SENDER_ADDRESS" in process.env ? String(new Buffer(process.env["SENDER_ADDRESS"])) : undefined;
 
