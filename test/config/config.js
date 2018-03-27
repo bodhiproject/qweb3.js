@@ -5,4 +5,35 @@ const Config = {
   ENCRYPTED_WALLET_TESTS: false,
 };
 
-module.exports = Config;
+// Load environment variables
+require('dotenv').config();
+var qtumRPCAddress = "QTUM_RPC_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_RPC_ADDRESS"])) : undefined;
+var qtumAddress = "SENDER_ADDRESS" in process.env ? String(new Buffer(process.env["SENDER_ADDRESS"])) : undefined;
+
+/* Returns the default Qtum address 
+ * @return {String} default Qtum address.
+ */
+function getDefaultQtumAddress() {
+  if (typeof qtumAddress === "undefined") {
+    return Config.SENDER_ADDRESS;
+  } else {
+    return qtumAddress;
+  }
+};
+
+/* Returns the Qtum network RPC url 
+ * @return {String} the Qtum network RPC url.
+ */
+function getQtumRPCAddress() {
+  if (typeof qtumRPCAddress === "undefined") {
+    return Config.QTUM_RPC_ADDRESS;
+  } else {
+    return qtumRPCAddress;
+  }
+};
+
+module.exports = {  
+  Config: Config,
+  getQtumRPCAddress: getQtumRPCAddress,
+  getDefaultQtumAddress: getDefaultQtumAddress  
+}
