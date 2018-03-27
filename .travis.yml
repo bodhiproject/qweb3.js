@@ -25,14 +25,15 @@ install:
   - tar -xvzf qtum-0.14.13-x86_64-linux-gnu.tar.gz
   - npm install
   - mkdir test/data/.qtum
-  - pwd
-  - ls -l
 
 script:
+  - pwd
+  - ls -l
   #- cd qtum-0.14.13/bin; ./qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=/home/travis/build/bodhiproject/qweb3.js/test/data/.qtum & 
-  - cd qtum-0.14.13/bin; ./qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=$TRAVIS_BUILD_DIR/qweb3.js/test/data/.qtum & 
+  # - cd qtum-0.14.13/bin; ./qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=$TRAVIS_BUILD_DIR/qweb3.js/test/data/.qtum & 
+  - ./qtum-0.14.13/bin/qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=./test/data/.qtum & 
   - sleep 10
-  - npm test
+  - cd; npm test
 
 after_failure:
   - cat /home/travis/build/bodhiproject/qweb3.js/test/data/.qtum/testnet3/debug.log
