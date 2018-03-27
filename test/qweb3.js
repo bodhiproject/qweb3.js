@@ -300,8 +300,8 @@ describe('Qweb3', () => {
       const hexDecodedaAddress = bs58.decode(QTUM_ADDRESS).toString('hex')
       var hexadecimalAddress = await qweb3.getHexAddress(QTUM_ADDRESS)
       assert.isString(hexadecimalAddress);
-      assert.lengthOf(hexadecimalAddress, 40, `${hexadecimalAddress} has length of 40`);
-      assert.include(hexDecodedaAddress, hexadecimalAddress, `${hexDecodedaAddress} contains ${hexadecimalAddress}`);
+      assert.lengthOf(hexadecimalAddress, 40);
+      assert.include(hexDecodedaAddress, hexadecimalAddress);
     });
   });
 
