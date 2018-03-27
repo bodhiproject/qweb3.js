@@ -4,18 +4,25 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 
+const bs58 = require('bs58')
+
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
-const Config = require('./config/config');
+
+const { Config, getQtumRPCAddress, getDefaultQtumAddress } = require('./config/config');
+
+console.log(`Your Qtum RPC address is ${getQtumRPCAddress()}`);
+console.log(`Your Default Qtum address is ${getDefaultQtumAddress()}`);
+
 const ContractMetadata = require('./data/contract_metadata');
 const qAssert = require('./utils/qassert');
 
 describe('Qweb3', () => {
-  const QTUM_ADDRESS = 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy';
+  const QTUM_ADDRESS = getDefaultQtumAddress();
   let qweb3;
 
   beforeEach(() => {
-    qweb3 = new Qweb3(Config.QTUM_RPC_ADDRESS);
+    qweb3 = new Qweb3(getQtumRPCAddress());
   });
 
   /** ******** MISC ********* */
@@ -290,13 +297,19 @@ describe('Qweb3', () => {
   /** ******** RAW TRANSACTIONS ********* */
   describe('getHexAddress()', () => {
     it('returns the hex address', async () => {
-      assert.equal(await qweb3.getHexAddress(QTUM_ADDRESS), '17e7888aa7412a735f336d2f6d784caefabb6fa3');
+      const hexDecodedAddress = bs58.decode(QTUM_ADDRESS).toString('hex')
+      var hexadecimalAddress = await qweb3.getHexAddress(QTUM_ADDRESS)
+      assert.isString(hexadecimalAddress);
+      assert.lengthOf(hexadecimalAddress, 40);
+      assert.include(hexDecodedAddress, hexadecimalAddress);
     });
   });
 
   describe('fromHexAddress()', () => {
     it('returns the qtum address', async () => {
-      assert.equal(await qweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3'), QTUM_ADDRESS);
+      const qtumAddress = await qweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3')
+      assert.isString(qtumAddress);
+      assert.lengthOf(qtumAddress, 34);
     });
   });
 

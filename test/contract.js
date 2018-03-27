@@ -5,7 +5,8 @@ const chai = require('chai');
 
 const assert = chai.assert;
 
-const Config = require('./config/config');
+const { Config } = require('./config/config');
+
 const ContractMetadata = require('./data/contract_metadata');
 const Contract = require('../src/contract');
 const Encoder = require('../src/encoder');
