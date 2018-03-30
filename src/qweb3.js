@@ -152,6 +152,17 @@ class Qweb3 {
     });
   }
 
+  /** ******** NETWORK ********* */
+  /**
+   * Returns data about each connected network node as a json array of objects.
+   * @return {Promise} Node info object or Error
+   */
+  getPeerInfo() {
+    return this.provider.request({
+      method: 'getpeerinfo',
+    });
+  }
+
   /** ******** RAW TRANSACTIONS ********* */
   /**
    * Get the hex address of a Qtum address.

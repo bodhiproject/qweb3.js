@@ -294,6 +294,19 @@ describe('Qweb3', () => {
     });
   });
 
+  /** ******** NETWORK ********* */
+  describe('getPeerInfo()', () => {
+    it('returns the Node info', async () => {
+      const res = await qweb3.getPeerInfo();
+      assert.isDefined(res);
+      assert.isArray(res);
+      _.forEach(res, (nodeInfo) => {
+        assert.isNumber(nodeInfo.synced_headers);
+        assert.isNumber(nodeInfo.synced_blocks);
+      });
+    });
+  });
+
   /** ******** RAW TRANSACTIONS ********* */
   describe('getHexAddress()', () => {
     it('returns the hex address', async () => {
