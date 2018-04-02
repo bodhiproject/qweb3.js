@@ -15,7 +15,7 @@ const qtumAddress = 'SENDER_ADDRESS' in process.env ? String(new Buffer(process.
  * @return {String} default Qtum address.
  */
 function getDefaultQtumAddress() {
-  if (typeof qtumAddress === 'undefined') {
+  if (_.isUndefined(qtumAddress)) {
     return Config.SENDER_ADDRESS;
   }
   return qtumAddress;
@@ -25,7 +25,7 @@ function getDefaultQtumAddress() {
  * @return {String} the Qtum network RPC url.
  */
 function getQtumRPCAddress() {
-  if (typeof qtumRPCAddress === 'undefined') {
+  if (_.isUndefined(qtumRPCAddress)) {
     return Config.QTUM_RPC_ADDRESS;
   }
   return qtumRPCAddress;
