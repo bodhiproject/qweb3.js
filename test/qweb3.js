@@ -4,7 +4,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 
-const bs58 = require('bs58')
+const bs58 = require('bs58');
 
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
@@ -310,8 +310,8 @@ describe('Qweb3', () => {
   /** ******** RAW TRANSACTIONS ********* */
   describe('getHexAddress()', () => {
     it('returns the hex address', async () => {
-      const hexDecodedAddress = bs58.decode(QTUM_ADDRESS).toString('hex')
-      var hexadecimalAddress = await qweb3.getHexAddress(QTUM_ADDRESS)
+      const hexDecodedAddress = bs58.decode(QTUM_ADDRESS).toString('hex');
+      const hexadecimalAddress = await qweb3.getHexAddress(QTUM_ADDRESS);
       assert.isString(hexadecimalAddress);
       assert.lengthOf(hexadecimalAddress, 40);
       assert.include(hexDecodedAddress, hexadecimalAddress);
@@ -320,7 +320,7 @@ describe('Qweb3', () => {
 
   describe('fromHexAddress()', () => {
     it('returns the qtum address', async () => {
-      const qtumAddress = await qweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3')
+      const qtumAddress = await qweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3');
       assert.isString(qtumAddress);
       assert.lengthOf(qtumAddress, 34);
     });

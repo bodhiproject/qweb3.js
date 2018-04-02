@@ -8,33 +8,31 @@ const Config = {
   ENCRYPTED_WALLET_TESTS: false,
 };
 
-const qtumRPCAddress = "QTUM_RPC_ADDRESS" in process.env ? String(new Buffer(process.env["QTUM_RPC_ADDRESS"])) : undefined;
-const qtumAddress = "SENDER_ADDRESS" in process.env ? String(new Buffer(process.env["SENDER_ADDRESS"])) : undefined;
+const qtumRPCAddress = 'QTUM_RPC_ADDRESS' in process.env ? String(new Buffer(process.env.QTUM_RPC_ADDRESS)) : undefined;
+const qtumAddress = 'SENDER_ADDRESS' in process.env ? String(new Buffer(process.env.SENDER_ADDRESS)) : undefined;
 
-/* Returns the default Qtum address 
+/* Returns the default Qtum address
  * @return {String} default Qtum address.
  */
 function getDefaultQtumAddress() {
-  if (typeof qtumAddress === "undefined") {
+  if (typeof qtumAddress === 'undefined') {
     return Config.SENDER_ADDRESS;
-  } else {
-    return qtumAddress;
   }
-};
+  return qtumAddress;
+}
 
-/* Returns the Qtum network RPC url 
+/* Returns the Qtum network RPC url
  * @return {String} the Qtum network RPC url.
  */
 function getQtumRPCAddress() {
-  if (typeof qtumRPCAddress === "undefined") {
+  if (typeof qtumRPCAddress === 'undefined') {
     return Config.QTUM_RPC_ADDRESS;
-  } else {
-    return qtumRPCAddress;
   }
-};
+  return qtumRPCAddress;
+}
 
-module.exports = {  
+module.exports = {
   Config,
   getQtumRPCAddress,
   getDefaultQtumAddress,
-}
+};
