@@ -71,7 +71,7 @@ class Contract {
 
     // Add request object with params used for request
     const result = await this.provider.request(options);
-    result.request = {
+    result.args = {
       contractAddress: this.address,
       amount: amt,
       gasLimit: limit,
