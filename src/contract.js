@@ -54,19 +54,29 @@ class Contract {
       methodArgs, amount, gasLimit, gasPrice, senderAddress,
     } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
+    const amt = amount || SEND_AMOUNT;
+    const limit = gasLimit || SEND_GASLIMIT;
+    const price = gasPrice || SEND_GASPRICE;
     const options = {
       method: 'sendtocontract',
       params: [
         this.address,
         this.constructDataHex(methodObj, args),
-        amount || SEND_AMOUNT,
-        gasLimit || SEND_GASLIMIT,
-        gasPrice || SEND_GASPRICE,
+        amt,
+        limit,
+        price,
         senderAddress,
       ],
     };
 
-    return this.provider.request(options);
+    // Add request object with sent params
+    const result = this.provider.request(options);
+    result.request.contractAddress = this.address;
+    result.request.amount = amt;
+    result.request.gasLimit = limit;
+    result.request.gasPrice = price;
+
+    return result;
   }
 
   /*
