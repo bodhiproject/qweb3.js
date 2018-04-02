@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 // Load environment variables
 require('dotenv').config();
 
