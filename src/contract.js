@@ -46,7 +46,7 @@ class Contract {
   * @param params Parameters of the contract method.
   * @return The transaction id of the sendtocontract.
   */
-  send(methodName, params) {
+  async send(methodName, params) {
     // Throw if methodArgs or senderAddress is not defined in params
     Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
@@ -54,19 +54,31 @@ class Contract {
       methodArgs, amount, gasLimit, gasPrice, senderAddress,
     } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
+    const amt = amount || SEND_AMOUNT;
+    const limit = gasLimit || SEND_GASLIMIT;
+    const price = gasPrice || SEND_GASPRICE;
     const options = {
       method: 'sendtocontract',
       params: [
         this.address,
         this.constructDataHex(methodObj, args),
-        amount || SEND_AMOUNT,
-        gasLimit || SEND_GASLIMIT,
-        gasPrice || SEND_GASPRICE,
+        amt,
+        limit,
+        price,
         senderAddress,
       ],
     };
 
-    return this.provider.request(options);
+    // Add request object with params used for request
+    const result = await this.provider.request(options);
+    result.args = {
+      contractAddress: this.address,
+      amount: amt,
+      gasLimit: limit,
+      gasPrice: price,
+    };
+
+    return result;
   }
 
   /*
