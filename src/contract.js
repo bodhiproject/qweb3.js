@@ -64,7 +64,7 @@ class Contract {
         this.constructDataHex(methodObj, args),
         amt,
         limit,
-        price,
+        price.toFixed(8),
         senderAddress,
       ],
     };

@@ -386,12 +386,14 @@ class Qweb3 {
   * @param comment {String} Comment used to store what the transaction is for.
   * @param commentTo {String} Comment to store name/organization to which you're sending the transaction.
   * @param subtractFeeFromAmount {Boolean} The fee will be deducted from the amount being sent.
+  * @param senderAddress {String} The QTUM address that will be used to send money from.
+  * @param changeToSender {Boolean} Return the change to the sender.
   * @return {Promise} Transaction ID or Error
   */
-  sendToAddress(address, amount, comment = '', commentTo = '', subtractFeeFromAmount = false) {
+  sendToAddress(address, amount, comment = '', commentTo = '', subtractFeeFromAmount = false, senderAddress, changeToSender) {
     return this.provider.request({
       method: 'sendtoaddress',
-      params: [address, amount, comment, commentTo, subtractFeeFromAmount],
+      params: [address, amount, comment, commentTo, subtractFeeFromAmount, senderAddress, changeToSender],
     });
   }
 
