@@ -512,4 +512,19 @@ describe('Qweb3', () => {
       });
     });
   });
+
+  describe('backupWallet()', () => {
+    it('backup the wallet', async () => {
+      const res = await qweb3.backupWallet('backup.dat');
+      assert.isDefined(res);
+    });
+  });
+
+  !Config.IMPORT_WALLET_TESTS ? describe.skip : describe('importWallet()', () => {
+    it('Imports keys from a wallet dump file', async () => {
+      const res = await qweb3.importWallet('/test/data/wallet.dat');
+      assert.isDefined(res);
+    });
+  });
+
 });

@@ -453,6 +453,30 @@ class Qweb3 {
       ],
     });
   }
+  /**
+   * Backup the wallet
+   * @param {String} destination The destination directory or file.
+   * @return {Promise} Success or Error.
+   */
+  backupWallet(destination) {
+    return this.provider.request({
+      method: 'backupwallet',
+      params: [destination],
+    });
+  }
+
+  /**
+   * Imports keys from a wallet dump file
+   * @param {String} filename The wallet file.
+   * @return {Promise} Success or Error.
+   */
+  importWallet(filename) {
+    return this.provider.request({
+      method: 'importwallet',
+      params: [filename],
+    });
+  }
+
 }
 
 module.exports = Qweb3;

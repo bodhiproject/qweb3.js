@@ -8,6 +8,7 @@ const Config = {
   SENDER_ADDRESS: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
   NEW_ADDRESS_TESTS: false,
   ENCRYPTED_WALLET_TESTS: false,
+  IMPORT_WALLET_TESTS: false,
 };
 
 const qtumRPCAddress = 'QTUM_RPC_ADDRESS' in process.env ? String(new Buffer(process.env.QTUM_RPC_ADDRESS)) : undefined;
