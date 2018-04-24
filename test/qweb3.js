@@ -523,7 +523,7 @@ describe('Qweb3', () => {
     describe('importWallet()', () => {
       it('imports keys from a wallet dump file', async () => {
         try {
-          await qweb3.importWallet(path.join(__dirname, './data/encrpty.txt'))
+          await qweb3.importWallet(path.join(__dirname, './data/wallet.dat'))
         }
         catch (err) {
           assert.isDefined(err)
