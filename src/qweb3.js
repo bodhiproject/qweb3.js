@@ -202,6 +202,18 @@ class Qweb3 {
   }
 
   /** ******** WALLET ********* */
+  /**
+   * Backup the wallet
+   * @param {String} destination The destination directory or file.
+   * @return {Promise} Success or Error.
+   */
+  backupWallet(destination) {
+    return this.provider.request({
+      method: 'backupwallet',
+      params: [destination],
+    });
+  }
+
   /*
   * Reveals the private key corresponding to the address.
   * @param address {String} The qtum address for the private key.
@@ -348,6 +360,18 @@ class Qweb3 {
     });
   }
 
+  /**
+   * Imports keys from a wallet dump file
+   * @param {String} filename The wallet file.
+   * @return {Promise} Success or Error.
+   */
+  importWallet(filename) {
+    return this.provider.request({
+      method: 'importwallet',
+      params: [filename],
+    });
+  }
+
   /*
   * Lists groups of addresses which have had their common ownership made public by common use as inputs
   *   or as the resulting change in past transactions.
@@ -451,29 +475,6 @@ class Qweb3 {
         oldPassphrase,
         newPassphrase,
       ],
-    });
-  }
-  /**
-   * Backup the wallet
-   * @param {String} destination The destination directory or file.
-   * @return {Promise} Success or Error.
-   */
-  backupWallet(destination) {
-    return this.provider.request({
-      method: 'backupwallet',
-      params: [destination],
-    });
-  }
-
-  /**
-   * Imports keys from a wallet dump file
-   * @param {String} filename The wallet file.
-   * @return {Promise} Success or Error.
-   */
-  importWallet(filename) {
-    return this.provider.request({
-      method: 'importwallet',
-      params: [filename],
     });
   }
 }
