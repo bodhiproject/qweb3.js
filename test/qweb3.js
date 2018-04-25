@@ -521,13 +521,17 @@ describe('Qweb3', () => {
     });
 
     describe('importWallet()', () => {
-      it('imports keys from a wallet dump file', async () => {
+      it('throw an error if importing a non-existent file', async () => {
         try {
           await qweb3.importWallet(path.join(__dirname, './data/wallet.dat'));
         } catch (err) {
           assert.isDefined(err);
           assert.equal(err, 'Error: Cannot open wallet dump file');
         }
+      });
+      it('import the wallet from a wallet dump file', async () => {
+        const res = await qweb3.backupWallet(path.join(__dirname, './data/backup.dat'));
+        assert.notTypeOf(res, 'Error');
       });
     });
   });
