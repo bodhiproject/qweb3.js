@@ -476,7 +476,6 @@ class Qweb3 {
       params: [filename],
     });
   }
-
 }
 
 module.exports = Qweb3;

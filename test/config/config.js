@@ -7,7 +7,7 @@ const Config = {
   QTUM_RPC_ADDRESS: 'http://bodhi:bodhi@localhost:13889',
   SENDER_ADDRESS: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
   NEW_ADDRESS_TESTS: false,
-  WALLET_TESTS: true,
+  WALLET_TESTS: false,
 };
 
 const qtumRPCAddress = 'QTUM_RPC_ADDRESS' in process.env ? String(new Buffer(process.env.QTUM_RPC_ADDRESS)) : undefined;
