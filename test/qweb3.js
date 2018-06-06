@@ -1,22 +1,19 @@
 const _ = require('lodash');
 const chai = require('chai');
 const path = require('path');
-
-const assert = chai.assert;
-const expect = chai.expect;
-
 const bs58 = require('bs58');
 
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
-
 const { Config, getQtumRPCAddress, getDefaultQtumAddress } = require('./config/config');
+const ContractMetadata = require('./data/contract_metadata');
+const qAssert = require('./utils/qassert');
+
+const assert = chai.assert;
+const expect = chai.expect;
 
 console.log(`Your Qtum RPC address is ${getQtumRPCAddress()}`);
 console.log(`Your Default Qtum address is ${getDefaultQtumAddress()}`);
-
-const ContractMetadata = require('./data/contract_metadata');
-const qAssert = require('./utils/qassert');
 
 describe('Qweb3', () => {
   const QTUM_ADDRESS = getDefaultQtumAddress();
