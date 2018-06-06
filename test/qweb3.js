@@ -513,24 +513,32 @@ describe('Qweb3', () => {
   describe('walletLock()', () => {
     it('locks the encrypted wallet', async () => {
       if (await isWalletEncrypted(qweb3)) {
-        res = await qweb3.walletLock();
-        assert.isNull(res);
-      } else {
+        await qweb3.walletPassphrase(getWalletPassphrase(), 3600, true);
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until > 0);
+
+        await qweb3.walletLock();
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until === 0);
+      } else { 
         assert.isTrue(true);
       }
     });
   });
 
-  !Config.WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
-    
+  describe('walletPassphrase()', () => {
+    it('unlocks the encrypted wallet', async () => {
+      if (await isWalletEncrypted(qweb3)) {
+        await qweb3.walletLock();
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until === 0);
 
-    describe('walletPassphrase()', () => {
-      it('unlocks the encrypted wallet', async () => {
-        const res = await qweb3.walletPassphrase('mypassphrase', 60, true);
-        assert.isDefined(res);
-      });
+        await qweb3.walletPassphrase(getWalletPassphrase(), 3600, true);
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until > 0);
+      } else {
+        assert.isTrue(true);
+      }      
     });
+  });
 
+  !Config.WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
     describe('backupWallet()', () => {
       it('backup the wallet', async () => {
         const res = await qweb3.backupWallet(path.join(__dirname, './data/backup.dat'));
