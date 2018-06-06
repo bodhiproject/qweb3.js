@@ -1,12 +1,6 @@
 const _ = require('lodash');
 require('dotenv').config();
 
-// Testnet default config values
-const Config = {
-  NEW_ADDRESS_TESTS: false,
-  WALLET_TESTS: false,
-};
-
 /* 
 * Returns the default Qtum address.
 * @return {String} Default Qtum address.

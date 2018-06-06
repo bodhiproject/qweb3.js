@@ -29,7 +29,7 @@ install:
 script:
   - ./qtum-0.14.13/bin/qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=./test/data/.qtum & 
   - sleep 10
-  - npm test
+  - npm run test:cleanenv
 
 after_failure:
   - cat /home/travis/build/bodhiproject/qweb3.js/test/data/.qtum/testnet3/debug.log

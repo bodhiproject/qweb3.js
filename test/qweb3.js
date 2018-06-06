@@ -378,15 +378,6 @@ describe('Qweb3', () => {
     });
   });
 
-  !Config.NEW_ADDRESS_TESTS ? describe.skip : describe('getNewAddress()', () => {
-    it('returns a new qtum address', async () => {
-      const res = await qweb3.getNewAddress('');
-      assert.isDefined(res);
-      assert.isString(res);
-      assert.isTrue(res.startsWith('q') || res.startsWith('Q'));
-    });
-  });
-
   describe('getTransaction()', () => {
     it('returns the transaction info', () => {
       const res = {
@@ -536,7 +527,17 @@ describe('Qweb3', () => {
     });
   });
 
-  !Config.WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
+  // Runs tests that are more suited for a clean environment, eg. CI tests
+  !_.includes(process.argv, '--cleanenv') ? describe.skip : describe('cleanEnv tests', () => {
+    describe('getNewAddress()', () => {
+      it('returns a new qtum address', async () => {
+        const res = await qweb3.getNewAddress('');
+        assert.isDefined(res);
+        assert.isString(res);
+        assert.isTrue(res.startsWith('q') || res.startsWith('Q'));
+      });
+    });
+
     describe('backupWallet()', () => {
       it('backup the wallet', async () => {
         const res = await qweb3.backupWallet(path.join(__dirname, './data/backup.dat'));

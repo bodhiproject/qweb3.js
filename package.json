@@ -37,7 +37,8 @@
   },
   "scripts": {
     "lint:fix": "eslint --fix -- src/. test/.",
-    "test": "mocha ./test/"
+    "test": "mocha ./test/",
+    "test:cleanenv": "mocha ./test --cleanenv"
   },
   "homepage": "http://www.bodhi.network/",
   "bugs": {
