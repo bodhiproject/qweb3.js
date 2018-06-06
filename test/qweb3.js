@@ -5,7 +5,7 @@ const bs58 = require('bs58');
 
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
-const { Config, getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase } = require('./config/config');
+const { getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase } = require('./config/config');
 const ContractMetadata = require('./data/contract_metadata');
 const qAssert = require('./utils/qassert');
 const { isWalletEncrypted } = require('./utils/utils');

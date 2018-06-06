@@ -32,7 +32,6 @@ function getWalletPassphrase() {
 }
 
 module.exports = {
-  Config,
   getQtumRPCAddress,
   getDefaultQtumAddress,
   getWalletPassphrase,
