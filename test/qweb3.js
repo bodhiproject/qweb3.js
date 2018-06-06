@@ -8,6 +8,7 @@ const Formatter = require('../src/formatter');
 const { Config, getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase } = require('./config/config');
 const ContractMetadata = require('./data/contract_metadata');
 const qAssert = require('./utils/qassert');
+const { isWalletEncrypted } = require('./utils/utils');
 
 const assert = chai.assert;
 const expect = chai.expect;
@@ -509,13 +510,19 @@ describe('Qweb3', () => {
     });
   });
 
-  !Config.WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
-    describe('walletLock()', () => {
-      it('locks the encrypted wallet', async () => {
-        const res = await qweb3.walletLock();
-        assert.isDefined(res);
-      });
+  describe('walletLock()', () => {
+    it('locks the encrypted wallet', async () => {
+      if (await isWalletEncrypted(qweb3)) {
+        res = await qweb3.walletLock();
+        assert.isNull(res);
+      } else {
+        assert.isTrue(true);
+      }
     });
+  });
+
+  !Config.WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
+    
 
     describe('walletPassphrase()', () => {
       it('unlocks the encrypted wallet', async () => {
