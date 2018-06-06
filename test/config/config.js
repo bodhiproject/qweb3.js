@@ -3,9 +3,6 @@ require('dotenv').config();
 
 // Testnet default config values
 const Config = {
-  QTUM_RPC_ADDRESS: 'http://bodhi:bodhi@localhost:13889',
-  SENDER_ADDRESS: 'qMZK8FNPRm54jvTLAGEs1biTCgyCkcsmna',
-  WALLET_PASSPHRASE: 'bodhi',
   NEW_ADDRESS_TESTS: false,
   WALLET_TESTS: false,
 };
@@ -15,7 +12,10 @@ const Config = {
 * @return {String} Default Qtum address.
 */
 function getDefaultQtumAddress() {
-  return process.env.SENDER_ADDRESS ? String(new Buffer(process.env.SENDER_ADDRESS)) : Config.SENDER_ADDRESS;
+  if (!process.env.SENDER_ADDRESS) {
+    throw Error('Must have SENDER_ADDRESS in .env');
+  }
+  return String(new Buffer(process.env.SENDER_ADDRESS));
 }
 
 /* 
@@ -23,7 +23,10 @@ function getDefaultQtumAddress() {
 * @return {String} The Qtum network RPC url.
 */
 function getQtumRPCAddress() {
-  return process.env.QTUM_RPC_ADDRESS ? String(new Buffer(process.env.QTUM_RPC_ADDRESS)) : Config.QTUM_RPC_ADDRESS;
+  if (!process.env.QTUM_RPC_ADDRESS) {
+    throw Error('Must have QTUM_RPC_ADDRESS in .env');
+  }
+  return String(new Buffer(process.env.QTUM_RPC_ADDRESS)); 
 }
 
 /* 
@@ -31,7 +34,7 @@ function getQtumRPCAddress() {
 * @return {String} The wallet passphrase.
 */
 function getWalletPassphrase() {
-  return process.env.WALLET_PASSPHRASE ? String(new Buffer(process.env.WALLET_PASSPHRASE)) : Config.WALLET_PASSPHRASE;
+  return process.env.WALLET_PASSPHRASE ? String(new Buffer(process.env.WALLET_PASSPHRASE)) : '';
 }
 
 module.exports = {

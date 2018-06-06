@@ -555,6 +555,7 @@ describe('Qweb3', () => {
           assert.equal(err, 'Error: Cannot open wallet dump file');
         }
       });
+      
       it('import the wallet from a wallet dump file', async () => {
         const res = await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
         assert.notTypeOf(res, 'Error');
