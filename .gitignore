@@ -102,10 +102,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-
-
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
