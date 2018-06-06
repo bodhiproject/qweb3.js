@@ -5,7 +5,7 @@ const bs58 = require('bs58');
 
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
-const { Config, getQtumRPCAddress, getDefaultQtumAddress } = require('./config/config');
+const { Config, getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase } = require('./config/config');
 const ContractMetadata = require('./data/contract_metadata');
 const qAssert = require('./utils/qassert');
 
@@ -341,9 +341,23 @@ describe('Qweb3', () => {
   describe('dumpPrivateKey()', () => {
     it('returns the private key', async () => {
       const address = await qweb3.getAccountAddress('');
-      const res = await qweb3.dumpPrivateKey(address);
-      assert.isDefined(res);
-      assert.isString(res);
+      try {
+        const res = await qweb3.dumpPrivateKey(address);
+        assert.isDefined(res);
+        assert.isString(res);
+      } catch (err) {
+        if (err.message.includes('Please enter the wallet passphrase with walletpassphrase first.')) {
+          await qweb3.walletPassphrase(getWalletPassphrase(), 3600);
+
+          const res = await qweb3.dumpPrivateKey(address);
+          assert.isDefined(res);
+          assert.isString(res);
+
+          await qweb3.walletLock();
+        } else {
+          assert.fail(`Unknown error: ${err.message}`);
+        }
+      }
     });
   });
 

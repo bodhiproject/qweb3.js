@@ -28,7 +28,7 @@ function getQtumRPCAddress() {
 
 /* 
 * Returns the wallet passphrase to unlock the encrypted wallet.
-* @return {String} The Qtum network RPC url.
+* @return {String} The wallet passphrase.
 */
 function getWalletPassphrase() {
   return process.env.WALLET_PASSPHRASE ? String(new Buffer(process.env.WALLET_PASSPHRASE)) : Config.WALLET_PASSPHRASE;
