@@ -342,22 +342,20 @@ describe('Qweb3', () => {
   describe('dumpPrivateKey()', () => {
     it('returns the private key', async () => {
       const address = await qweb3.getAccountAddress('');
-      try {
+      if (await isWalletEncrypted(qweb3)) {
+        await qweb3.walletPassphrase(getWalletPassphrase(), 3600);
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until > 0);
+
         const res = await qweb3.dumpPrivateKey(address);
         assert.isDefined(res);
         assert.isString(res);
-      } catch (err) {
-        if (err.message.includes('Please enter the wallet passphrase with walletpassphrase first.')) {
-          await qweb3.walletPassphrase(getWalletPassphrase(), 3600);
 
-          const res = await qweb3.dumpPrivateKey(address);
-          assert.isDefined(res);
-          assert.isString(res);
-
-          await qweb3.walletLock();
-        } else {
-          assert.fail(`Unknown error: ${err.message}`);
-        }
+        await qweb3.walletLock();
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until === 0);
+      } else {
+        const res = await qweb3.dumpPrivateKey(address);
+        assert.isDefined(res);
+        assert.isString(res);
       }
     });
   });
@@ -555,7 +553,7 @@ describe('Qweb3', () => {
           assert.equal(err, 'Error: Cannot open wallet dump file');
         }
       });
-      
+
       it('import the wallet from a wallet dump file', async () => {
         const res = await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
         assert.notTypeOf(res, 'Error');
