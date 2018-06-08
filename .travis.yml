@@ -4,7 +4,7 @@ node_js:
   - "9"
 
 env:
-  - CXX=g++-4.8
+  - CXX=g++-4.8 QTUM_RPC_ADDRESS='http://bodhi:bodhi@localhost:13889' SENDER_ADDRESS='qMZK8FNPRm54jvTLAGEs1biTCgyCkcsmna' WALLET_PASSPHRASE='bodhi'
 
 addons:
   apt:
@@ -29,7 +29,7 @@ install:
 script:
   - ./qtum-0.14.13/bin/qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=./test/data/.qtum & 
   - sleep 10
-  - npm test
+  - npm run test:cleanenv
 
 after_failure:
   - cat /home/travis/build/bodhiproject/qweb3.js/test/data/.qtum/testnet3/debug.log

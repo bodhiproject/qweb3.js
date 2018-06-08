@@ -1,40 +1,38 @@
 const _ = require('lodash');
-
-// Load environment variables
 require('dotenv').config();
 
-const Config = {
-  QTUM_RPC_ADDRESS: 'http://bodhi:bodhi@localhost:13889',
-  SENDER_ADDRESS: 'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
-  NEW_ADDRESS_TESTS: false,
-  WALLET_TESTS: false,
-};
-
-const qtumRPCAddress = 'QTUM_RPC_ADDRESS' in process.env ? String(new Buffer(process.env.QTUM_RPC_ADDRESS)) : undefined;
-const qtumAddress = 'SENDER_ADDRESS' in process.env ? String(new Buffer(process.env.SENDER_ADDRESS)) : undefined;
-
-/* Returns the default Qtum address
- * @return {String} default Qtum address.
- */
+/* 
+* Returns the default Qtum address.
+* @return {String} Default Qtum address.
+*/
 function getDefaultQtumAddress() {
-  if (_.isUndefined(qtumAddress)) {
-    return Config.SENDER_ADDRESS;
+  if (!process.env.SENDER_ADDRESS) {
+    throw Error('Must have SENDER_ADDRESS in .env');
   }
-  return qtumAddress;
+  return String(new Buffer(process.env.SENDER_ADDRESS));
 }
 
-/* Returns the Qtum network RPC url
- * @return {String} the Qtum network RPC url.
- */
+/* 
+* Returns the Qtum network RPC url.
+* @return {String} The Qtum network RPC url.
+*/
 function getQtumRPCAddress() {
-  if (_.isUndefined(qtumRPCAddress)) {
-    return Config.QTUM_RPC_ADDRESS;
+  if (!process.env.QTUM_RPC_ADDRESS) {
+    throw Error('Must have QTUM_RPC_ADDRESS in .env');
   }
-  return qtumRPCAddress;
+  return String(new Buffer(process.env.QTUM_RPC_ADDRESS)); 
+}
+
+/* 
+* Returns the wallet passphrase to unlock the encrypted wallet.
+* @return {String} The wallet passphrase.
+*/
+function getWalletPassphrase() {
+  return process.env.WALLET_PASSPHRASE ? String(new Buffer(process.env.WALLET_PASSPHRASE)) : '';
 }
 
 module.exports = {
-  Config,
   getQtumRPCAddress,
   getDefaultQtumAddress,
+  getWalletPassphrase,
 };

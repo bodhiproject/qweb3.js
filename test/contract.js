@@ -3,14 +3,13 @@ const Web3Utils = require('web3-utils');
 const BN = require('bn.js');
 const chai = require('chai');
 
-const assert = chai.assert;
-
-const { Config } = require('./config/config');
-
+const { getQtumRPCAddress } = require('./config/config');
 const ContractMetadata = require('./data/contract_metadata');
 const Contract = require('../src/contract');
 const Encoder = require('../src/encoder');
 const Formatter = require('../src/formatter');
+
+const assert = chai.assert;
 
 describe('Contract', () => {
   let contract;
@@ -18,7 +17,8 @@ describe('Contract', () => {
   describe('constructor', () => {
     it('inits all the values', async () => {
       contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, ContractMetadata.EventFactory.address,
+        getQtumRPCAddress(),
+        ContractMetadata.EventFactory.address,
         ContractMetadata.EventFactory.abi,
       );
       assert.isDefined(contract.provider);
@@ -27,7 +27,7 @@ describe('Contract', () => {
     });
 
     it('removes the hex prefix from the address', async () => {
-      contract = new Contract(Config.QTUM_RPC_ADDRESS, '0x1234567890', ContractMetadata.EventFactory.abi);
+      contract = new Contract(getQtumRPCAddress(), '0x1234567890', ContractMetadata.EventFactory.abi);
       assert.equal(contract.address, '1234567890');
     });
   });
@@ -99,7 +99,7 @@ describe('Contract', () => {
   describe('constructDataHex()', () => {
     beforeEach(() => {
       contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, ContractMetadata.EventFactory.address,
+        getQtumRPCAddress(), ContractMetadata.EventFactory.address,
         ContractMetadata.EventFactory.abi,
       );
     });
@@ -630,7 +630,7 @@ describe('Contract', () => {
 
     beforeEach(() => {
       contract = new Contract(
-        Config.QTUM_RPC_ADDRESS, ContractMetadata.EventFactory.address,
+        getQtumRPCAddress(), ContractMetadata.EventFactory.address,
         ContractMetadata.EventFactory.abi,
       );
     });

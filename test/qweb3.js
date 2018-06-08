@@ -1,22 +1,20 @@
 const _ = require('lodash');
 const chai = require('chai');
 const path = require('path');
-
-const assert = chai.assert;
-const expect = chai.expect;
-
 const bs58 = require('bs58');
 
 const Qweb3 = require('../src/qweb3');
 const Formatter = require('../src/formatter');
+const { getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase } = require('./config/config');
+const ContractMetadata = require('./data/contract_metadata');
+const qAssert = require('./utils/qassert');
+const { isWalletEncrypted } = require('./utils/utils');
 
-const { Config, getQtumRPCAddress, getDefaultQtumAddress } = require('./config/config');
+const assert = chai.assert;
+const expect = chai.expect;
 
 console.log(`Your Qtum RPC address is ${getQtumRPCAddress()}`);
 console.log(`Your Default Qtum address is ${getDefaultQtumAddress()}`);
-
-const ContractMetadata = require('./data/contract_metadata');
-const qAssert = require('./utils/qassert');
 
 describe('Qweb3', () => {
   const QTUM_ADDRESS = getDefaultQtumAddress();
@@ -344,9 +342,21 @@ describe('Qweb3', () => {
   describe('dumpPrivateKey()', () => {
     it('returns the private key', async () => {
       const address = await qweb3.getAccountAddress('');
-      const res = await qweb3.dumpPrivateKey(address);
-      assert.isDefined(res);
-      assert.isString(res);
+      if (await isWalletEncrypted(qweb3)) {
+        await qweb3.walletPassphrase(getWalletPassphrase(), 3600);
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until > 0);
+
+        const res = await qweb3.dumpPrivateKey(address);
+        assert.isDefined(res);
+        assert.isString(res);
+
+        await qweb3.walletLock();
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until === 0);
+      } else {
+        const res = await qweb3.dumpPrivateKey(address);
+        assert.isDefined(res);
+        assert.isString(res);
+      }
     });
   });
 
@@ -365,15 +375,6 @@ describe('Qweb3', () => {
       assert.isDefined(res);
       assert.isArray(res);
       assert.isTrue(_.every(res, item => item.startsWith('q') || item.startsWith('Q')));
-    });
-  });
-
-  !Config.NEW_ADDRESS_TESTS ? describe.skip : describe('getNewAddress()', () => {
-    it('returns a new qtum address', async () => {
-      const res = await qweb3.getNewAddress('');
-      assert.isDefined(res);
-      assert.isString(res);
-      assert.isTrue(res.startsWith('q') || res.startsWith('Q'));
     });
   });
 
@@ -498,18 +499,42 @@ describe('Qweb3', () => {
     });
   });
 
-  !Config.WALLET_TESTS ? describe.skip : describe('encrypted wallet', () => {
-    describe('walletLock()', () => {
-      it('locks the encrypted wallet', async () => {
-        const res = await qweb3.walletLock();
-        assert.isDefined(res);
-      });
-    });
+  describe('walletLock()', () => {
+    it('locks the encrypted wallet', async () => {
+      if (await isWalletEncrypted(qweb3)) {
+        await qweb3.walletPassphrase(getWalletPassphrase(), 3600, true);
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until > 0);
 
-    describe('walletPassphrase()', () => {
-      it('unlocks the encrypted wallet', async () => {
-        const res = await qweb3.walletPassphrase('mypassphrase', 60, true);
+        await qweb3.walletLock();
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until === 0);
+      } else { 
+        assert.isTrue(true);
+      }
+    });
+  });
+
+  describe('walletPassphrase()', () => {
+    it('unlocks the encrypted wallet', async () => {
+      if (await isWalletEncrypted(qweb3)) {
+        await qweb3.walletLock();
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until === 0);
+
+        await qweb3.walletPassphrase(getWalletPassphrase(), 3600, true);
+        assert.isTrue((await qweb3.getWalletInfo()).unlocked_until > 0);
+      } else {
+        assert.isTrue(true);
+      }      
+    });
+  });
+
+  // Runs tests that are more suited for a clean environment, eg. CI tests
+  !_.includes(process.argv, '--cleanenv') ? describe.skip : describe('cleanEnv tests', () => {
+    describe('getNewAddress()', () => {
+      it('returns a new qtum address', async () => {
+        const res = await qweb3.getNewAddress('');
         assert.isDefined(res);
+        assert.isString(res);
+        assert.isTrue(res.startsWith('q') || res.startsWith('Q'));
       });
     });
 
@@ -529,6 +554,7 @@ describe('Qweb3', () => {
           assert.equal(err, 'Error: Cannot open wallet dump file');
         }
       });
+
       it('import the wallet from a wallet dump file', async () => {
         const res = await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
         assert.notTypeOf(res, 'Error');

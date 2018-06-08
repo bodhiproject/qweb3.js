@@ -9,6 +9,14 @@ Run the following in your project folder:
 
 	npm install qweb3 --save
 
+## Running Tests
+You need to create a `.env` file in the root folder with the following variables in the following formats. Change it to how your environment is setup.
+```
+QTUM_RPC_ADDRESS='http://bodhi:bodhi@localhost:13889'
+SENDER_ADDRESS='qMZK8FNPRm54jvTLAGEs1biTCgyCkcsmna'
+WALLET_PASSPHRASE='bodhi'
+``` 
+
 ## Qweb3.js
 Instantiate a new instance of `Qweb3`: 
 ```
@@ -17,6 +25,10 @@ const { Qweb3 } = require('qweb3');
 // Pass in the path of your local Qtum node rpc port with username/password
 // In our case, username=bodhi, password=bodhi, port=13889
 const qClient = new Qweb3('http://bodhi:bodhi@localhost:13889');
+
+// Default Qtum RPC ports:
+// testnet=13889
+// mainnet=3889
 ```
 
 ### isConnected()

@@ -102,10 +102,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-
-
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
@@ -128,3 +124,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/git,node,linux,macos,windows
+
+# dotenv
+.env
