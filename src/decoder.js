@@ -1,5 +1,6 @@
-const _ = require('lodash');
+const { isEmpty, each, find } = require('lodash');
 const Web3Utils = require('web3-utils');
+const EthjsAbi = require('ethjs-abi');
 const crypto = require('crypto');
 const bs58 = require('bs58');
 
@@ -10,7 +11,7 @@ const TestnetNetworkByte = '78';
 
 class Decoder {
   static toQtumAddress(hexAddress, isMainnet = false) {
-    if (hexAddress === undefined || _.isEmpty(hexAddress)) {
+    if (hexAddress === undefined || isEmpty(hexAddress)) {
       throw new Error('hexAddress should not be undefined or empty');
     }
     if (!Web3Utils.isHex(hexAddress)) {
@@ -45,7 +46,7 @@ class Decoder {
     }
 
     if (value instanceof Array) {
-      _.each(value, (arrayItem, index) => {
+      each(value, (arrayItem, index) => {
         if (Web3Utils.isHex(arrayItem)) {
           value[index] = Utils.trimHexPrefix(arrayItem);
         }
@@ -55,6 +56,41 @@ class Decoder {
     }
 
     return value;
+  }
+
+  /**
+   * Decodes the output of a callcontract.
+   * @param {object} rawOutput Raw output of callcontract.
+   * @param {object} contractABI The ABI of the contract that was called.
+   * @param {string} methodName The name of the method that was called.
+   * @param {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values.
+   * @return {object} Decoded callcontract output.
+   */
+  static decodeCall(rawOutput, contractABI, methodName, removeHexPrefix = true) {
+    if (!rawOutput) {
+      console.error('rawOutput is undefined.');
+      return rawOutput;
+    }
+    if (!contractABI) {
+      console.error('contractABI is undefined.');
+      return rawOutput;
+    }
+    if (!methodName) {
+      console.error('methodName is undefined.');
+      return rawOutput;
+    }
+
+    const methodABI = find(contractABI, { name: methodName });
+    if (methodABI && 'executionResult' in rawOutput && 'output' in rawOutput.executionResult) {
+      rawOutput.executionResult.output = EthjsAbi.decodeMethod(
+        methodABI,
+        Utils.appendHexPrefix(rawOutput.executionResult.output),
+      );
+      if (removeHexPrefix) {
+        rawOutput.executionResult.output = Decoder.removeHexPrefix(rawOutput.executionResult.output);
+      }
+    }
+    return rawOutput;
   }
 }
 
