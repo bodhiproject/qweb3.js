@@ -1,11 +1,10 @@
 const chai = require('chai');
-
-const assert = chai.assert;
 const BN = require('bn.js');
 const BigNumber = require('bignumber.js');
 
 const Encoder = require('../src/encoder');
 
+const { assert } = chai;
 const PADDED_BYTES = 64;
 
 describe('Encoder', () => {

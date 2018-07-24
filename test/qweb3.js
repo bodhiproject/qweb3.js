@@ -10,8 +10,7 @@ const ContractMetadata = require('./data/contract_metadata');
 const qAssert = require('./utils/qassert');
 const { isWalletEncrypted } = require('./utils/utils');
 
-const assert = chai.assert;
-const expect = chai.expect;
+const { assert } = chai;
 
 console.log(`Your Qtum RPC address is ${getQtumRPCAddress()}`);
 console.log(`Your Default Qtum address is ${getDefaultQtumAddress()}`);
