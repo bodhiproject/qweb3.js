@@ -59,7 +59,7 @@ class Decoder {
   }
 
   /**
-   * Decodes the output of a callcontract.
+   * Decodes the output of a callcontract and puts it in executionResult.formattedOutput
    * @param {object} rawOutput Raw output of callcontract.
    * @param {object} contractABI The ABI of the contract that was called.
    * @param {string} methodName The name of the method that was called.
@@ -68,16 +68,13 @@ class Decoder {
    */
   static decodeCall(rawOutput, contractABI, methodName, removeHexPrefix = true) {
     if (!rawOutput) {
-      console.error('rawOutput is undefined.');
-      return rawOutput;
+      throw Error('rawOutput is undefined.');
     }
     if (!contractABI) {
-      console.error('contractABI is undefined.');
-      return rawOutput;
+      throw Error('contractABI is undefined.');
     }
     if (!methodName) {
-      console.error('methodName is undefined.');
-      return rawOutput;
+      throw Error('methodName is undefined.');
     }
 
     const methodABI = find(contractABI, { name: methodName });
