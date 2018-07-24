@@ -9,7 +9,7 @@ const Contract = require('../src/contract');
 const Encoder = require('../src/encoder');
 const Formatter = require('../src/formatter');
 
-const assert = chai.assert;
+const { assert } = chai;
 
 describe('Contract', () => {
   let contract;

@@ -1,10 +1,9 @@
-const _ = require('lodash');
 const chai = require('chai');
-
-const assert = chai.assert;
 
 const Formatter = require('../src/formatter');
 const ContractMetadata = require('./data/contract_metadata');
+
+const { assert } = chai;
 
 describe('Formatter', () => {
   describe('searchLogOutput()', () => {
