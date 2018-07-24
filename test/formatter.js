@@ -218,7 +218,6 @@ describe('Formatter', () => {
       };
 
       const formatted = Formatter.callOutput(rawOutput, ContractMetadata.TopicEvent.abi, 'owner', true);
-      console.log(formatted);
       assert.equal(formatted[0], '17e7888aa7412a735f336d2f6d784caefabb6fa3');
     });
   });
