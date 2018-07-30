@@ -1,5 +1,6 @@
 const Qweb3 = require('./qweb3');
 const Contract = require('./contract');
+const Encoder = require('./encoder');
 const Decoder = require('./decoder');
 const Utils = require('./utils');
 
@@ -11,6 +12,7 @@ if (typeof window !== 'undefined' && typeof window.Qweb3 === 'undefined') {
 module.exports = {
   Qweb3,
   Contract,
+  Encoder,
   Decoder,
   Utils,
 };
