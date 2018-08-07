@@ -2,7 +2,8 @@ module.exports = {
   "extends": "airbnb-base",
   "env": {
     "node": true,
-    "mocha": true
+    "mocha": true,
+    "browser": true
   },
   "parserOptions": {
     "ecmaVersion": 8,
