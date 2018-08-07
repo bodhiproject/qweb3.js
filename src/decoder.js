@@ -78,18 +78,19 @@ class Decoder {
       throw Error('methodName is undefined.');
     }
 
+    const output = rawOutput;
     const methodABI = find(contractABI, { name: methodName });
-    if (methodABI && 'executionResult' in rawOutput && 'output' in rawOutput.executionResult) {
+    if (methodABI && 'executionResult' in output && 'output' in output.executionResult) {
       let formattedOutput = EthjsAbi.decodeMethod(
         methodABI,
-        Utils.appendHexPrefix(rawOutput.executionResult.output),
+        Utils.appendHexPrefix(output.executionResult.output),
       );
       if (removeHexPrefix) {
         formattedOutput = Decoder.removeHexPrefix(formattedOutput);
       }
-      rawOutput.executionResult.formattedOutput = formattedOutput;
+      output.executionResult.formattedOutput = formattedOutput;
     }
-    return rawOutput;
+    return output;
   }
 }
 

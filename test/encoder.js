@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, max-len */
 const chai = require('chai');
 const BN = require('bn.js');
 const BigNumber = require('bignumber.js');
@@ -440,3 +441,4 @@ describe('Encoder', () => {
     });
   });
 });
+/* eslint-enable no-underscore-dangle, max-len */

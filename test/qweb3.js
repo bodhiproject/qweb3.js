@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, max-len */
 const _ = require('lodash');
 const chai = require('chai');
 const path = require('path');
@@ -561,3 +562,4 @@ describe('Qweb3', () => {
     });
   });
 });
+/* eslint-enable no-underscore-dangle, max-len */

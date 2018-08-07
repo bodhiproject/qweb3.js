@@ -12,15 +12,13 @@ module.exports = {
     }
   },
   "rules": {
+    "class-methods-use-this": 0,
+    "max-len": [2, { "code": 120 }],
+    "no-console": 0,
+    "no-plusplus": 0
     // "consistent-return": 0,
-    // "max-len": [2,
-    //   {
-    //     "code": 400
-    //   }
-    // ],
     // "import/no-dynamic-require": 0,
     // "import/prefer-default-export": 0,
-    // "no-console": 0,
     // "no-use-before-define": ["error",
     //   {
     //     "functions": true,
@@ -37,11 +35,6 @@ module.exports = {
     //   {
     //     "args": "none", // "all" for everything
     //     "caughtErrors": "none"
-    //   }
-    // ],
-    // "class-methods-use-this": [0,
-    //   {
-    //     "exceptMethods": ["foo"] // Not effective since it's 0
     //   }
     // ],
     // "no-param-reassign": ["error",

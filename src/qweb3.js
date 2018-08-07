@@ -16,7 +16,13 @@ class Qweb3 {
   isConnected() {
     return this.provider.request({
       method: 'getinfo',
-    }).then(res => Promise.resolve(!!res), err => Promise.resolve(false));
+    }).then((res, err) => {
+      if (err) {
+        Promise.resolve(false);
+      } else {
+        Promise.resolve(!!res);
+      }
+    });
   }
 
   /** ******** BLOCKCHAIN ********* */
@@ -86,6 +92,7 @@ class Qweb3 {
   listContracts(startingAcctIndex = 1, maxDisplay = 20) {
     return this.provider.request({
       method: 'listcontracts',
+      params: [startingAcctIndex, maxDisplay],
     });
   }
 
