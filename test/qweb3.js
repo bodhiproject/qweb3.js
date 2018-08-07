@@ -528,6 +528,7 @@ describe('Qweb3', () => {
   });
 
   // Runs tests that are more suited for a clean environment, eg. CI tests
+  // eslint-disable-next-line no-unused-expressions
   !_.includes(process.argv, '--cleanenv') ? describe.skip : describe('cleanEnv tests', () => {
     describe('getNewAddress()', () => {
       it('returns a new qtum address', async () => {

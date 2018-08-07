@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const chai = require('chai');
 
-const assert = chai.assert;
+const { assert } = chai;
 
 module.exports = class QAssert {
   static isQtumAddress(address) {

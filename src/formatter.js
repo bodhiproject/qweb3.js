@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const Web3Utils = require('web3-utils');
 const EthjsAbi = require('ethjs-abi');
 
 const Utils = require('./utils');
@@ -43,9 +42,11 @@ class Formatter {
 
           if (contractObj) {
             // Each field of log needs to appended with '0x' to be parsed
-            item.address = Utils.appendHexPrefix(item.address);
-            item.data = Utils.appendHexPrefix(item.data);
-            item.topics = _.map(item.topics, Utils.appendHexPrefix);
+            Object.assign(item, {
+              address: Utils.appendHexPrefix(item.address),
+              data: Utils.appendHexPrefix(item.data),
+              topics: _.map(item.topics, Utils.appendHexPrefix),
+            });
 
             const methodAbi = _.find(contractObj.abi, { name: eventHashObj.event });
             if (_.isUndefined(methodAbi)) {
@@ -70,7 +71,7 @@ class Formatter {
               });
             }
 
-            resultEntry.log[index] = decodedLog;
+            resultEntry.log.splice(index, 1, decodedLog);
           }
         });
       }
@@ -105,14 +106,15 @@ class Formatter {
 
         // Strip hex prefix
         if (removeHexPrefix) {
-          _.each(decodedOutput, (value, key) => {
-            decodedOutput[key] = Decoder.removeHexPrefix(decodedOutput[key]);
+          _.each(decodedOutput, (value2, key2) => {
+            decodedOutput[key2] = Decoder.removeHexPrefix(decodedOutput[key2]);
           });
         }
 
         result = decodedOutput;
         return false;
       }
+      return true;
     });
 
     return result;
