@@ -5,8 +5,6 @@ const Formatter = require('./formatter');
 
 class Qweb3 {
   constructor(url) {
-    const self = this;
-    // TODO: url string validation
     this.provider = new HttpProvider(url);
   }
 
@@ -427,7 +425,7 @@ class Qweb3 {
     confTarget = 6,
     estimateMode = 'UNSET',
     senderAddress,
-    changeToSender = false
+    changeToSender = false,
   ) {
     return this.provider.request({
       method: 'sendtoaddress',
