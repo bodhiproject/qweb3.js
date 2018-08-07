@@ -45,17 +45,18 @@ class Decoder {
       return false;
     }
 
-    if (value instanceof Array) {
-      each(value, (arrayItem, index) => {
+    let v = value;
+    if (v instanceof Array) {
+      each(v, (arrayItem, index) => {
         if (Web3Utils.isHex(arrayItem)) {
-          value[index] = Utils.trimHexPrefix(arrayItem);
+          v[index] = Utils.trimHexPrefix(arrayItem);
         }
       });
     } else if (Web3Utils.isHex(value)) {
-      value = Utils.trimHexPrefix(value);
+      v = Utils.trimHexPrefix(value);
     }
 
-    return value;
+    return v;
   }
 
   /**

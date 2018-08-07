@@ -103,7 +103,7 @@ class Contract {
     // calculate start byte for dynamic data
     let dataLoc = 0;
     _.each(methodObj.inputs, (item) => {
-      const type = item.type;
+      const { type } = item;
       if (type.match(Constants.REGEX_STATIC_ARRAY)) {
         // treat each static array as an individual slot for dynamic data location purposes
         const arrCap = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
@@ -114,7 +114,7 @@ class Contract {
     });
 
     _.each(methodObj.inputs, (item, index) => {
-      const type = item.type;
+      const { type } = item;
       let hex;
 
       if (type === Constants.BYTES) {
@@ -172,7 +172,7 @@ class Contract {
     if (_.isUndefined(methodObj)) {
       throw new Error(`Method ${methodName} not defined in ABI.`);
     }
-    if (methodObj.inputs.length != methodArgs.length) {
+    if (methodObj.inputs.length !== methodArgs.length) {
       throw new Error('Number of arguments supplied does not match ABI method args.');
     }
 

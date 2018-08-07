@@ -506,7 +506,7 @@ describe('Qweb3', () => {
 
         await qweb3.walletLock();
         assert.isTrue((await qweb3.getWalletInfo()).unlocked_until === 0);
-      } else { 
+      } else {
         assert.isTrue(true);
       }
     });
@@ -522,7 +522,7 @@ describe('Qweb3', () => {
         assert.isTrue((await qweb3.getWalletInfo()).unlocked_until > 0);
       } else {
         assert.isTrue(true);
-      }      
+      }
     });
   });
 

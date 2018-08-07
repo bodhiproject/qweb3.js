@@ -38,6 +38,7 @@
     "mocha": "^5.2.0"
   },
   "scripts": {
+    "lint": "eslint -- src/. test/.",
     "lint:fix": "eslint --fix -- src/. test/.",
     "test": "mocha ./test/",
     "test:cleanenv": "mocha ./test --cleanenv",

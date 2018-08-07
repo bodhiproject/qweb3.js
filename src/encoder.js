@@ -77,7 +77,7 @@ class Encoder {
       throw new Error('isFunction should not be undefined');
     }
 
-    const name = obj.name;
+    const { name } = obj;
     let params = '';
     for (let i = 0; i < obj.inputs.length; i++) {
       params = params.concat(obj.inputs[i].type);
