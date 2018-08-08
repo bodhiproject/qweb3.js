@@ -549,7 +549,7 @@ describe('Qweb3', () => {
     describe('importWallet()', () => {
       it('throw an error if importing a non-existent file', async () => {
         try {
-          await qweb3.importWallet(path.join(__dirname, './data/wallet.dat'));
+          await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
         } catch (err) {
           assert.isDefined(err);
           assert.equal(err, 'Error: Cannot open wallet dump file');
