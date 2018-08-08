@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, max-len */
 const chai = require('chai');
 const BN = require('bn.js');
 const BigNumber = require('bignumber.js');
@@ -142,28 +143,6 @@ describe('Encoder', () => {
     });
 
     it('throws if isFunction is undefined', () => {
-      const funcObj = {
-        constant: false,
-        inputs: [{
-          name: '_resultIndex',
-          type: 'uint8',
-        }, {
-          name: '_sender',
-          type: 'address',
-        }, {
-          name: '_amount',
-          type: 'uint256',
-        }],
-        name: 'voteFromOracle',
-        outputs: [{
-          name: '',
-          type: 'bool',
-        }],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'function',
-      };
-
       assert.throws(() => Encoder.objToHash(undefined, true), Error);
     });
   });
@@ -440,3 +419,4 @@ describe('Encoder', () => {
     });
   });
 });
+/* eslint-enable no-underscore-dangle, max-len */

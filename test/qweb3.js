@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, max-len */
 const _ = require('lodash');
 const chai = require('chai');
 const path = require('path');
@@ -506,7 +507,7 @@ describe('Qweb3', () => {
 
         await qweb3.walletLock();
         assert.isTrue((await qweb3.getWalletInfo()).unlocked_until === 0);
-      } else { 
+      } else {
         assert.isTrue(true);
       }
     });
@@ -522,11 +523,12 @@ describe('Qweb3', () => {
         assert.isTrue((await qweb3.getWalletInfo()).unlocked_until > 0);
       } else {
         assert.isTrue(true);
-      }      
+      }
     });
   });
 
   // Runs tests that are more suited for a clean environment, eg. CI tests
+  // eslint-disable-next-line no-unused-expressions
   !_.includes(process.argv, '--cleanenv') ? describe.skip : describe('cleanEnv tests', () => {
     describe('getNewAddress()', () => {
       it('returns a new qtum address', async () => {
@@ -547,7 +549,7 @@ describe('Qweb3', () => {
     describe('importWallet()', () => {
       it('throw an error if importing a non-existent file', async () => {
         try {
-          await qweb3.importWallet(path.join(__dirname, './data/wallet.dat'));
+          await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
         } catch (err) {
           assert.isDefined(err);
           assert.equal(err, 'Error: Cannot open wallet dump file');
@@ -561,3 +563,4 @@ describe('Qweb3', () => {
     });
   });
 });
+/* eslint-enable no-underscore-dangle, max-len */

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, max-len */
 const _ = require('lodash');
 const Web3Utils = require('web3-utils');
 const BN = require('bn.js');
@@ -652,3 +653,4 @@ describe('Contract', () => {
     });
   });
 });
+/* eslint-enable no-underscore-dangle, max-len */

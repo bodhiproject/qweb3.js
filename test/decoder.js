@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const chai = require('chai');
 
 const ContractMetadata = require('./data/contract_metadata');
@@ -74,3 +75,4 @@ describe('Decoder', () => {
     });
   });
 });
+/* eslint-enable max-len */

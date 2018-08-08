@@ -1,69 +1,54 @@
-const _ = require('lodash');
 const url = require('url');
-const fetch = require('node-fetch');
+const axios = require('axios');
+const { isEmpty } = require('lodash');
 
-const Utils = require('./utils');
-
+/**
+ * HTTP Provider for interacting with the blockchain via JSONRPC POST calls.
+ */
 class HttpProvider {
+  /**
+   * Constructor.
+   * @param {string} urlString URL of the blockchain access point. eg. http://bodhi:bodhi@127.0.0.1:13889
+   */
   constructor(urlString) {
     this.url = url.parse(urlString);
-    this.reqId = 0;
   }
 
-  request(params) {
-    // Make sure method is defined in params
-    Utils.paramsCheck('request', params, ['method']);
+  /**
+   * Executes a request to the blockchain via JSONRPC POST request.
+   * @param {string} method Blockchain method to call. eg. 'sendtocontract'
+   * @param {array} args Raw arguments for the call. [contractAddress, data, amount?, gasLimit?, gasPrice?]
+   */
+  async rawCall(method, args = []) {
+    if (isEmpty(method)) {
+      throw Error('method cannot be empty.');
+    }
 
-    // Construct body of request options
-    const bodyJson = _.extend({
-      id: this.reqId,
+    // Construct body
+    const body = {
+      id: new Date().getTime(),
       jsonrpc: '1.0',
-      method: '',
-      params: [],
-    }, params);
-
-    // Construct options of request
-    const reqOpts = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: JSON.stringify(bodyJson),
+      method,
+      params: args,
     };
 
-    // Add Basic Auth header if auth is defined in HttpProvider constructor
-    if (this.url.auth) {
-      reqOpts.headers.Authorization = `Basic ${Buffer.from(this.url.auth).toString('base64')}`;
+    // Execute POST request
+    const { result, error } = (await axios({
+      method: 'post',
+      url: `${this.url.protocol}//${this.url.host}`,
+      headers: {
+        'Content-Type': 'text/plain',
+        Authorization: `Basic ${Buffer.from(this.url.auth).toString('base64')}`,
+      },
+      data: JSON.stringify(body),
+    })).data;
+
+    // Handle error
+    if (error) {
+      throw Error(error);
     }
 
-    this.reqId += 1;
-
-    return fetch(`${this.url.protocol}//${this.url.host}`, reqOpts)
-      .then(this.parseJSON)
-      .then(this.checkStatus);
-  }
-
-  /**
-   * Returns resolved Promise if Http response contains result; otherwise returns rejected upon error.
-   * @param {object} response JSON response from a HTTP request
-   * @return {object|undefined} Returns either the response, or throws an error
-   */
-  checkStatus(response) {
-    // We can rely on checking error object so dont check HTTP status code here.
-    if (response.error) {
-      throw new Error(response.error.message);
-    } else {
-      return response.result;
-    }
-  }
-
-  /**
-   * Parses the JSON returned by a network request
-   * @param  {object} response A response from a network request
-   * @return {object} The parsed JSON from the request
-   */
-  parseJSON(response) {
-    return response.json();
+    return result;
   }
 }
 

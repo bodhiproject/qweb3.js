@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle, max-len */
 const chai = require('chai');
 
 const Formatter = require('../src/formatter');
@@ -222,3 +223,4 @@ describe('Formatter', () => {
     });
   });
 });
+/* eslint-enable no-underscore-dangle, max-len */

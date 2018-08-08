@@ -6,9 +6,9 @@ const Utils = require('./utils');
 const Encoder = require('./encoder');
 const Constants = require('./constants');
 
-const SEND_AMOUNT = 0;
-const SEND_GASLIMIT = 250000;
-const SEND_GASPRICE = 0.0000004;
+const DEFAULT_AMOUNT = 0;
+const DEFAULT_GAS_LIMIT = 250000;
+const DEFAULT_GAS_PRICE = 0.0000004;
 
 class Contract {
   constructor(url, address, abi) {
@@ -27,16 +27,7 @@ class Contract {
     const { methodArgs, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
 
-    const options = {
-      method: 'callcontract',
-      params: [
-        this.address,
-        this.constructDataHex(methodObj, args),
-        senderAddress,
-      ],
-    };
-
-    return this.provider.request(options)
+    return this.provider.rawCall('callcontract', [this.address, this.constructDataHex(methodObj, args), senderAddress])
       .then(result => Formatter.callOutput(result, this.abi, methodName, true));
   }
 
@@ -54,23 +45,20 @@ class Contract {
       methodArgs, amount, gasLimit, gasPrice, senderAddress,
     } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
-    const amt = amount || SEND_AMOUNT;
-    const limit = gasLimit || SEND_GASLIMIT;
-    const price = gasPrice || SEND_GASPRICE;
-    const options = {
-      method: 'sendtocontract',
-      params: [
-        this.address,
-        this.constructDataHex(methodObj, args),
-        amt,
-        limit,
-        price.toFixed(8),
-        senderAddress,
-      ],
-    };
+    const amt = amount || DEFAULT_AMOUNT;
+    const limit = gasLimit || DEFAULT_GAS_LIMIT;
+    const price = gasPrice || DEFAULT_GAS_PRICE;
+
+    const result = await this.provider.rawCall('sendtocontract', [
+      this.address,
+      this.constructDataHex(methodObj, args),
+      amt,
+      limit,
+      price.toFixed(8),
+      senderAddress,
+    ]);
 
     // Add request object with params used for request
-    const result = await this.provider.request(options);
     result.args = {
       contractAddress: this.address,
       amount: amt,
@@ -103,7 +91,7 @@ class Contract {
     // calculate start byte for dynamic data
     let dataLoc = 0;
     _.each(methodObj.inputs, (item) => {
-      const type = item.type;
+      const { type } = item;
       if (type.match(Constants.REGEX_STATIC_ARRAY)) {
         // treat each static array as an individual slot for dynamic data location purposes
         const arrCap = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
@@ -114,7 +102,7 @@ class Contract {
     });
 
     _.each(methodObj.inputs, (item, index) => {
-      const type = item.type;
+      const { type } = item;
       let hex;
 
       if (type === Constants.BYTES) {
@@ -172,7 +160,7 @@ class Contract {
     if (_.isUndefined(methodObj)) {
       throw new Error(`Method ${methodName} not defined in ABI.`);
     }
-    if (methodObj.inputs.length != methodArgs.length) {
+    if (methodObj.inputs.length !== methodArgs.length) {
       throw new Error('Number of arguments supplied does not match ABI method args.');
     }
 

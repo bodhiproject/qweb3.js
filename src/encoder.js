@@ -77,7 +77,7 @@ class Encoder {
       throw new Error('isFunction should not be undefined');
     }
 
-    const name = obj.name;
+    const { name } = obj;
     let params = '';
     for (let i = 0; i < obj.inputs.length; i++) {
       params = params.concat(obj.inputs[i].type);
@@ -219,7 +219,7 @@ class Encoder {
     const array = new Array(10);
     for (let i = 0; i < numOfItems; i++) {
       let hexString;
-      if (strArray[i] != undefined) {
+      if (strArray[i] !== undefined) {
         hexString = Web3Utils.utf8ToHex(strArray[i].toString());
       } else {
         hexString = Web3Utils.utf8ToHex('');
