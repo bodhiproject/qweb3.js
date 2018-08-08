@@ -123,9 +123,7 @@ class Qweb3 {
    * @return {Promise} Blockchain info object or Error
    */
   getInfo() {
-    return this.provider.request({
-      method: 'getinfo',
-    });
+    return this.provider.rawCall('getinfo');
   }
 
   /** ******** NETWORK ********* */
@@ -134,144 +132,109 @@ class Qweb3 {
    * @return {Promise} Node info object or Error
    */
   getPeerInfo() {
-    return this.provider.request({
-      method: 'getpeerinfo',
-    });
+    return this.provider.rawCall('getpeerinfo');
   }
 
   /** ******** RAW TRANSACTIONS ********* */
   /**
    * Get the hex address of a Qtum address.
-   * @param address {String} Qtum address
+   * @param {string} address Qtum address
    * @return {Promise} Hex string of the converted address or Error
    */
   getHexAddress(address) {
-    return this.provider.request({
-      method: 'gethexaddress',
-      params: [address],
-    });
+    return this.provider.rawCall('gethexaddress', [address]);
   }
 
   /**
    * Converts a hex address to qtum address.
-   * @param hexAddress {String} Qtum address in hex format.
+   * @param {string} hexAddress Qtum address in hex format.
    * @return {Promise} Qtum address or Error.
    */
   fromHexAddress(hexAddress) {
-    return this.provider.request({
-      method: 'fromhexaddress',
-      params: [hexAddress],
-    });
+    return this.provider.rawCall('fromhexaddress', [hexAddress]);
   }
 
   /** ******** UTIL ********* */
   /**
    * Validates if a valid Qtum address.
-   * @param address {String} Qtum address to validate.
+   * @param {string} address Qtum address to validate.
    * @return {Promise} Object with validation info or Error.
    */
   validateAddress(address) {
-    return this.provider.request({
-      method: 'validateaddress',
-      params: [address],
-    });
+    return this.provider.rawCall('validateaddress', [address]);
   }
 
   /** ******** WALLET ********* */
   /**
-   * Backup the wallet
-   * @param {String} destination The destination directory or file.
+   * Backs up the wallet.
+   * @param {string} destination The destination directory or file.
    * @return {Promise} Success or Error.
    */
   backupWallet(destination) {
-    return this.provider.request({
-      method: 'backupwallet',
-      params: [destination],
-    });
+    return this.provider.rawCall('backupwallet', [destination]);
   }
 
-  /*
-  * Reveals the private key corresponding to the address.
-  * @param address {String} The qtum address for the private key.
-  * @return {Promise} Private key or Error.
-  */
+  /**
+   * Reveals the private key corresponding to the address.
+   * @param {string} address The qtum address for the private key.
+   * @return {Promise} Private key or Error.
+   */
   dumpPrivateKey(address) {
-    return this.provider.request({
-      method: 'dumpprivkey',
-      params: [address],
-    });
+    return this.provider.rawCall('dumpprivkey', [address]);
   }
 
-  /*
-  * Encrypts the wallet for the first time. This will shut down the qtum server.
-  * @param passphrase {String} The passphrase to encrypt the wallet with. Must be at least 1 character.
-  * @return {Promise} Success or Error.
-  */
+  /**
+   * Encrypts the wallet for the first time. This will shut down the qtum server.
+   * @param {string} passphrase The passphrase to encrypt the wallet with. Must be at least 1 character.
+   * @return {Promise} Success or Error.
+   */
   encryptWallet(passphrase) {
-    return this.provider.request({
-      method: 'encryptwallet',
-      params: [passphrase],
-    });
+    return this.provider.rawCall('encryptwallet', [passphrase]);
   }
 
-  /*
-  * Gets the account name associated with the Qtum address.
-  * @param address {String} The qtum address for account lookup.
-  * @return {Promise} Account name or Error.
-  */
+  /**
+   * Gets the account name associated with the Qtum address.
+   * @param {string} address The qtum address for account lookup.
+   * @return {Promise} Account name or Error.
+   */
   getAccount(address) {
-    return this.provider.request({
-      method: 'getaccount',
-      params: [address],
-    });
+    return this.provider.rawCall('getaccount', [address]);
   }
 
-  /*
-  * Gets the Qtum address based on the account name.
-  * @param acctName {String} The account name for the address ("" for default).
-  * @return {Promise} Qtum address or Error.
-  */
+  /**
+   * Gets the Qtum address based on the account name.
+   * @param {string} acctName The account name for the address ("" for default).
+   * @return {Promise} Qtum address or Error.
+   */
   getAccountAddress(acctName = '') {
-    return this.provider.request({
-      method: 'getaccountaddress',
-      params: [acctName],
-    });
+    return this.provider.rawCall('getaccountaddress', [acctName]);
   }
 
-  /*
-  * Gets the Qtum address with the account name.
-  * @param acctName {String} The account name ("" for default).
-  * @return {Promise} Qtum address array or Error.
-  */
+  /**
+   * Gets the Qtum address with the account name.
+   * @param {string} acctName The account name ("" for default).
+   * @return {Promise} Qtum address array or Error.
+   */
   getAddressesByAccount(acctName = '') {
-    return this.provider.request({
-      method: 'getaddressesbyaccount',
-      params: [acctName],
-    });
+    return this.provider.rawCall('getaddressesbyaccount', [acctName]);
   }
 
-  /*
-  * Gets a new Qtum address for receiving payments.
-  * @param acctName {String} The account name for the address to be linked to ("" for default).
-  * @return {Promise} Qtum address or Error.
-  */
+  /**
+   * Gets a new Qtum address for receiving payments.
+   * @param {string} acctName The account name for the address to be linked to ("" for default).
+   * @return {Promise} Qtum address or Error.
+   */
   getNewAddress(acctName = '') {
-    return this.provider.request({
-      method: 'getnewaddress',
-      params: [acctName],
-    });
+    return this.provider.rawCall('getnewaddress', [acctName]);
   }
 
   /**
    * Get transaction details by txid
-   * @param txid {string} The transaction id (64 char hex string).
+   * @param {string} txid The transaction id (64 char hex string).
    * @return {Promise} Promise containing result object or Error
    */
   getTransaction(txid) {
-    return this.provider.request({
-      method: 'gettransaction',
-      params: [txid],
-    });
+    return this.provider.rawCall('gettransaction', [txid]);
   }
 
   /**
@@ -279,120 +242,98 @@ class Qweb3 {
    * @return {Promise} Promise containing result object or Error
    */
   getWalletInfo() {
-    return this.provider.request({
-      method: 'getwalletinfo',
-    });
+    return this.provider.rawCall('getwalletinfo');
   }
 
-  /*
-  * Gets the total unconfirmed balance.
-  * @return {Promise} Unconfirmed balance or Error.
-  */
+  /**
+   * Gets the total unconfirmed balance.
+   * @return {Promise} Unconfirmed balance or Error.
+   */
   getUnconfirmedBalance() {
-    return this.provider.request({
-      method: 'getunconfirmedbalance',
-    });
+    return this.provider.rawCall('getunconfirmedbalance');
   }
 
-  /*
-  * Adds an address that is watch-only. Cannot be used to spend.
-  * @param address {String} The hex-encoded script (or address).
-  * @param label {String} An optional label.
-  * @param rescan {Boolean} Rescan the wallet for transactions.
-  * @return {Promise} Success or Error.
-  */
+  /**
+   * Adds an address that is watch-only. Cannot be used to spend.
+   * @param {string} address The hex-encoded script (or address).
+   * @param {string} label An optional label.
+   * @param {boolean} rescan Rescan the wallet for transactions.
+   * @return {Promise} Success or Error.
+   */
   importAddress(address, label = '', rescan = true) {
-    return this.provider.request({
-      method: 'importaddress',
-      params: [address, label, rescan],
-    });
+    return this.provider.rawCall('importaddress', [address, label, rescan]);
   }
 
-  /*
-  * Adds an address by private key.
-  * @param privateKey {String} The private key.
-  * @param label {String} An optional label.
-  * @param rescan {Boolean} Rescan the wallet for transactions.
-  * @return {Promise} Success or Error.
-  */
+  /**
+   * Adds an address by private key.
+   * @param {string} privateKey The private key.
+   * @param {string} label An optional label.
+   * @param {boolean} rescan Rescan the wallet for transactions.
+   * @return {Promise} Success or Error.
+   */
   importPrivateKey(privateKey, label = '', rescan = true) {
-    return this.provider.request({
-      method: 'importprivkey',
-      params: [privateKey, label, rescan],
-    });
+    return this.provider.rawCall('importprivkey', [privateKey, label, rescan]);
   }
 
-  /*
-  * Adds an watch-only address by public key. Cannot be used to spend.
-  * @param publicKey {String} The public key.
-  * @param label {String} An optional label.
-  * @param rescan {Boolean} Rescan the wallet for transactions.
-  * @return {Promise} Success or Error.
-  */
+  /**
+   * Adds an watch-only address by public key. Cannot be used to spend.
+   * @param {string} publicKey The public key.
+   * @param {string} label An optional label.
+   * @param {boolean} rescan Rescan the wallet for transactions.
+   * @return {Promise} Success or Error.
+   */
   importPublicKey(publicKey, label = '', rescan = true) {
-    return this.provider.request({
-      method: 'importpubkey',
-      params: [publicKey, label, rescan],
-    });
+    return this.provider.rawCall('importpubkey', [publicKey, label, rescan]);
   }
 
   /**
    * Imports keys from a wallet dump file
-   * @param {String} filename The wallet file.
+   * @param {string} filename The wallet file.
    * @return {Promise} Success or Error.
    */
   importWallet(filename) {
-    return this.provider.request({
-      method: 'importwallet',
-      params: [filename],
-    });
+    return this.provider.rawCall('importwallet', [filename]);
   }
 
-  /*
-  * Lists groups of addresses which have had their common ownership made public by common use as inputs
-  *   or as the resulting change in past transactions.
-  * @return {Promise} Array of addresses with QTUM balances or Error.
-  */
+  /**
+   * Lists groups of addresses which have had their common ownership made public by common use as inputs
+   *  or as the resulting change in past transactions.
+   * @return {Promise} Array of addresses with QTUM balances or Error.
+   */
   listAddressGroupings() {
-    return this.provider.request({
-      method: 'listaddressgroupings',
-    });
+    return this.provider.rawCall('listaddressgroupings');
   }
 
-  /*
-  * Lists temporary unspendable outputs.
-  * @return {Promise} Array of unspendable outputs or Error
-  */
+  /**
+   * Lists temporary unspendable outputs.
+   * @return {Promise} Array of unspendable outputs or Error
+   */
   listLockUnspent() {
-    return this.provider.request({
-      method: 'listlockunspent',
-    });
+    return this.provider.rawCall('listlockunspent');
   }
 
-  /*
-  * Lists unspent transaction outputs.
-  * @return {Promise} Array of unspent transaction outputs or Error
-  */
+  /**
+   * Lists unspent transaction outputs.
+   * @return {Promise} Array of unspent transaction outputs or Error
+   */
   listUnspent() {
-    return this.provider.request({
-      method: 'listunspent',
-    });
+    return this.provider.rawCall('listunspent');
   }
 
-  /*
-  * Lists unspent transaction outputs.
-  * @param address {String} Address to send QTUM to.
-  * @param amount {Number} Amount of QTUM to send.
-  * @param comment {String} Comment used to store what the transaction is for.
-  * @param commentTo {String} Comment to store name/organization to which you're sending the transaction.
-  * @param subtractFeeFromAmount {Boolean} The fee will be deducted from the amount being sent.
-  * @param replaceable {Boolean} Allow this transaction to be replaced by a transaction with higher fees via BIP 125.
-  * @param confTarget {Number} Confirmation target (in blocks).
-  * @param estimateMode {String} The fee estimate mode, must be one of: "UNSET", "ECONOMICAL", "CONSERVATIVE"
-  * @param senderAddress {String} The QTUM address that will be used to send money from.
-  * @param changeToSender {Boolean} Return the change to the sender.
-  * @return {Promise} Transaction ID or Error
-  */
+  /**
+   * Lists unspent transaction outputs.
+   * @param {string} address Address to send QTUM to.
+   * @param {number} amount Amount of QTUM to send.
+   * @param {string} comment Comment used to store what the transaction is for.
+   * @param {string} commentTo Comment to store name/organization to which you're sending the transaction.
+   * @param {boolean} subtractFeeFromAmount The fee will be deducted from the amount being sent.
+   * @param {boolean} replaceable Allow this transaction to be replaced by a transaction with higher fees via BIP 125.
+   * @param {number} confTarget Confirmation target (in blocks).
+   * @param {string} estimateMode The fee estimate mode, must be one of: "UNSET", "ECONOMICAL", "CONSERVATIVE"
+   * @param {string} senderAddress The QTUM address that will be used to send money from.
+   * @param {boolean} changeToSender Return the change to the sender.
+   * @return {Promise} Transaction ID or Error
+   */
   sendToAddress(
     address,
     amount,
@@ -405,33 +346,27 @@ class Qweb3 {
     senderAddress,
     changeToSender = false,
   ) {
-    return this.provider.request({
-      method: 'sendtoaddress',
-      params: [
-        address,
-        amount,
-        comment,
-        commentTo,
-        subtractFeeFromAmount,
-        replaceable,
-        confTarget,
-        estimateMode,
-        senderAddress,
-        changeToSender,
-      ],
-    });
+    return this.provider.rawCall('sendtoaddress', [
+      address,
+      amount,
+      comment,
+      commentTo,
+      subtractFeeFromAmount,
+      replaceable,
+      confTarget,
+      estimateMode,
+      senderAddress,
+      changeToSender,
+    ]);
   }
 
-  /*
-  * Set the transaction fee per kB. Overwrites the paytxfee parameter.
-  * @param amount {Number} The transaction fee in QTUM/kB.
-  * @return {Promise} True/false for success or Error.
-  */
+  /**
+   * Set the transaction fee per kB. Overwrites the paytxfee parameter.
+   * @param {bumber} amount The transaction fee in QTUM/kB.
+   * @return {Promise} True/false for success or Error.
+   */
   setTxFee(amount) {
-    return this.provider.request({
-      method: 'settxfee',
-      params: [amount],
-    });
+    return this.provider.rawCall('settxfee', [amount]);
   }
 
   /**
@@ -439,44 +374,28 @@ class Qweb3 {
    * @return {Promise} Success or Error.
    */
   walletLock() {
-    return this.provider.request({
-      method: 'walletlock',
-      params: [],
-    });
+    return this.provider.rawCall('walletlock');
   }
 
   /**
    * Unlocks the encrypted wallet with the wallet passphrase.
-   * @param {String} passphrase The wallet passphrase.
-   * @param {Number} timeout The number of seconds to keep the wallet unlocked.
-   * @param {Boolean} stakingOnly Unlock wallet for staking only.
+   * @param {string} passphrase The wallet passphrase.
+   * @param {number} timeout The number of seconds to keep the wallet unlocked.
+   * @param {boolean} stakingOnly Unlock wallet for staking only.
    * @return {Promise} Success or Error.
    */
   walletPassphrase(passphrase, timeout, stakingOnly = false) {
-    return this.provider.request({
-      method: 'walletpassphrase',
-      params: [
-        passphrase,
-        timeout,
-        stakingOnly,
-      ],
-    });
+    return this.provider.rawCall('walletpassphrase', [passphrase, timeout, stakingOnly]);
   }
 
   /**
    * Changes the encrypted wallets passphrase.
-   * @param {String} oldPassphrase The old wallet passphrase.
-   * @param {String} newPassphrase The new wallet passphrase.
+   * @param {string} oldPassphrase The old wallet passphrase.
+   * @param {string} newPassphrase The new wallet passphrase.
    * @return {Promise} Success or Error.
    */
   walletPassphraseChange(oldPassphrase, newPassphrase) {
-    return this.provider.request({
-      method: 'walletpassphrasechange',
-      params: [
-        oldPassphrase,
-        newPassphrase,
-      ],
-    });
+    return this.provider.rawCall('walletpassphrasechange', [oldPassphrase, newPassphrase]);
   }
 }
 

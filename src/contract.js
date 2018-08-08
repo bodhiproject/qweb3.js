@@ -27,16 +27,7 @@ class Contract {
     const { methodArgs, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
 
-    const options = {
-      method: 'callcontract',
-      params: [
-        this.address,
-        this.constructDataHex(methodObj, args),
-        senderAddress,
-      ],
-    };
-
-    return this.provider.request(options)
+    return this.provider.rawCall('callcontract', [this.address, this.constructDataHex(methodObj, args), senderAddress])
       .then(result => Formatter.callOutput(result, this.abi, methodName, true));
   }
 
@@ -57,20 +48,17 @@ class Contract {
     const amt = amount || SEND_AMOUNT;
     const limit = gasLimit || SEND_GASLIMIT;
     const price = gasPrice || SEND_GASPRICE;
-    const options = {
-      method: 'sendtocontract',
-      params: [
-        this.address,
-        this.constructDataHex(methodObj, args),
-        amt,
-        limit,
-        price.toFixed(8),
-        senderAddress,
-      ],
-    };
+
+    const result = await this.provider.rawCall('sendtocontract', [
+      this.address,
+      this.constructDataHex(methodObj, args),
+      amt,
+      limit,
+      price.toFixed(8),
+      senderAddress,
+    ]);
 
     // Add request object with params used for request
-    const result = await this.provider.request(options);
     result.args = {
       contractAddress: this.address,
       amount: amt,
