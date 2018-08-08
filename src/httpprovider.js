@@ -15,9 +15,9 @@ class HttpProvider {
   }
 
   /**
-   * Executes a request to the blockchain.
+   * Executes a request to the blockchain via JSONRPC POST request.
    * @param {string} method Blockchain method to call. eg. 'sendtocontract'
-   * @param {array} args Raw arguments for the call. [contractAddress, data, amount, gasLimit, gasPrice]
+   * @param {array} args Raw arguments for the call. [contractAddress, data, amount?, gasLimit?, gasPrice?]
    */
   async rawCall(method, args = []) {
     if (isEmpty(method)) {
