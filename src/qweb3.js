@@ -9,20 +9,17 @@ class Qweb3 {
   }
 
   /** ******** MISC ********* */
-  /*
-   * Returns true if getinfo request returns result.
-   * @return {Promise} True/false for connected or Error.
+  /**
+   * Checks if the blockchain is connected.
+   * @return If blockchain is connected.
    */
-  isConnected() {
-    return this.provider.request({
-      method: 'getinfo',
-    }).then((res, err) => {
-      if (err) {
-        Promise.resolve(false);
-      } else {
-        Promise.resolve(!!res);
-      }
-    });
+  async isConnected() {
+    try {
+      const res = await this.provider.rawCall('getnetworkinfo');
+      return typeof res === 'object';
+    } catch (err) {
+      return false;
+    }
   }
 
   /** ******** BLOCKCHAIN ********* */
