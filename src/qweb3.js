@@ -23,69 +23,56 @@ class Qweb3 {
   }
 
   /** ******** BLOCKCHAIN ********* */
-  /*
-  * Returns the latest block info that is synced with the client.
-  * @param blockHash {String} The block hash to look up.
-  * @param verbose {Boolean} True for a json object or false for the hex encoded data.
-  * @return {Promise} Latest block info or Error.
-  */
+  /**
+   * Returns the block info for a given block hash.
+   * @param {string} blockHash The block hash to look up.
+   * @param {boolean} verbose True for a json object or false for the hex encoded data.
+   * @return {Promise} Latest block info or Error.
+   */
   getBlock(blockHash, verbose = true) {
-    return this.provider.request({
-      method: 'getblock',
-      params: [blockHash, verbose],
-    });
+    return this.provider.rawCall('getblock', [blockHash, verbose]);
   }
 
-  /*
-  * Returns the latest block info that is synced with the client.
-  * @return {Promise} Latest block info or Error.
-  */
+  /**
+   * Returns various state info regarding blockchain processing.
+   * @return {Promise} Latest block info or Error.
+   */
   getBlockchainInfo() {
-    return this.provider.request({
-      method: 'getblockchaininfo',
-    });
+    return this.provider.rawCall('getblockchaininfo');
   }
 
-  /*
-  * Returns the current block height that is synced with the client.
-  * @return {Promise} Current block count or Error.
-  */
+  /**
+   * Returns the current block height that is synced.
+   * @return {Promise} Current block count or Error.
+   */
   getBlockCount() {
-    return this.provider.request({
-      method: 'getblockcount',
-    });
+    return this.provider.rawCall('getblockcount');
   }
 
-  /*
-  * Returns the block hash of the block height number specified.
-  * @param blockNum {Number} The block number to look up.
-  * @return {Promise} Block hash or Error.
-  */
+  /**
+   * Returns the block hash of the block height number specified.
+   * @param {number} blockNum The block number to look up.
+   * @return {Promise} Block hash or Error.
+   */
   getBlockHash(blockNum) {
-    return this.provider.request({
-      method: 'getblockhash',
-      params: [blockNum],
-    });
+    return this.provider.rawCall('getblockhash', [blockNum]);
   }
 
-  /*
-  * Returns the transaction receipt given the txid.
-  * @param txid {String} The transaction id to look up.
-  * @return {Promise} Transaction receipt or Error.
-  */
+  /**
+   * Returns the transaction receipt given the txid.
+   * @param {string} txid The transaction id to look up.
+   * @return {Promise} Transaction receipt or Error.
+   */
   getTransactionReceipt(txid) {
-    return this.provider.request({
-      method: 'gettransactionreceipt',
-      params: [txid],
-    });
+    return this.provider.rawCall('gettransactionreceipt', [txid]);
   }
 
-  /*
-  * Returns an array of deployed contract addresses.
-  * @param startingAcctIndex {Number} The starting account index.
-  * @param maxDisplay {Number} Max accounts to list.
-  * @return {Promise} Array of contract addresses or Error.
-  */
+  /**
+   * Returns an array of deployed contract addresses.
+   * @param {number} startingAcctIndex The starting account index.
+   * @param {number} maxDisplay Max accounts to list.
+   * @return {Promise} Array of contract addresses or Error.
+   */
   listContracts(startingAcctIndex = 1, maxDisplay = 20) {
     return this.provider.rawCall('listcontracts', [startingAcctIndex, maxDisplay]);
   }
@@ -126,17 +113,7 @@ class Qweb3 {
       throw new Error('topics expects a string or an array.');
     }
 
-    const options = {
-      method: 'searchlogs',
-      params: [
-        fromBlock,
-        toBlock,
-        addrObj,
-        topicsObj,
-      ],
-    };
-
-    return this.provider.request(options)
+    return this.provider.rawCall('searchlogs', [fromBlock, toBlock, addrObj, topicsObj])
       .then(results => Formatter.searchLogOutput(results, contractMetadata, removeHexPrefix));
   }
 
