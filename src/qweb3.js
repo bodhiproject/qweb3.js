@@ -90,10 +90,7 @@ class Qweb3 {
   * @return {Promise} Array of contract addresses or Error.
   */
   listContracts(startingAcctIndex = 1, maxDisplay = 20) {
-    return this.provider.request({
-      method: 'listcontracts',
-      params: [startingAcctIndex, maxDisplay],
-    });
+    return this.provider.rawCall('listcontracts', [startingAcctIndex, maxDisplay]);
   }
 
   /**
