@@ -6,9 +6,9 @@ const Utils = require('./utils');
 const Encoder = require('./encoder');
 const Constants = require('./constants');
 
-const SEND_AMOUNT = 0;
-const SEND_GASLIMIT = 250000;
-const SEND_GASPRICE = 0.0000004;
+const DEFAULT_AMOUNT = 0;
+const DEFAULT_GAS_LIMIT = 250000;
+const DEFAULT_GAS_PRICE = 0.0000004;
 
 class Contract {
   constructor(url, address, abi) {
@@ -45,9 +45,9 @@ class Contract {
       methodArgs, amount, gasLimit, gasPrice, senderAddress,
     } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
-    const amt = amount || SEND_AMOUNT;
-    const limit = gasLimit || SEND_GASLIMIT;
-    const price = gasPrice || SEND_GASPRICE;
+    const amt = amount || DEFAULT_AMOUNT;
+    const limit = gasLimit || DEFAULT_GAS_LIMIT;
+    const price = gasPrice || DEFAULT_GAS_PRICE;
 
     const result = await this.provider.rawCall('sendtocontract', [
       this.address,
