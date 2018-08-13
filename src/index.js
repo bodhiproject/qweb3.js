@@ -3,6 +3,7 @@ const Contract = require('./contract');
 const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
 const Utils = require('./utils');
+const HttpProvider = require('./providers/http-provider');
 
 // dont override global variable
 if (typeof window !== 'undefined' && typeof window.Qweb3 === 'undefined') {
@@ -15,4 +16,5 @@ module.exports = {
   Encoder,
   Decoder,
   Utils,
+  HttpProvider,
 };
