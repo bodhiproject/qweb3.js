@@ -160,6 +160,7 @@ class Decoder {
         methodABI,
         Utils.appendHexPrefix(output.executionResult.output),
       );
+
       if (removeHexPrefix) {
         each(Object.keys(formattedOutput), (key) => {
           formattedOutput[key] = Decoder.removeHexPrefix(formattedOutput[key]);
