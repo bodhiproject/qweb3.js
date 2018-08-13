@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const HttpProvider = require('./httpprovider');
+const HttpProvider = require('./provider/http-provider');
 const Formatter = require('./formatter');
 const Utils = require('./utils');
 const Encoder = require('./encoder');
