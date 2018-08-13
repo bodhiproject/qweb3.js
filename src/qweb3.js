@@ -21,6 +21,7 @@ class Qweb3 {
    * Constructs a new Contract instance.
    * @param {string} address Address of the contract.
    * @param {array} abi ABI of the contract.
+   * @return {Contract} Contract instance.
    */
   Contract(address, abi) {
     return new Contract(this.provider, address, abi);
@@ -29,6 +30,7 @@ class Qweb3 {
   /**
    * Constructs a new HttpProvider instance.
    * @param {string} urlString URL of the blockchain API. eg. http://bodhi:bodhi@127.0.0.1:13889
+   * @return {HttpProvider} HttpProvider instance.
    */
   HttpProvider(urlString) {
     return new HttpProvider(urlString);
