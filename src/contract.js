@@ -33,7 +33,7 @@ class Contract {
     const { methodArgs, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
 
-    let result = this.provider.rawCall('callcontract', [
+    let result = await this.provider.rawCall('callcontract', [
       this.address,
       this.constructDataHex(methodObj, args),
       senderAddress,
