@@ -20,6 +20,9 @@ module.exports = {
       ignoreTrailingComments: true
     }],
     "no-console": 0,
-    "no-plusplus": 0
-  }
+    "no-plusplus": 0,
+    "object-curly-newline": [2, {
+      ImportDeclaration: "never",
+    }],
+  },
 };

@@ -40,8 +40,8 @@
   "scripts": {
     "lint": "eslint -- src/. test/.",
     "lint:fix": "eslint --fix -- src/. test/.",
-    "test": "mocha --recursive src/**/*.tests.js",
-    "test:cleanenv": "mocha ./test --cleanenv",
+    "test": "mocha --recursive **/*.tests.js",
+    "test:cleanenv": "mocha --recursive **/*.tests.js --cleanenv",
     "precommit": "lint-staged",
     "prepush": "npm run lint:fix"
   },

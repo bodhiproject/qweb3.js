@@ -4,7 +4,7 @@ const Web3Utils = require('web3-utils');
 const BN = require('bn.js');
 const chai = require('chai');
 
-const { getQtumRPCAddress } = require('../../test/config/config');
+const { getQtumRPCAddress } = require('../../test/utils');
 const ContractMetadata = require('../../test/data/contract_metadata');
 const Contract = require('../contract');
 const Encoder = require('../formatters/encoder');
