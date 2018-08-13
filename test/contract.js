@@ -7,8 +7,8 @@ const chai = require('chai');
 const { getQtumRPCAddress } = require('./config/config');
 const ContractMetadata = require('./data/contract_metadata');
 const Contract = require('../src/contract');
-const Encoder = require('../src/encoder');
-const Formatter = require('../src/formatter');
+const Encoder = require('../src/formatters/encoder');
+const Formatter = require('../src/formatters/formatter');
 
 const { assert } = chai;
 

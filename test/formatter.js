@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, max-len */
 const chai = require('chai');
 
-const Formatter = require('../src/formatter');
+const Formatter = require('../src/formatters/formatter');
 const ContractMetadata = require('./data/contract_metadata');
 
 const { assert } = chai;

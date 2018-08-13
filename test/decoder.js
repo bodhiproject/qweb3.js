@@ -2,7 +2,7 @@
 const chai = require('chai');
 
 const ContractMetadata = require('./data/contract_metadata');
-const Decoder = require('../src/decoder');
+const Decoder = require('../src/formatters/decoder');
 
 const { assert, expect } = chai;
 

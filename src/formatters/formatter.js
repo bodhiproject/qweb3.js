@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const EthjsAbi = require('ethjs-abi');
 
-const Utils = require('./utils');
+const Utils = require('../utils');
 const Encoder = require('./encoder');
 const Decoder = require('./decoder');
 

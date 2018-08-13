@@ -4,7 +4,7 @@ const EthjsAbi = require('ethjs-abi');
 const crypto = require('crypto');
 const bs58 = require('bs58');
 
-const Utils = require('./utils');
+const Utils = require('../utils');
 
 const MainnetNetworkByte = '3A';
 const TestnetNetworkByte = '78';

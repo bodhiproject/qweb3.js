@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
-const HttpProvider = require('./provider/http-provider');
-const Formatter = require('./formatter');
+const HttpProvider = require('./providers/http-provider');
+const Formatter = require('./formatters/formatter');
 
 class Qweb3 {
   constructor(url) {

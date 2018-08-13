@@ -3,7 +3,7 @@ const chai = require('chai');
 const BN = require('bn.js');
 const BigNumber = require('bignumber.js');
 
-const Encoder = require('../src/encoder');
+const Encoder = require('../src/formatters/encoder');
 
 const { assert } = chai;
 const PADDED_BYTES = 64;

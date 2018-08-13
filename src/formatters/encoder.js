@@ -3,8 +3,8 @@ const Web3Utils = require('web3-utils');
 const BigNumber = require('bignumber.js');
 const bs58 = require('bs58');
 
-const Utils = require('./utils');
-const Constants = require('./constants');
+const Utils = require('../utils');
+const Constants = require('../constants');
 
 class Encoder {
   /*

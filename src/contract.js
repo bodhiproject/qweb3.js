@@ -1,9 +1,9 @@
 const _ = require('lodash');
 
-const HttpProvider = require('./provider/http-provider');
-const Formatter = require('./formatter');
+const HttpProvider = require('./providers/http-provider');
+const Formatter = require('./formatters/formatter');
 const Utils = require('./utils');
-const Encoder = require('./encoder');
+const Encoder = require('./formatters/encoder');
 const Constants = require('./constants');
 
 const DEFAULT_AMOUNT = 0;
