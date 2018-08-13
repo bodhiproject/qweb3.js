@@ -23,12 +23,18 @@ class Contract {
    * @param {array} params Parameters of contract method
    * @return {Promise} Promise containing result object or Error
    */
-  call(methodName, params) {
+  async call(methodName, params) {
     const { methodArgs, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
 
-    return this.provider.rawCall('callcontract', [this.address, this.constructDataHex(methodObj, args), senderAddress])
-      .then(result => Formatter.callOutput(result, this.abi, methodName, true));
+    let result = this.provider.rawCall('callcontract', [
+      this.address,
+      this.constructDataHex(methodObj, args),
+      senderAddress,
+    ]);
+    // Format the result
+    result = Formatter.callOutput(result, this.abi, methodName, true);
+    return result;
   }
 
   /*
