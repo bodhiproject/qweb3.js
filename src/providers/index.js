@@ -8,6 +8,10 @@ const compatibleProviders = [
 ];
 
 const initProvider = (provider) => {
+  if (!provider) {
+    throw Error('Provider cannot be undefined.');
+  }
+
   if (typeof provider === 'string') {
     return new HttpProvider(provider);
   }

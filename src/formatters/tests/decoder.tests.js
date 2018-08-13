@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 const chai = require('chai');
 
-const ContractMetadata = require('./data/contract_metadata');
-const Decoder = require('../src/formatters/decoder');
+const ContractMetadata = require('../../../test/data/contract_metadata');
+const Decoder = require('../decoder');
 
 const { assert, expect } = chai;
 
