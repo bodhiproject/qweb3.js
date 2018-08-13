@@ -14,8 +14,8 @@ class Qweb3 {
    */
   constructor(provider) {
     this.provider = initProvider(provider);
-    this.encoder = new Encoder();
-    this.decoder = new Decoder();
+    this.encoder = Encoder;
+    this.decoder = Decoder;
   }
 
   /**
