@@ -4,7 +4,7 @@ const HttpProvider = require('./http-provider');
 
 const compatibleProviders = [
   'HttpProvider',
-  'QryptoProvider',
+  'QryptoRPCProvider',
 ];
 
 const initProvider = (provider) => {
