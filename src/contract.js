@@ -53,9 +53,7 @@ class Contract {
     // Throw if methodArgs or senderAddress is not defined in params
     Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
-    const {
-      methodArgs, amount, gasLimit, gasPrice, senderAddress,
-    } = params;
+    const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
     const amt = amount || DEFAULT_AMOUNT;
     const limit = gasLimit || DEFAULT_GAS_LIMIT;

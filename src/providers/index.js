@@ -24,6 +24,4 @@ const initProvider = (provider) => {
   return provider;
 };
 
-module.exports = {
-  initProvider,
-};
+module.exports = { initProvider };
