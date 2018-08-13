@@ -3,8 +3,8 @@ const _ = require('lodash');
 const HttpProvider = require('./providers/http-provider');
 const Formatter = require('./formatters/formatter');
 const Utils = require('./utils');
-const Encoder = require('./formatters/encoder');
 const Constants = require('./constants');
+const Encoder = require('./formatters/encoder');
 
 const DEFAULT_AMOUNT = 0;
 const DEFAULT_GAS_LIMIT = 250000;
