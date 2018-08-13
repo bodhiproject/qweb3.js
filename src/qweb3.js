@@ -1,8 +1,10 @@
 const _ = require('lodash');
 
+const { initProvider } = require('./providers');
 const Contract = require('./contract');
 const HttpProvider = require('./providers/http-provider');
-const { initProvider } = require('./providers');
+const Encoder = require('./formatters/encoder');
+const Decoder = require('./formatters/decoder');
 const Formatter = require('./formatters/formatter');
 
 class Qweb3 {
@@ -12,6 +14,8 @@ class Qweb3 {
    */
   constructor(provider) {
     this.provider = initProvider(provider);
+    this.encoder = new Encoder();
+    this.decoder = new Decoder();
   }
 
   /**
