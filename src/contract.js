@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
-const HttpProvider = require('./providers/http-provider');
-const Formatter = require('./formatters/formatter');
+const { initProvider } = require('./providers');
 const Utils = require('./utils');
+const Formatter = require('./formatters/formatter');
 const Constants = require('./constants');
 const Encoder = require('./formatters/encoder');
 
@@ -11,8 +11,14 @@ const DEFAULT_GAS_LIMIT = 250000;
 const DEFAULT_GAS_PRICE = 0.0000004;
 
 class Contract {
-  constructor(url, address, abi) {
-    this.provider = new HttpProvider(url);
+  /**
+   * Contract constructor.
+   * @param {string|Qweb3Provider} provider Either URL string to create HttpProvider or a Qweb3 compatible provider.
+   * @param {*} address Address of the contract.
+   * @param {*} abi ABI of the contract.
+   */
+  constructor(provider, address, abi) {
+    this.provider = initProvider(provider);
     this.address = Utils.trimHexPrefix(address);
     this.abi = abi;
   }

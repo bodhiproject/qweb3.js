@@ -1,11 +1,15 @@
 const _ = require('lodash');
 
-const HttpProvider = require('./providers/http-provider');
+const { initProvider } = require('./providers');
 const Formatter = require('./formatters/formatter');
 
 class Qweb3 {
-  constructor(url) {
-    this.provider = new HttpProvider(url);
+  /**
+   * Qweb3 constructor.
+   * @param {string|Qweb3Provider} provider Either URL string to create HttpProvider or a Qweb3 compatible provider.
+   */
+  constructor(provider) {
+    this.provider = initProvider(provider);
   }
 
   /** ******** MISC ********* */
