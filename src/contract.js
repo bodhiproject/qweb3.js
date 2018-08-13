@@ -2,8 +2,8 @@ const _ = require('lodash');
 
 const { initProvider } = require('./providers');
 const Utils = require('./utils');
-const Formatter = require('./formatters/formatter');
 const Constants = require('./constants');
+const Decoder = require('./formatters/decoder');
 const Encoder = require('./formatters/encoder');
 
 const DEFAULT_AMOUNT = 0;
@@ -39,7 +39,7 @@ class Contract {
       senderAddress,
     ]);
     // Format the result
-    result = Formatter.callOutput(result, this.abi, methodName, true);
+    result = Decoder.decodeCall(result, this.abi, methodName, true);
     return result;
   }
 

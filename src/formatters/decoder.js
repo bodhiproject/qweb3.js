@@ -156,12 +156,14 @@ class Decoder {
     const output = rawOutput;
     const methodABI = find(contractABI, { name: methodName });
     if (methodABI && 'executionResult' in output && 'output' in output.executionResult) {
-      let formattedOutput = EthjsAbi.decodeMethod(
+      const formattedOutput = EthjsAbi.decodeMethod(
         methodABI,
         Utils.appendHexPrefix(output.executionResult.output),
       );
       if (removeHexPrefix) {
-        formattedOutput = Decoder.removeHexPrefix(formattedOutput);
+        each(Object.keys(formattedOutput), (key) => {
+          formattedOutput[key] = Decoder.removeHexPrefix(formattedOutput[key]);
+        });
       }
       output.executionResult.formattedOutput = formattedOutput;
     }
