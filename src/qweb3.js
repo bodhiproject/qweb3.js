@@ -1,6 +1,7 @@
 const _ = require('lodash');
 
 const Contract = require('./contract');
+const HttpProvider = require('./providers/http-provider');
 const { initProvider } = require('./providers');
 const Formatter = require('./formatters/formatter');
 
@@ -20,6 +21,14 @@ class Qweb3 {
    */
   Contract(address, abi) {
     return new Contract(this.provider, address, abi);
+  }
+
+  /**
+   * Constructs a new HttpProvider instance.
+   * @param {string} urlString URL of the blockchain API. eg. http://bodhi:bodhi@127.0.0.1:13889
+   */
+  HttpProvider(urlString) {
+    return new HttpProvider(urlString);
   }
 
   /** ******** MISC ********* */

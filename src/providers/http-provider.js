@@ -8,7 +8,7 @@ const { isEmpty } = require('lodash');
 class HttpProvider {
   /**
    * Constructor.
-   * @param {string} urlString URL of the blockchain access point. eg. http://bodhi:bodhi@127.0.0.1:13889
+   * @param {string} urlString URL of the blockchain API. eg. http://bodhi:bodhi@127.0.0.1:13889
    */
   constructor(urlString) {
     this.url = url.parse(urlString);
