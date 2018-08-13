@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+const Contract = require('./contract');
 const { initProvider } = require('./providers');
 const Formatter = require('./formatters/formatter');
 
@@ -10,6 +11,15 @@ class Qweb3 {
    */
   constructor(provider) {
     this.provider = initProvider(provider);
+  }
+
+  /**
+   * Constructs a new Contract instance.
+   * @param {string} address Address of the contract.
+   * @param {array} abi ABI of the contract.
+   */
+  Contract(address, abi) {
+    return new Contract(this.provider, address, abi);
   }
 
   /** ******** MISC ********* */

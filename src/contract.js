@@ -14,8 +14,8 @@ class Contract {
   /**
    * Contract constructor.
    * @param {string|Qweb3Provider} provider Either URL string to create HttpProvider or a Qweb3 compatible provider.
-   * @param {*} address Address of the contract.
-   * @param {*} abi ABI of the contract.
+   * @param {string} address Address of the contract.
+   * @param {array} abi ABI of the contract.
    */
   constructor(provider, address, abi) {
     this.provider = initProvider(provider);
