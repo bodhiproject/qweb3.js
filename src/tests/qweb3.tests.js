@@ -5,7 +5,7 @@ const path = require('path');
 const bs58 = require('bs58');
 
 const Qweb3 = require('../qweb3');
-const Formatter = require('../formatters/formatter');
+const Decoder = require('../formatters/decoder');
 const ContractMetadata = require('../../test/data/contract_metadata');
 const qAssert = require('../../test/utils/qassert');
 const { getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase, isWalletEncrypted } = require('../../test/utils');
@@ -204,7 +204,7 @@ describe('Qweb3', () => {
           ],
         },
       ];
-      const formatted = Formatter.searchLogOutput(rawOutput, ContractMetadata, true);
+      const formatted = Decoder.decodeSearchLog(rawOutput, ContractMetadata, true);
       assert.isDefined(formatted);
       assert.isDefined(formatted[0].log[0]._name);
       assert.isDefined(formatted[0].log[0]._resultNames);

@@ -1,9 +1,10 @@
-const { isEmpty, each, find } = require('lodash');
+const { isEmpty, isUndefined, each, find, filter, assign, map } = require('lodash');
 const Web3Utils = require('web3-utils');
 const EthjsAbi = require('ethjs-abi');
 const crypto = require('crypto');
 const bs58 = require('bs58');
 
+const Encoder = require('./encoder');
 const Utils = require('../utils');
 
 const MainnetNetworkByte = '3A';
@@ -57,6 +58,80 @@ class Decoder {
     }
 
     return v;
+  }
+
+  /**
+   * Formats the output of searchlog by decoding eventName, indexed, and unindexed params
+   * @param {object} rawOutput Raw seachlog output
+   * @param {object} contractMetadata Metadata of all contracts and their events with topic hashes
+   * @param {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
+   * @return {object} Decoded searchlog output
+   */
+  static decodeSearchLog(rawOutput, contractMetadata, removeHexPrefix = true) {
+    // Create dict of all event hashes
+    const eventHashes = {};
+    each(contractMetadata, (contractItem, contractKey) => {
+      const filteredEvents = filter(contractItem.abi, { type: 'event' });
+
+      each(filteredEvents, (eventObj) => {
+        const hash = Encoder.objToHash(eventObj, false);
+        eventHashes[hash] = {
+          contract: contractKey,
+          event: eventObj.name,
+        };
+      });
+    });
+
+    return map(rawOutput, (resultEntry) => {
+      const formatted = assign({}, resultEntry);
+
+      if (!isEmpty(resultEntry.log)) {
+        each(resultEntry.log, (item, index) => {
+          const eventHashObj = eventHashes[item.topics[0]];
+
+          let contractObj;
+          if (eventHashObj) {
+            contractObj = contractMetadata[eventHashObj.contract];
+          }
+
+          if (contractObj) {
+            // Each field of log needs to appended with '0x' to be parsed
+            Object.assign(item, {
+              address: Utils.appendHexPrefix(item.address),
+              data: Utils.appendHexPrefix(item.data),
+              topics: map(item.topics, Utils.appendHexPrefix),
+            });
+
+            const methodAbi = find(contractObj.abi, { name: eventHashObj.event });
+            if (isUndefined(methodAbi)) {
+              console.warn(`Error: Could not find method in ABI for ${eventHashObj.event}`);
+              return;
+            }
+
+            let decodedLog;
+            try {
+              decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
+            } catch (err) { // catch throws in decodeLogItem
+              console.warn(err.message);
+              return;
+            }
+
+            // Strip hex prefix
+            if (removeHexPrefix) {
+              each(methodAbi.inputs, (inputItem) => {
+                let value = decodedLog[inputItem.name];
+                value = Decoder.removeHexPrefix(value);
+                decodedLog[inputItem.name] = value;
+              });
+            }
+
+            resultEntry.log.splice(index, 1, decodedLog);
+          }
+        });
+      }
+
+      return formatted;
+    });
   }
 
   /**

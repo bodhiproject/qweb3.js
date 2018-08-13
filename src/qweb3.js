@@ -5,7 +5,6 @@ const Contract = require('./contract');
 const HttpProvider = require('./providers/http-provider');
 const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
-const Formatter = require('./formatters/formatter');
 
 class Qweb3 {
   /**
@@ -141,7 +140,7 @@ class Qweb3 {
     }
 
     return this.provider.rawCall('searchlogs', [fromBlock, toBlock, addrObj, topicsObj])
-      .then(results => Formatter.searchLogOutput(results, contractMetadata, removeHexPrefix));
+      .then(results => Decoder.decodeSearchLog(results, contractMetadata, removeHexPrefix));
   }
 
   /** ******** CONTROL ********* */
