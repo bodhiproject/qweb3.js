@@ -4,11 +4,11 @@ const Web3Utils = require('web3-utils');
 const BN = require('bn.js');
 const chai = require('chai');
 
-const { getQtumRPCAddress } = require('./config/config');
-const ContractMetadata = require('./data/contract_metadata');
-const Contract = require('../src/contract');
-const Encoder = require('../src/formatters/encoder');
-const Formatter = require('../src/formatters/formatter');
+const { getQtumRPCAddress } = require('../../test/config/config');
+const ContractMetadata = require('../../test/data/contract_metadata');
+const Contract = require('../contract');
+const Encoder = require('../formatters/encoder');
+const Formatter = require('../formatters/formatter');
 
 const { assert } = chai;
 

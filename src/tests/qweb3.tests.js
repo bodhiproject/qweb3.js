@@ -4,12 +4,12 @@ const chai = require('chai');
 const path = require('path');
 const bs58 = require('bs58');
 
-const Qweb3 = require('../src/qweb3');
-const Formatter = require('../src/formatters/formatter');
-const { getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase } = require('./config/config');
-const ContractMetadata = require('./data/contract_metadata');
-const qAssert = require('./utils/qassert');
-const { isWalletEncrypted } = require('./utils/utils');
+const Qweb3 = require('../qweb3');
+const Formatter = require('../formatters/formatter');
+const { getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase } = require('../../test/config/config');
+const ContractMetadata = require('../../test/data/contract_metadata');
+const qAssert = require('../../test/utils/qassert');
+const { isWalletEncrypted } = require('../../test/utils/utils');
 
 const { assert } = chai;
 
