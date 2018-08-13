@@ -540,7 +540,7 @@ describe('Qweb3', () => {
 
     describe('backupWallet()', () => {
       it('backup the wallet', async () => {
-        const res = await qweb3.backupWallet(path.join(__dirname, './data/backup.dat'));
+        const res = await qweb3.backupWallet(path.join(__dirname, '../../test/data/backup.dat'));
         assert.notTypeOf(res, 'Error');
       });
     });
@@ -548,7 +548,7 @@ describe('Qweb3', () => {
     describe('importWallet()', () => {
       it('throw an error if importing a non-existent file', async () => {
         try {
-          await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
+          await qweb3.importWallet(path.join(__dirname, '../../test/data/backup.dat'));
         } catch (err) {
           assert.isDefined(err);
           assert.equal(err, 'Error: Cannot open wallet dump file');
@@ -556,7 +556,7 @@ describe('Qweb3', () => {
       });
 
       it('import the wallet from a wallet dump file', async () => {
-        const res = await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
+        const res = await qweb3.importWallet(path.join(__dirname, '../../test/data/backup.dat'));
         assert.notTypeOf(res, 'Error');
       });
     });
