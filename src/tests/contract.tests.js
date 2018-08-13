@@ -4,11 +4,11 @@ const Web3Utils = require('web3-utils');
 const BN = require('bn.js');
 const chai = require('chai');
 
-const { getQtumRPCAddress } = require('./config/config');
-const ContractMetadata = require('./data/contract_metadata');
-const Contract = require('../src/contract');
-const Encoder = require('../src/encoder');
-const Formatter = require('../src/formatter');
+const { getQtumRPCAddress } = require('../../test/utils');
+const ContractMetadata = require('../../test/data/contract_metadata');
+const Contract = require('../contract');
+const Encoder = require('../formatters/encoder');
+const Decoder = require('../formatters/decoder');
 
 const { assert } = chai;
 
@@ -57,10 +57,10 @@ describe('Contract', () => {
         },
       };
 
-      const formatted = Formatter.callOutput(result, ContractMetadata.DecentralizedOracle.abi, 'getVoteBalances', true);
-      assert.isDefined(formatted[0]);
-      assert.isTrue(_.every(formatted[0], item => Web3Utils.isBN(item)));
-      assert.equal(formatted[0][2].toString(16), new BN('10000000000').toString(16));
+      const formatted = Decoder.decodeCall(result, ContractMetadata.DecentralizedOracle.abi, 'getVoteBalances', true);
+      assert.isDefined(formatted.executionResult.formattedOutput[0]);
+      assert.isTrue(_.every(formatted.executionResult.formattedOutput[0], item => Web3Utils.isBN(item)));
+      assert.equal(formatted.executionResult.formattedOutput[0][2].toString(16), new BN('10000000000').toString(16));
     });
   });
 

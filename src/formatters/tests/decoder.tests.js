@@ -1,13 +1,160 @@
 /* eslint-disable no-underscore-dangle, max-len */
 const chai = require('chai');
 
-const Formatter = require('../src/formatter');
-const ContractMetadata = require('./data/contract_metadata');
+const ContractMetadata = require('../../../test/data/contract_metadata');
+const Decoder = require('../decoder');
 
-const { assert } = chai;
+const { assert, expect } = chai;
 
-describe('Formatter', () => {
-  describe('searchLogOutput()', () => {
+describe('Decoder', () => {
+  describe('toQtumAddress()', () => {
+    it('returns the converted qtum address', () => {
+      assert.equal(
+        Decoder.toQtumAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3', false),
+        'qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy',
+      );
+      assert.equal(
+        Decoder.toQtumAddress('2a2ad24849bc061f0f7abee243ebdb584b0d11f1', true),
+        'QQSwne4oB1jmRXceHrs9tPGQmn7qjvSqyR',
+      );
+    });
+
+    it('throws if hexAddress is undefined or empty', () => {
+      expect(() => Decoder.toQtumAddress()).to.throw();
+      expect(() => Decoder.toQtumAddress('')).to.throw();
+    });
+
+    it('throws if hexAddress is not hex', () => {
+      expect(() => Decoder.toQtumAddress('qKjn4fStBaAtwGiwueJf9qFxgpbAvf1xAy')).to.throw();
+    });
+  });
+
+  describe('removeHexPrefix()', () => {
+    it('returns the value without the hex prefix', () => {
+      const hexValue = '0x1111111111111111111111111111111111111111';
+      assert.equal(Decoder.removeHexPrefix(hexValue), hexValue.slice(2));
+    });
+
+    it('returns the array values with hex prefixes', () => {
+      const hexArray = ['0x1111111111111111111111111111111111111111', '0x2222222222222222222222222222222222222222'];
+      const expected = [hexArray[0].slice(2), hexArray[1].slice(2)];
+      assert.deepEqual(Decoder.removeHexPrefix(hexArray), expected);
+    });
+  });
+
+  describe('decodeCall()', () => {
+    let rawOutput = {
+      address: 'a6dd0b0399dc6162cedde85ed50c6fa4a0dd44f1',
+      executionResult: {
+        gasUsed: 21720,
+        excepted: 'None',
+        newAddress: 'a6dd0b0399dc6162cedde85ed50c6fa4a0dd44f1',
+        output: '000000000000000000000000000000000000000000000000002386f26fc10000',
+        codeDeposit: 0,
+        gasRefunded: 0,
+        depositSize: 0,
+        gasForDeposit: 0,
+      },
+      transactionReceipt: {
+        stateRoot: 'e6dfdcb1a7b722f39cf036d681ff76637f556447a8dea0d29f05b83df82d9cc0',
+        gasUsed: 21720,
+        bloom: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+        log: [],
+      },
+    };
+
+    it('returns the formattedOutput in the object', () => {
+      const decoded = Decoder.decodeCall(rawOutput, ContractMetadata.BodhiToken.abi, 'tokenTotalSupply');
+      assert.isDefined(decoded.executionResult.formattedOutput);
+    });
+
+    it('returns the formatted call output for a struct', () => {
+      rawOutput = {
+        address: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
+        executionResult: {
+          gasUsed: 22381,
+          excepted: 'None',
+          newAddress: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
+          output: '00000000000000000000000000000000000000000000000000000000000000010000000000000000000000009ece13d31f24b1c45107924f9c3fda2eb55eeda7',
+          codeDeposit: 0,
+          gasRefunded: 0,
+          depositSize: 0,
+          gasForDeposit: 0,
+        },
+        transactionReceipt: {
+          stateRoot: 'c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82',
+          gasUsed: 22381,
+          bloom: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+          log: [
+          ],
+        },
+      };
+
+      const decoded = Decoder.decodeCall(rawOutput, ContractMetadata.TopicEvent.abi, 'oracles', true);
+      assert.equal(decoded.executionResult.formattedOutput.oracleAddress, '9ece13d31f24b1c45107924f9c3fda2eb55eeda7');
+      assert.isTrue(decoded.executionResult.formattedOutput.didSetResult);
+    });
+
+    it('returns the formatted call output for uint', () => {
+      rawOutput = {
+        address: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
+        executionResult: {
+          gasUsed: 22303,
+          excepted: 'None',
+          newAddress: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
+          output: '0000000000000000000000000000000000000000000000000000000000000004',
+          codeDeposit: 0,
+          gasRefunded: 0,
+          depositSize: 0,
+          gasForDeposit: 0,
+        },
+        transactionReceipt: {
+          stateRoot: 'c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82',
+          gasUsed: 22303,
+          bloom: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+          log: [
+          ],
+        },
+      };
+
+      const decoded = Decoder.decodeCall(rawOutput, ContractMetadata.TopicEvent.abi, 'numOfResults', true);
+      assert.equal(decoded.executionResult.formattedOutput[0], 4);
+    });
+
+    it('returns the formatted call output for address', () => {
+      rawOutput = {
+        address: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
+        executionResult: {
+          gasUsed: 22169,
+          excepted: 'None',
+          newAddress: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
+          output: '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3',
+          codeDeposit: 0,
+          gasRefunded: 0,
+          depositSize: 0,
+          gasForDeposit: 0,
+        },
+        transactionReceipt: {
+          stateRoot: 'c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82',
+          gasUsed: 22169,
+          bloom: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+          log: [
+          ],
+        },
+      };
+
+      const decoded = Decoder.decodeCall(rawOutput, ContractMetadata.TopicEvent.abi, 'owner', true);
+      assert.equal(decoded.executionResult.formattedOutput[0], '17e7888aa7412a735f336d2f6d784caefabb6fa3');
+    });
+
+    it('throws if rawOutput, contractABI, or methodName is undefined', () => {
+      expect(() => Decoder.decodeCall(undefined, ContractMetadata.BodhiToken.abi, 'tokenTotalSupply')).to.throw();
+      expect(() => Decoder.decodeCall(rawOutput, undefined, 'tokenTotalSupply')).to.throw();
+      expect(() => Decoder.decodeCall(rawOutput, ContractMetadata.BodhiToken.abi, undefined)).to.throw();
+    });
+  });
+
+  describe('decodeSearchLog()', () => {
     const rawOutput = [
       {
         blockHash: '1bfca6e1c401865982121000a60a5f7f32839e124486891fd2d34bd6e1052de2',
@@ -45,7 +192,7 @@ describe('Formatter', () => {
     ];
 
     it('returns the formatted searchlog output', () => {
-      const formatted = Formatter.searchLogOutput(rawOutput, ContractMetadata, true);
+      const formatted = Decoder.decodeSearchLog(rawOutput, ContractMetadata, true);
 
       // CentralizedOracleCreated event
       const log0 = formatted[0].log[0];
@@ -132,94 +279,13 @@ describe('Formatter', () => {
         },
       ];
 
-      const formatted = Formatter.searchLogOutput(withdrawWinningsOutput, ContractMetadata, true);
+      const formatted = Decoder.decodeSearchLog(withdrawWinningsOutput, ContractMetadata, true);
       assert.isDefined(formatted[0].log[0].topics);
       assert.isDefined(formatted[0].log[0].data);
       assert.isDefined(formatted[0].log[1]._eventName);
       assert.isDefined(formatted[0].log[1]._winner);
       assert.isUndefined(formatted[0].log[1].topics);
       assert.isUndefined(formatted[0].log[1].data);
-    });
-  });
-
-  describe('callOutput()', () => {
-    it('returns the formatted call output for a struct', () => {
-      const rawOutput = {
-        address: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        executionResult: {
-          gasUsed: 22381,
-          excepted: 'None',
-          newAddress: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-          output: '00000000000000000000000000000000000000000000000000000000000000010000000000000000000000009ece13d31f24b1c45107924f9c3fda2eb55eeda7',
-          codeDeposit: 0,
-          gasRefunded: 0,
-          depositSize: 0,
-          gasForDeposit: 0,
-        },
-        transactionReceipt: {
-          stateRoot: 'c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82',
-          gasUsed: 22381,
-          bloom: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-          log: [
-          ],
-        },
-      };
-
-      const formatted = Formatter.callOutput(rawOutput, ContractMetadata.TopicEvent.abi, 'oracles', true);
-      assert.equal(formatted.oracleAddress, '9ece13d31f24b1c45107924f9c3fda2eb55eeda7');
-      assert.isTrue(formatted.didSetResult);
-    });
-
-    it('returns the formatted call output for uint', () => {
-      const rawOutput = {
-        address: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        executionResult: {
-          gasUsed: 22303,
-          excepted: 'None',
-          newAddress: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-          output: '0000000000000000000000000000000000000000000000000000000000000004',
-          codeDeposit: 0,
-          gasRefunded: 0,
-          depositSize: 0,
-          gasForDeposit: 0,
-        },
-        transactionReceipt: {
-          stateRoot: 'c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82',
-          gasUsed: 22303,
-          bloom: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-          log: [
-          ],
-        },
-      };
-
-      const formatted = Formatter.callOutput(rawOutput, ContractMetadata.TopicEvent.abi, 'numOfResults', true);
-      assert.equal(formatted[0], 4);
-    });
-
-    it('returns the formatted call output for address', () => {
-      const rawOutput = {
-        address: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-        executionResult: {
-          gasUsed: 22169,
-          excepted: 'None',
-          newAddress: 'dacd16bde8ff9f7689cb8d3363324c77fbb80950',
-          output: '00000000000000000000000017e7888aa7412a735f336d2f6d784caefabb6fa3',
-          codeDeposit: 0,
-          gasRefunded: 0,
-          depositSize: 0,
-          gasForDeposit: 0,
-        },
-        transactionReceipt: {
-          stateRoot: 'c0886d5ea7204e8f2e6006d5847c8fb6813b0430322476443630f367f50b6a82',
-          gasUsed: 22169,
-          bloom: '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-          log: [
-          ],
-        },
-      };
-
-      const formatted = Formatter.callOutput(rawOutput, ContractMetadata.TopicEvent.abi, 'owner', true);
-      assert.equal(formatted[0], '17e7888aa7412a735f336d2f6d784caefabb6fa3');
     });
   });
 });

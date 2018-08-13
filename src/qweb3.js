@@ -1,11 +1,41 @@
 const _ = require('lodash');
 
-const HttpProvider = require('./httpprovider');
-const Formatter = require('./formatter');
+const { initProvider } = require('./providers');
+const Contract = require('./contract');
+const HttpProvider = require('./providers/http-provider');
+const Encoder = require('./formatters/encoder');
+const Decoder = require('./formatters/decoder');
+const Utils = require('./utils');
 
 class Qweb3 {
-  constructor(url) {
-    this.provider = new HttpProvider(url);
+  /**
+   * Qweb3 constructor.
+   * @param {string|Qweb3Provider} provider Either URL string to create HttpProvider or a Qweb3 compatible provider.
+   */
+  constructor(provider) {
+    this.provider = initProvider(provider);
+    this.encoder = Encoder;
+    this.decoder = Decoder;
+    this.utils = Utils;
+  }
+
+  /**
+   * Constructs a new Contract instance.
+   * @param {string} address Address of the contract.
+   * @param {array} abi ABI of the contract.
+   * @return {Contract} Contract instance.
+   */
+  Contract(address, abi) {
+    return new Contract(this.provider, address, abi);
+  }
+
+  /**
+   * Constructs a new HttpProvider instance.
+   * @param {string} urlString URL of the blockchain API. eg. http://bodhi:bodhi@127.0.0.1:13889
+   * @return {HttpProvider} HttpProvider instance.
+   */
+  HttpProvider(urlString) {
+    return new HttpProvider(urlString);
   }
 
   /** ******** MISC ********* */
@@ -114,7 +144,7 @@ class Qweb3 {
     }
 
     return this.provider.rawCall('searchlogs', [fromBlock, toBlock, addrObj, topicsObj])
-      .then(results => Formatter.searchLogOutput(results, contractMetadata, removeHexPrefix));
+      .then(results => Decoder.decodeSearchLog(results, contractMetadata, removeHexPrefix));
   }
 
   /** ******** CONTROL ********* */

@@ -1,7 +1,7 @@
 {
   "name": "qweb3",
   "namespace": "bodhi",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Qtum JavaScript API comunicating to qtum node over RPC",
   "main": "./src/index.js",
   "repository": {
@@ -21,13 +21,13 @@
     "bignumber.js": "^7.2.1",
     "bn.js": "^4.11.8",
     "bs58": "^4.0.1",
+    "chai": "^4.1.2",
     "ethjs-abi": "^0.2.1",
     "lodash": "^4.17.10",
     "utf8": "^3.0.0",
     "web3-utils": "^1.0.0-beta.26"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
     "dotenv": "^6.0.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
@@ -40,8 +40,8 @@
   "scripts": {
     "lint": "eslint -- src/. test/.",
     "lint:fix": "eslint --fix -- src/. test/.",
-    "test": "mocha ./test/",
-    "test:cleanenv": "mocha ./test --cleanenv",
+    "test": "mocha --recursive **/*.tests.js",
+    "test:cleanenv": "mocha --recursive **/*.tests.js --cleanenv",
     "precommit": "lint-staged",
     "prepush": "npm run lint:fix"
   },
@@ -57,7 +57,7 @@
       "pre-push": "npm run lint:fix"
     }
   },
-  "homepage": "http://www.bodhi.network/",
+  "homepage": "https://www.bodhi.network/",
   "bugs": {
     "url": "https://github.com/bodhiproject/qweb3.js/issues"
   },

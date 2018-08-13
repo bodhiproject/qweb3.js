@@ -4,12 +4,11 @@ const chai = require('chai');
 const path = require('path');
 const bs58 = require('bs58');
 
-const Qweb3 = require('../src/qweb3');
-const Formatter = require('../src/formatter');
-const { getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase } = require('./config/config');
-const ContractMetadata = require('./data/contract_metadata');
-const qAssert = require('./utils/qassert');
-const { isWalletEncrypted } = require('./utils/utils');
+const Qweb3 = require('../qweb3');
+const Decoder = require('../formatters/decoder');
+const ContractMetadata = require('../../test/data/contract_metadata');
+const qAssert = require('../../test/utils/qassert');
+const { getQtumRPCAddress, getDefaultQtumAddress, getWalletPassphrase, isWalletEncrypted } = require('../../test/utils');
 
 const { assert } = chai;
 
@@ -205,7 +204,7 @@ describe('Qweb3', () => {
           ],
         },
       ];
-      const formatted = Formatter.searchLogOutput(rawOutput, ContractMetadata, true);
+      const formatted = Decoder.decodeSearchLog(rawOutput, ContractMetadata, true);
       assert.isDefined(formatted);
       assert.isDefined(formatted[0].log[0]._name);
       assert.isDefined(formatted[0].log[0]._resultNames);
@@ -541,7 +540,7 @@ describe('Qweb3', () => {
 
     describe('backupWallet()', () => {
       it('backup the wallet', async () => {
-        const res = await qweb3.backupWallet(path.join(__dirname, './data/backup.dat'));
+        const res = await qweb3.backupWallet(path.join(__dirname, '../../test/data/backup.dat'));
         assert.notTypeOf(res, 'Error');
       });
     });
@@ -549,7 +548,7 @@ describe('Qweb3', () => {
     describe('importWallet()', () => {
       it('throw an error if importing a non-existent file', async () => {
         try {
-          await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
+          await qweb3.importWallet(path.join(__dirname, '../../test/data/backup.dat'));
         } catch (err) {
           assert.isDefined(err);
           assert.equal(err, 'Error: Cannot open wallet dump file');
@@ -557,7 +556,7 @@ describe('Qweb3', () => {
       });
 
       it('import the wallet from a wallet dump file', async () => {
-        const res = await qweb3.importWallet(path.join(__dirname, './data/backup.dat'));
+        const res = await qweb3.importWallet(path.join(__dirname, '../../test/data/backup.dat'));
         assert.notTypeOf(res, 'Error');
       });
     });

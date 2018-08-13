@@ -1,18 +1,24 @@
 const _ = require('lodash');
 
-const HttpProvider = require('./httpprovider');
-const Formatter = require('./formatter');
+const { initProvider } = require('./providers');
 const Utils = require('./utils');
-const Encoder = require('./encoder');
 const Constants = require('./constants');
+const Decoder = require('./formatters/decoder');
+const Encoder = require('./formatters/encoder');
 
 const DEFAULT_AMOUNT = 0;
 const DEFAULT_GAS_LIMIT = 250000;
 const DEFAULT_GAS_PRICE = 0.0000004;
 
 class Contract {
-  constructor(url, address, abi) {
-    this.provider = new HttpProvider(url);
+  /**
+   * Contract constructor.
+   * @param {string|Qweb3Provider} provider Either URL string to create HttpProvider or a Qweb3 compatible provider.
+   * @param {string} address Address of the contract.
+   * @param {array} abi ABI of the contract.
+   */
+  constructor(provider, address, abi) {
+    this.provider = initProvider(provider);
     this.address = Utils.trimHexPrefix(address);
     this.abi = abi;
   }
@@ -23,12 +29,18 @@ class Contract {
    * @param {array} params Parameters of contract method
    * @return {Promise} Promise containing result object or Error
    */
-  call(methodName, params) {
+  async call(methodName, params) {
     const { methodArgs, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
 
-    return this.provider.rawCall('callcontract', [this.address, this.constructDataHex(methodObj, args), senderAddress])
-      .then(result => Formatter.callOutput(result, this.abi, methodName, true));
+    let result = await this.provider.rawCall('callcontract', [
+      this.address,
+      this.constructDataHex(methodObj, args),
+      senderAddress,
+    ]);
+    // Format the result
+    result = Decoder.decodeCall(result, this.abi, methodName, true);
+    return result;
   }
 
   /*
@@ -41,9 +53,7 @@ class Contract {
     // Throw if methodArgs or senderAddress is not defined in params
     Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
-    const {
-      methodArgs, amount, gasLimit, gasPrice, senderAddress,
-    } = params;
+    const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
     const { method: methodObj, args } = this.validateMethodAndArgs(methodName, methodArgs);
     const amt = amount || DEFAULT_AMOUNT;
     const limit = gasLimit || DEFAULT_GAS_LIMIT;
