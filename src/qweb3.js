@@ -5,6 +5,7 @@ const Contract = require('./contract');
 const HttpProvider = require('./providers/http-provider');
 const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
+const Utils = require('./utils');
 
 class Qweb3 {
   /**
@@ -15,6 +16,7 @@ class Qweb3 {
     this.provider = initProvider(provider);
     this.encoder = Encoder;
     this.decoder = Decoder;
+    this.utils = Utils;
   }
 
   /**
