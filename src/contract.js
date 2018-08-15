@@ -1,10 +1,6 @@
-const _ = require('lodash');
-
 const { initProvider } = require('./providers');
 const Utils = require('./utils');
-const Constants = require('./constants');
 const Decoder = require('./formatters/decoder');
-const Encoder = require('./formatters/encoder');
 
 const DEFAULT_AMOUNT = 0;
 const DEFAULT_GAS_LIMIT = 250000;
@@ -77,116 +73,6 @@ class Contract {
     };
 
     return result;
-  }
-
-  /*
-  * @dev Constructs the data hex string needed for a call() or send().
-  * @param methodObj The json object of the method taken from the ABI.
-  * @param args The arguments for the method.
-  * @return The full hex string concatenated together.
-  */
-  constructDataHex(methodObj, args) {
-    if (!methodObj) {
-      throw new Error('methodObj should not be undefined.');
-    }
-
-    // function hash
-    const funcHash = Encoder.objToHash(methodObj, true);
-
-    const numOfParams = methodObj.inputs.length;
-
-    // create an array of data hex strings which will be combined at the end
-    const dataHexArr = _.times(numOfParams, _.constant(null));
-
-    // calculate start byte for dynamic data
-    let dataLoc = 0;
-    _.each(methodObj.inputs, (item) => {
-      const { type } = item;
-      if (type.match(Constants.REGEX_STATIC_ARRAY)) {
-        // treat each static array as an individual slot for dynamic data location purposes
-        const arrCap = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
-        dataLoc += arrCap;
-      } else {
-        dataLoc += 1;
-      }
-    });
-
-    _.each(methodObj.inputs, (item, index) => {
-      const { type } = item;
-      let hex;
-
-      if (type === Constants.BYTES) {
-        throw new Error('dynamics bytes conversion not implemented.');
-      } else if (type === Constants.STRING) {
-        throw new Error('dynamic string conversion not implemented.');
-      } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
-        let data = '';
-
-        // set location of dynamic data
-        const startBytesLoc = dataLoc * 32;
-        hex = Encoder.uintToHex(startBytesLoc);
-        dataHexArr[index] = hex;
-
-        // construct data
-        // add length of dynamic data set
-        const numOfDynItems = args[index].length;
-        data += Encoder.uintToHex(numOfDynItems);
-
-        // add each hex converted item
-        _.each(args[index], (dynItem) => {
-          data += Encoder.encodeParam(type, dynItem);
-        });
-
-        // add the dynamic data to the end
-        dataHexArr.push(data);
-
-        // increment starting data location
-        // +1 for the length of data set
-        dataLoc += numOfDynItems + 1;
-      } else if (type === Constants.ADDRESS
-        || type === Constants.BOOL
-        || type.match(Constants.REGEX_UINT)
-        || type.match(Constants.REGEX_INT)
-        || type.match(Constants.REGEX_BYTES)
-        || type.match(Constants.REGEX_STATIC_ARRAY)) { // static types
-        dataHexArr[index] = Encoder.encodeParam(type, args[index]);
-      } else {
-        console.error(`found unknown type: ${type}`);
-      }
-    });
-
-    return funcHash + dataHexArr.join('');
-  }
-
-  /**
-   * Validates arguments by ABI schema and throws errors if mismatch.
-   * @param {String} methodName The method name.
-   * @param {Array} methodArgs The method arguments.
-   * @return {Object} The method object in ABI and processed argument array.
-   */
-  validateMethodAndArgs(methodName, methodArgs) {
-    const methodObj = _.find(this.abi, { name: methodName });
-
-    if (_.isUndefined(methodObj)) {
-      throw new Error(`Method ${methodName} not defined in ABI.`);
-    }
-    if (methodObj.inputs.length !== methodArgs.length) {
-      throw new Error('Number of arguments supplied does not match ABI method args.');
-    }
-
-    let args;
-    if (_.isUndefined(methodArgs)) {
-      args = [];
-    } else if (_.isArray(methodArgs)) {
-      args = methodArgs;
-    } else {
-      args = [methodArgs];
-    }
-
-    return {
-      method: methodObj,
-      args,
-    };
   }
 }
 
