@@ -258,7 +258,7 @@ class Encoder {
    * @param {array} methodArgs The method arguments.
    * @return {boolean} If valid methodName and methodArgs.
    */
-  validateMethodAndArgs(abi, methodName, args = []) {
+  static validateMethodAndArgs(abi, methodName, args = []) {
     const methodObj = _.find(abi, { name: methodName });
     if (!abi) {
       throw Error('abi should not be undefined.');
@@ -283,7 +283,7 @@ class Encoder {
    * @param {array} args Arguments for the method.
    * @return Hex string of all the encoded args.
    */
-  constructData(abi, methodName, args = []) {
+  static constructData(abi, methodName, args = []) {
     if (!this.validateMethodAndArgs(abi, methodName, args)) {
       throw Error('Invalid params to construct data.');
     }
