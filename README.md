@@ -197,6 +197,7 @@ qweb3.encoder.uintToHex(num);
 qweb3.encoder.stringToHex(string, maxCharLen);
 qweb3.encoder.stringArrayToHex(strArray, numOfItems);
 qweb3.encoder.padHexString(hexStr);
+qweb3.encoder.constructData(abi, methodName, args);
 ```
 
 ## Decoder
