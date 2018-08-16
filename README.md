@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bodhiproject/qweb3.js.svg?branch=master)](https://travis-ci.org/bodhiproject/qweb3.js)
+
 # Qweb3.js - Web3.js for Qtum
 
 Qweb3 is a library for dApps to interract with the Qtum blockchain. Qweb3 communicates to a Qtum node via the provider provided.
