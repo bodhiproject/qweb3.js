@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - "9"
+  - "10"
 
 env:
   - CXX=g++-4.8 QTUM_RPC_ADDRESS='http://bodhi:bodhi@localhost:13889' SENDER_ADDRESS='qMZK8FNPRm54jvTLAGEs1biTCgyCkcsmna' WALLET_PASSPHRASE='bodhi'
