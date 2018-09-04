@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const { isString, isArray, isFinite } = require('lodash');
 
 const { initProvider } = require('./providers');
 const Contract = require('./contract');
@@ -118,29 +118,29 @@ class Qweb3 {
    * @return {Promise} Promise containing returned logs or Error
    */
   searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, removeHexPrefix) {
-    if (!_.isNumber(fromBlock)) {
-      throw new Error(`fromBlock expects a number. Got ${fromBlock} instead.`);
+    if (!isFinite(fromBlock)) {
+      throw Error('fromBlock must be a number');
     }
-    if (!_.isNumber(toBlock)) {
-      throw new Error(`toBlock expects a number. Got ${toBlock} instead.`);
+    if (!isFinite(toBlock)) {
+      throw Error('toBlock must be a number.');
     }
 
     const addrObj = { addresses: undefined };
-    if (_.isString(addresses)) {
+    if (isString(addresses)) {
       addrObj.addresses = [addresses];
-    } else if (_.isArray(addresses)) {
+    } else if (isArray(addresses)) {
       addrObj.addresses = addresses;
     } else {
-      throw new Error('addresses expects a string or an array.');
+      throw Error('addresses must be a string or an array.');
     }
 
     const topicsObj = { topics: undefined };
-    if (_.isString(topics)) {
+    if (isString(topics)) {
       topicsObj.topics = [topics];
-    } else if (_.isArray(topics)) {
+    } else if (isArray(topics)) {
       topicsObj.topics = topics;
     } else {
-      throw new Error('topics expects a string or an array.');
+      throw Error('topics must be a string or an array.');
     }
 
     return this.provider.rawCall('searchlogs', [fromBlock, toBlock, addrObj, topicsObj])
@@ -154,6 +154,39 @@ class Qweb3 {
    */
   getInfo() {
     return this.provider.rawCall('getinfo');
+  }
+
+  /** ******** GENERATING ********* */
+  /**
+   * Mine up to n blocks immediately (before the RPC call returns) to an address in the wallet.
+   * @param {number} blocks How many blocks are generated immediately.
+   * @param {number} maxTries How many iterations to try (default = 1000000).
+   * @return {array} Hashes of blocks generated.
+   */
+  generate(blocks, maxTries = 1000000) {
+    if (!isFinite(blocks)) {
+      throw Error('blocks must be a number.');
+    }
+
+    return this.provider.rawCall('generate', [blocks, maxTries]);
+  }
+
+  /**
+   * Mine blocks immediately to a specified address (before the RPC call returns).
+   * @param {number} blocks How many blocks are generated immediately.
+   * @param {string} address The address to send the newly generated qtum to.
+   * @param {number} maxTries How many iterations to try (default = 1000000).
+   * @return {array} Hashes of blocks generated.
+   */
+  generateToAddress(blocks, address, maxTries = 1000000) {
+    if (!isFinite(blocks)) {
+      throw Error('blocks must be a number.');
+    }
+    if (!isString(address)) {
+      throw Error('address must be a string.');
+    }
+
+    return this.provider.rawCall('generatetoaddress', [blocks, address, maxTries]);
   }
 
   /** ******** NETWORK ********* */
