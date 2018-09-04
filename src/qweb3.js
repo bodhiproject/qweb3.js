@@ -159,14 +159,34 @@ class Qweb3 {
   /** ******** GENERATING ********* */
   /**
    * Mine up to n blocks immediately (before the RPC call returns) to an address in the wallet.
-   * @param {number} blocks Number of blocks to mine.
+   * @param {number} blocks How many blocks are generated immediately.
+   * @param {number} maxTries How many iterations to try (default = 1000000).
+   * @return {array} Hashes of blocks generated.
    */
-  generateBlocks(blocks) {
+  generate(blocks, maxTries = 1000000) {
     if (!isFinite(blocks)) {
       throw Error('blocks must be a number.');
     }
 
-    return this.provider.rawCall('generate', [blocks]);
+    return this.provider.rawCall('generate', [blocks, maxTries]);
+  }
+
+  /**
+   * Mine blocks immediately to a specified address (before the RPC call returns).
+   * @param {number} blocks How many blocks are generated immediately.
+   * @param {string} address The address to send the newly generated qtum to.
+   * @param {number} maxTries How many iterations to try (default = 1000000).
+   * @return {array} Hashes of blocks generated.
+   */
+  generateToAddress(blocks, address, maxTries = 1000000) {
+    if (!isFinite(blocks)) {
+      throw Error('blocks must be a number.');
+    }
+    if (!isString(address)) {
+      throw Error('address must be a string.');
+    }
+
+    return this.provider.rawCall('generatetoaddress', [blocks, address, maxTries]);
   }
 
   /** ******** NETWORK ********* */
