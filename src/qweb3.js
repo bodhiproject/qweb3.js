@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const { isString, isArray, isFinite } = require('lodash');
 
 const { initProvider } = require('./providers');
 const Contract = require('./contract');
@@ -118,29 +118,29 @@ class Qweb3 {
    * @return {Promise} Promise containing returned logs or Error
    */
   searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, removeHexPrefix) {
-    if (!_.isNumber(fromBlock)) {
-      throw new Error(`fromBlock expects a number. Got ${fromBlock} instead.`);
+    if (!isFinite(fromBlock)) {
+      throw Error('fromBlock must be a number');
     }
-    if (!_.isNumber(toBlock)) {
-      throw new Error(`toBlock expects a number. Got ${toBlock} instead.`);
+    if (!isFinite(toBlock)) {
+      throw Error('toBlock must be a number.');
     }
 
     const addrObj = { addresses: undefined };
-    if (_.isString(addresses)) {
+    if (isString(addresses)) {
       addrObj.addresses = [addresses];
-    } else if (_.isArray(addresses)) {
+    } else if (isArray(addresses)) {
       addrObj.addresses = addresses;
     } else {
-      throw new Error('addresses expects a string or an array.');
+      throw Error('addresses must be a string or an array.');
     }
 
     const topicsObj = { topics: undefined };
-    if (_.isString(topics)) {
+    if (isString(topics)) {
       topicsObj.topics = [topics];
-    } else if (_.isArray(topics)) {
+    } else if (isArray(topics)) {
       topicsObj.topics = topics;
     } else {
-      throw new Error('topics expects a string or an array.');
+      throw Error('topics must be a string or an array.');
     }
 
     return this.provider.rawCall('searchlogs', [fromBlock, toBlock, addrObj, topicsObj])
@@ -162,7 +162,7 @@ class Qweb3 {
    * @param {number} blocks Number of blocks to mine.
    */
   generateBlocks(blocks) {
-    if (!_.isFinite(blocks)) {
+    if (!isFinite(blocks)) {
       throw Error('blocks must be a number.');
     }
 
