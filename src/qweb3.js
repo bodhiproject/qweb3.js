@@ -156,6 +156,19 @@ class Qweb3 {
     return this.provider.rawCall('getinfo');
   }
 
+  /** ******** GENERATING ********* */
+  /**
+   * Mine up to n blocks immediately (before the RPC call returns) to an address in the wallet.
+   * @param {number} blocks Number of blocks to mine.
+   */
+  generateBlocks(blocks) {
+    if (!_.isFinite(blocks)) {
+      throw Error('blocks must be a number.');
+    }
+
+    return this.provider.rawCall('generate', [blocks]);
+  }
+
   /** ******** NETWORK ********* */
   /**
    * Returns data about each connected network node as a json array of objects.
