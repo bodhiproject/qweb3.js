@@ -21,11 +21,12 @@ const { Qweb3 } = require('qweb3');
 // Default Qtum RPC ports: testnet=13889 mainnet=3889
 const qweb3 = new Qweb3('http://bodhi:bodhi@localhost:13889');
 
-// Instantiate Qweb3 with QryptoRPCProvider
-// QryptoRPCProvider is a provider for the Qrypto Wallet Chrome Extension.
-// Please note QryptoRPCProvider only allows the rawCall() method to be used.
+// Instantiate Qweb3 with window.qryptoProvider
+// qryptoProvider is a provider for the Qrypto Wallet Chrome Extension.
+// Please note qryptoProvider only allows the rawCall() method to be used.
 // It is specifically used for sendtocontract and callcontract only.
-const qweb3 = new Qweb3(new QryptoRPCProvider());
+const CurrentProvider = window.qryptoProvider;
+const qweb3 = new Qweb3(new CurrentProvider());
 ```
 
 ### isConnected()
