@@ -15,7 +15,7 @@ Run the following in your project folder:
 This is example is meant for web dapps who would like to use Qweb3's convenience methods with Qrypto's RPC provider. Qrypto is a Qtum wallet [Chrome extension](https://chrome.google.com/webstore/detail/qrypto/hdmjdgjbehedbnjmljikggbmmbnbmlnd). More details about Qrypto [here](https://github.com/bodhiproject/qrypto).
 
 ### 1. Construct Qweb3 instance
-If you have Qrypyto installed, you will have a `window.qrypto` object injected in your browser tab.
+If you have Qrypyto installed, you will have a `window.qrypto` object injected in your browser tab. Pass that into Qweb3 as a parameter to set the provider.
 ```
 const qweb3 = new Qweb3(window.qrypto.rpcProvider);
 ```
@@ -46,6 +46,9 @@ function onQryptoAcctChange(event) {
     //   address: "qJHp6dUSmDShpEEMmwxqHPo7sFSdydSkPM",
     //   balance: 49.10998413
     // } 
+
+    // You may also get the account from `window.qrypto.account`.
+    // account = window.qrypto.account
   }
 }
 window.addEventListener('message', onQryptoAcctChange, false);
