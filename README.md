@@ -31,13 +31,14 @@ const contract = qweb3.Contract(contractAddress, contractAbi);
 ```
 
 ### 3. Get Logged In Qrypto Account
-To get the current logged in account in Qrypto, you will have to add a message listener to listen to messages sent from Qrypto.
+To get the current logged in account in Qrypto, you will have to add an [Event Listener](https://www.w3schools.com/jsref/met_element_addeventlistener.asp) to listen to messages sent from Qrypto.
 ```
 let account;
 
 function onQryptoAcctChange(event) {
   if (event.data.message && event.data.message.type == "ACCOUNT_CHANGED") {
     account = event.data.message.payload;
+
     // You now have the logged in account.
     // account = InpageAccount {
     //   loggedIn: true,
