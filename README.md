@@ -12,24 +12,53 @@ Run the following in your project folder:
 	npm install qweb3 --save
 
 ## Web Dapp Usage
-This is example is meant for web dapps who would like to use Qweb3's convenience methods with Qrypto's RPC provider. Qrypto is a Qtum wallet [Chrome extension](https://chrome.google.com/webstore/detail/qrypto/hdmjdgjbehedbnjmljikggbmmbnbmlnd).
+This is example is meant for web dapps who would like to use Qweb3's convenience methods with Qrypto's RPC provider. Qrypto is a Qtum wallet [Chrome extension](https://chrome.google.com/webstore/detail/qrypto/hdmjdgjbehedbnjmljikggbmmbnbmlnd). More details about Qrypto [here](https://github.com/bodhiproject/qrypto).
+
+### 1. Construct Qweb3 instance
+If you have Qrypyto installed, you will have a `window.qrypto` object injected in your browser tab.
 ```
-// If you have Qrypyto installed, you will have a `window.qrypto` object injected in your browser tab.
 const qweb3 = new Qweb3(window.qrypto.rpcProvider);
+```
+
+### 2. Construct Contract instance
+The Contract class is meant for executing `sendtocontract` or `callcontract` at a specific contract address with a given ABI.
+```
 const contractAddress = 'f7b958eac2bdaca0f225b86d162f263441d23c19';
 const contractAbi = [{"constant":false,"inputs":[{"name":"_eventAddress","type":"address"},{"name":"_eventName","type":"bytes32[10]"},{"name":"_eventResultNames","type":"bytes32[10]"},{"name":"_numOfResults","type":"uint8"},{"name":"_lastResultIndex","type":"uint8"},{"name":"_arbitrationEndBlock","type":"uint256"},{"name":"_consensusThreshold","type":"uint256"}],"name":"createDecentralizedOracle","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_eventAddress","type":"address"},{"name":"_eventName","type":"bytes32[10]"},{"name":"_eventResultNames","type":"bytes32[10]"},{"name":"_numOfResults","type":"uint8"},{"name":"_lastResultIndex","type":"uint8"},{"name":"_arbitrationEndBlock","type":"uint256"},{"name":"_consensusThreshold","type":"uint256"}],"name":"doesDecentralizedOracleExist","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_oracle","type":"address"},{"name":"_eventAddress","type":"address"},{"name":"_eventName","type":"bytes32[10]"},{"name":"_eventResultNames","type":"bytes32[10]"},{"name":"_numOfResults","type":"uint8"},{"name":"_bettingEndBlock","type":"uint256"},{"name":"_resultSettingEndBlock","type":"uint256"},{"name":"_consensusThreshold","type":"uint256"}],"name":"createCentralizedOracle","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_oracle","type":"address"},{"name":"_eventAddress","type":"address"},{"name":"_eventName","type":"bytes32[10]"},{"name":"_eventResultNames","type":"bytes32[10]"},{"name":"_numOfResults","type":"uint8"},{"name":"_bettingEndBlock","type":"uint256"},{"name":"_resultSettingEndBlock","type":"uint256"},{"name":"_consensusThreshold","type":"uint256"}],"name":"doesCentralizedOracleExist","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"oracles","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_addressManager","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_contractAddress","type":"address"},{"indexed":true,"name":"_oracle","type":"address"},{"indexed":true,"name":"_eventAddress","type":"address"},{"indexed":false,"name":"_name","type":"bytes32[10]"},{"indexed":false,"name":"_resultNames","type":"bytes32[10]"},{"indexed":false,"name":"_numOfResults","type":"uint8"},{"indexed":false,"name":"_bettingEndBlock","type":"uint256"},{"indexed":false,"name":"_resultSettingEndBlock","type":"uint256"},{"indexed":false,"name":"_consensusThreshold","type":"uint256"}],"name":"CentralizedOracleCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_contractAddress","type":"address"},{"indexed":true,"name":"_eventAddress","type":"address"},{"indexed":false,"name":"_name","type":"bytes32[10]"},{"indexed":false,"name":"_resultNames","type":"bytes32[10]"},{"indexed":false,"name":"_numOfResults","type":"uint8"},{"indexed":false,"name":"_lastResultIndex","type":"uint8"},{"indexed":false,"name":"_arbitrationEndBlock","type":"uint256"},{"indexed":false,"name":"_consensusThreshold","type":"uint256"}],"name":"DecentralizedOracleCreated","type":"event"}];
 
 // Create a new Contract instance and use the same provider as qweb3
 const contract = qweb3.Contract(contractAddress, contractAbi);
+```
 
-// Get the current logged in account in Qrypto
-const loggedInAccount = window.qrypto.account.address;
+### 3. Get Logged In Qrypto Account
+To get the current logged in account in Qrypto, you will have to add a message listener to listen to messages sent from Qrypto.
+```
+let account;
 
+function onQryptoAcctChange(event) {
+  if (event.data.message && event.data.message.type == "ACCOUNT_CHANGED") {
+    account = event.data.message.payload;
+    // You now have the logged in account.
+    // account = InpageAccount {
+    //   loggedIn: true,
+    //   name: "My Wallet", 
+    //   network: "TestNet",
+    //   address: "qJHp6dUSmDShpEEMmwxqHPo7sFSdydSkPM",
+    //   balance: 49.10998413
+    // } 
+  }
+}
+window.addEventListener('message', onQryptoAcctChange, false);
+```
+
+### 4. Execute sendtocontract
+The last piece is to execute a `sendtocontract` on your Contract instance. This will automatically show a Qrypto popup to confirm that you would like to send the transaction.
+```
 // Does a sendtocontract call on a function called setResult(uint8)
 const tx = await contract.send('setResult', {
-  methodArgs: [1],    // Sets the params of the function in order
+  methodArgs: [1],    // Sets the function params
   gasLimit: 1000000,  // Sets the gas limit to 1 million
-  senderAddress: loggedInAccount,
+  senderAddress: account.address,
 });
 // tx = txid of the transaction
 ```
