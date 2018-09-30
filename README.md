@@ -67,7 +67,15 @@ const tx = await contract.send('setResult', {
 // tx = txid of the transaction
 ```
 
-## Qweb3.js
+## Qweb3Provider
+The provider is the link between Qweb3 and the blockchain. A compatible Qweb3 Provider adheres to the following interface:
+```
+interface Qweb3Provider: {
+  rawCall: (method: string, args: any[]) => Promise; // returns the result of the request
+}
+```
+
+## Qweb3
 Instantiate a new instance of `Qweb3`: 
 ```
 const { Qweb3 } = require('qweb3');
