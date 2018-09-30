@@ -147,15 +147,6 @@ class Qweb3 {
       .then(results => Decoder.decodeSearchLog(results, contractMetadata, removeHexPrefix));
   }
 
-  /** ******** CONTROL ********* */
-  /**
-   * Get the blockchain info.
-   * @return {Promise} Blockchain info object or Error
-   */
-  getInfo() {
-    return this.provider.rawCall('getinfo');
-  }
-
   /** ******** GENERATING ********* */
   /**
    * Mine up to n blocks immediately (before the RPC call returns) to an address in the wallet.
