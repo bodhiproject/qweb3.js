@@ -266,32 +266,6 @@ describe('Qweb3', () => {
     });
   });
 
-  /** ******** CONTROL ********* */
-  describe('getInfo()', () => {
-    it('returns the blockchain info', async () => {
-      const res = await qweb3.getInfo(QTUM_ADDRESS);
-      assert.isDefined(res);
-      assert.isObject(res);
-      assert.isDefined(res.version);
-      assert.isDefined(res.protocolversion);
-      assert.isDefined(res.walletversion);
-      assert.isDefined(res.balance);
-      assert.isDefined(res.stake);
-      assert.isDefined(res.blocks);
-      assert.isDefined(res.timeoffset);
-      assert.isDefined(res.connections);
-      assert.isDefined(res.proxy);
-      assert.isDefined(res.difficulty);
-      assert.isDefined(res.testnet);
-      assert.isDefined(res.moneysupply);
-      assert.isDefined(res.keypoololdest);
-      assert.isDefined(res.keypoolsize);
-      assert.isDefined(res.paytxfee);
-      assert.isDefined(res.relayfee);
-      assert.isDefined(res.errors);
-    });
-  });
-
   /** ******** NETWORK ********* */
   describe('getPeerInfo()', () => {
     it('returns the Node info', async () => {

@@ -21,7 +21,12 @@ describe('Providers', () => {
       assert.isTrue(instance.constructor.name === 'HttpProvider');
     });
 
+    it('throws if the provider is undefined', () => {
+      assert.throws(() => initProvider(undefined));
+    });
+
     it('throws if not a compatible provider', () => {
+      assert.throws(() => initProvider({ rawCall: 'test' }));
       assert.throws(() => initProvider(new Decoder()));
     });
   });

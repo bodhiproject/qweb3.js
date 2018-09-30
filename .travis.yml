@@ -19,15 +19,15 @@ cache:
     - "node_modules"
 
 before_install:
-  - wget https://github.com/qtumproject/qtum/releases/download/mainnet-ignition-v0.14.13/qtum-0.14.13-x86_64-linux-gnu.tar.gz
+  - wget https://github.com/qtumproject/qtum/releases/download/mainnet-ignition-v0.16.1/qtum-0.16.1-x86_64-linux-gnu.tar.gz
 
 install:
-  - tar -xvzf qtum-0.14.13-x86_64-linux-gnu.tar.gz
+  - tar -xvzf qtum-0.16.1-x86_64-linux-gnu.tar.gz
   - npm install
   - mkdir test/data/.qtum
 
 script:
-  - ./qtum-0.14.13/bin/qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=./test/data/.qtum & 
+  - ./qtum-0.16.1/bin/qtumd -testnet -logevents -rpcuser=bodhi -rpcpassword=bodhi -datadir=./test/data/.qtum & 
   - sleep 10
   - npm run test:cleanenv
 

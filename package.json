@@ -1,7 +1,7 @@
 {
   "name": "qweb3",
   "namespace": "bodhi",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Qtum JavaScript API comunicating to qtum node over RPC",
   "main": "./src/index.js",
   "repository": {
@@ -34,26 +34,16 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "husky": "^1.0.0-rc.13",
-    "lint-staged": "^7.2.2",
     "mocha": "^5.2.0"
   },
   "scripts": {
     "lint": "eslint -- src/. test/.",
     "lint:fix": "eslint --fix -- src/. test/.",
     "test": "mocha --recursive **/*.tests.js",
-    "test:cleanenv": "mocha --recursive **/*.tests.js --cleanenv",
-    "precommit": "lint-staged",
-    "prepush": "npm run lint:fix"
-  },
-  "lint-staged": {
-    "*.js": [
-      "npm run lint:fix",
-      "git add"
-    ]
+    "test:cleanenv": "mocha --recursive **/*.tests.js --cleanenv"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
       "pre-push": "npm run lint:fix"
     }
   },
