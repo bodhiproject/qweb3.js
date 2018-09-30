@@ -1,24 +1,18 @@
-const { includes } = require('lodash');
-
 const HttpProvider = require('./http-provider');
-
-const compatibleProviders = [
-  'HttpProvider',
-  'QryptoRPCProvider',
-];
 
 const initProvider = (provider) => {
   if (!provider) {
-    throw Error('Provider cannot be undefined.');
+    throw Error('provider cannot be undefined.');
   }
 
+  // URL was passed to create an HttpProvider instance
   if (typeof provider === 'string') {
     return new HttpProvider(provider);
   }
 
-  const className = provider.constructor.name;
-  if (!includes(compatibleProviders, className)) {
-    throw Error(`Incompatible provider: ${className}`);
+  // Check for rawCall() in provider object
+  if (!provider.rawCall || typeof provider.rawCall !== 'function') {
+    throw Error('provider is not a compatible Qweb3 Provider.');
   }
 
   return provider;
