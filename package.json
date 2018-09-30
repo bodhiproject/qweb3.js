@@ -41,8 +41,12 @@
     "lint": "eslint -- src/. test/.",
     "lint:fix": "eslint --fix -- src/. test/.",
     "test": "mocha --recursive **/*.tests.js",
-    "test:cleanenv": "mocha --recursive **/*.tests.js --cleanenv",
-    "prepush": "npm run lint:fix"
+    "test:cleanenv": "mocha --recursive **/*.tests.js --cleanenv"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint:fix"
+    }
   },
   "homepage": "https://www.bodhi.network/",
   "bugs": {
