@@ -7,7 +7,7 @@ const Decoder = require('../../formatters/decoder');
 
 const { assert } = chai;
 
-describe.only('Providers', () => {
+describe('Providers', () => {
   describe('initProvider', () => {
     it('accepts a url string', () => {
       const instance = initProvider('http://bodhi:bodhi@localhost:13889');
