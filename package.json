@@ -1,7 +1,7 @@
 {
   "name": "qweb3",
   "namespace": "bodhi",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Qtum JavaScript API comunicating to qtum node over RPC",
   "main": "./src/index.js",
   "repository": {
