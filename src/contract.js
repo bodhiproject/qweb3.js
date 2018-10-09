@@ -27,11 +27,15 @@ class Contract {
    * @return {Promise} Call result.
    */
   async call(methodName, params) {
-    const { methodArgs, senderAddress } = params;
-    const data = Encoder.constructData(this.abi, methodName, methodArgs);
-    let result = await this.provider.rawCall('callcontract', [this.address, data, senderAddress]);
-    result = Decoder.decodeCall(result, this.abi, methodName, true); // Format the result
-    return result;
+    try {
+      const { methodArgs, senderAddress } = params;
+      const data = Encoder.constructData(this.abi, methodName, methodArgs);
+      let result = await this.provider.rawCall('callcontract', [this.address, data, senderAddress]);
+      result = Decoder.decodeCall(result, this.abi, methodName, true); // Format the result
+      return result;
+    } catch (err) {
+      throw Error(err.message || err);
+    }
   }
 
   /**
@@ -41,32 +45,36 @@ class Contract {
    * @return {Promise} Transaction ID of the sendtocontract.
    */
   async send(methodName, params) {
-    // Throw if methodArgs or senderAddress is not defined in params
-    Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
+    try {
+      // Throw if methodArgs or senderAddress is not defined in params
+      Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
-    const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
-    const data = Encoder.constructData(this.abi, methodName, methodArgs);
-    const amt = amount || DEFAULT_AMOUNT;
-    const limit = gasLimit || DEFAULT_GAS_LIMIT;
-    const price = gasPrice || DEFAULT_GAS_PRICE;
+      const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
+      const data = Encoder.constructData(this.abi, methodName, methodArgs);
+      const amt = amount || DEFAULT_AMOUNT;
+      const limit = gasLimit || DEFAULT_GAS_LIMIT;
+      const price = gasPrice || DEFAULT_GAS_PRICE;
 
-    const result = await this.provider.rawCall('sendtocontract', [
-      this.address,
-      data,
-      amt,
-      limit,
-      price.toFixed(8),
-      senderAddress,
-    ]);
+      const result = await this.provider.rawCall('sendtocontract', [
+        this.address,
+        data,
+        amt,
+        limit,
+        price.toFixed(8),
+        senderAddress,
+      ]);
 
-    // Add original request params to result obj
-    result.args = {
-      contractAddress: this.address,
-      amount: amt,
-      gasLimit: limit,
-      gasPrice: price,
-    };
-    return result;
+      // Add original request params to result obj
+      result.args = {
+        contractAddress: this.address,
+        amount: amt,
+        gasLimit: limit,
+        gasPrice: price,
+      };
+      return result;
+    } catch (err) {
+      throw Error(err.message || err);
+    }
   }
 }
 
