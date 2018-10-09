@@ -27,11 +27,15 @@ class Contract {
    * @return {Promise} Call result.
    */
   async call(methodName, params) {
-    const { methodArgs, senderAddress } = params;
-    const data = Encoder.constructData(this.abi, methodName, methodArgs);
-    let result = await this.provider.rawCall('callcontract', [this.address, data, senderAddress]);
-    result = Decoder.decodeCall(result, this.abi, methodName, true); // Format the result
-    return result;
+    try {
+      const { methodArgs, senderAddress } = params;
+      const data = Encoder.constructData(this.abi, methodName, methodArgs);
+      let result = await this.provider.rawCall('callcontract', [this.address, data, senderAddress]);
+      result = Decoder.decodeCall(result, this.abi, methodName, true); // Format the result
+      return result;
+    } catch (err) {
+      throw Error(err.message || err);
+    }
   }
 
   /**
@@ -69,7 +73,7 @@ class Contract {
       };
       return result;
     } catch (err) {
-      throw Error(err);
+      throw Error(err.message || err);
     }
   }
 }
