@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Web3Utils = require('web3-utils');
+const Web3ETHAbi = require('web3-eth-abi');
 const BigNumber = require('bignumber.js');
 const bs58 = require('bs58');
 
@@ -236,7 +237,11 @@ class Encoder {
         hex = this.uintToHex(value);
       }
     } else if (type.match(Constants.REGEX_BYTES)) { // fixed bytes, ie. bytes32
-      hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE);
+      if (Web3Utils.isHexStrict(value)) {
+        hex = Web3ETHAbi.encodeParameter(type, value).substr(2);
+      } else {
+        hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE);
+      }
     } else if (type.match(Constants.REGEX_STATIC_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
       const arrCapacity = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
       if (value instanceof Array) {
