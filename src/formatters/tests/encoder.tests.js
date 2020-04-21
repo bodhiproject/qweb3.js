@@ -844,6 +844,50 @@ describe('Encoder', () => {
         .toLowerCase());
     });
 
+    it('converts bytes types with hex value', () => {
+      let methodObj = {
+        constant: true,
+        inputs: [
+          {
+            name: '',
+            type: 'bytes32',
+          },
+        ],
+        name: 'didWithdraw',
+        outputs: [],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      };
+      let args = ['0x68656c6c6f'];
+      let dataHex = Encoder.constructData([methodObj], 'didWithdraw', args);
+
+      let funcHash = Encoder.objToHash(methodObj, true);
+      let param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+
+      methodObj = {
+        constant: true,
+        inputs: [
+          {
+            name: '',
+            type: 'bytes8',
+          },
+        ],
+        name: 'didWithdraw',
+        outputs: [],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      };
+      args = ['0x68656c6c6f'];
+      dataHex = Encoder.constructData([methodObj], 'didWithdraw', args);
+
+      funcHash = Encoder.objToHash(methodObj, true);
+      param = '68656c6c6f000000000000000000000000000000000000000000000000000000';
+      assert.equal(dataHex, funcHash.concat(param));
+    });
+
     it('converts bytes types', () => {
       let methodObj = {
         constant: true,
@@ -971,6 +1015,33 @@ describe('Encoder', () => {
 
       funcHash = Encoder.objToHash(methodObj, true);
       assert.equal(dataHex, funcHash);
+    });
+
+    it('converts bytes32 types', () => {
+      const methodObj = {
+        constant: true,
+        inputs: [
+          {
+            name: 'v',
+            type: 'uint8',
+          }, {
+            name: 'r',
+            type: 'bytes32',
+          }, {
+            name: 's',
+            type: 'bytes32',
+          },
+        ],
+        name: 'verify',
+        outputs: [],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      };
+      const args = ['0x1c', '0x9e72ad2e50c8cff774ce8984e9cbd47d3edb658f72a4938e8e2e475390a8e57e', '0x3685b2ee64860d800428efa29b4da13453455159a9cd2448c7ce15844f6d564d'];
+      const dataHex = Encoder.constructData([methodObj], 'verify', args);
+
+      assert.equal('e2454522000000000000000000000000000000000000000000000000000000000000001c9e72ad2e50c8cff774ce8984e9cbd47d3edb658f72a4938e8e2e475390a8e57e3685b2ee64860d800428efa29b4da13453455159a9cd2448c7ce15844f6d564d', dataHex);
     });
 
     it('throws if abi is undefined', () => {
